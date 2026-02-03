@@ -1,6 +1,7 @@
 """
 This file contains code for creating new (random) contamination scenarios.
 """
+
 import random
 import math
 import numpy as np
@@ -15,16 +16,17 @@ def create_random_contamination_event(time_window: tuple[int, int],
     # Random duration
     end_time = start_time + random.randint(duration_interval[0], duration_interval[1])
 
-    # Random amount of contaminants
+    # Random amount of contaminants, don't need to change that
     EV_log_min = math.log10(1.39e6)
     EV_log_max = math.log10(2.08e7)
     EV_conc = 10 ** (EV_log_min + random.uniform(0, 1) * (EV_log_max - EV_log_min))
     TOC = 140 + random.uniform(0, 1) * (250 - 140)
     C_FRA_fraction = 0.4
     C_SRA_fraction = 0.6
+    # can change 
     rate = 100
 
-    injection_conc_P = EV_conc * rate
+    injection_conc_P = EV_conc * rate # rate = injection strength, can change it 
     injection_conc_C_FRA = C_FRA_fraction * TOC * rate
     injection_conc_C_SRA = C_SRA_fraction * TOC * rate
 
@@ -47,7 +49,7 @@ if __name__ == "__main__":
     #f_msx_in = "CY-DBP_competition_stream_competition_365days.msx"
 
     ########################################################################
-    # Parameters of the contamination events
+    # Parameters of the contamination events, what we are going to change 
     duration_interval = (60, 480)    # 60 min - 480 min long contamination
     n_contamination_events = 2  # Two random contamination events
     time_window = (2, 5)        # Contamination event between the third and sixth day
@@ -68,6 +70,7 @@ if __name__ == "__main__":
         # Add random contamination events
         all_junctions = scenario.get_topology().get_all_junctions()
         contamination_patterns = []
+        # can control at specific nodes 
         for _ in range(n_contamination_events):
             node_id = random.choice(all_junctions)
 
@@ -76,13 +79,19 @@ if __name__ == "__main__":
             for species_id, pattern in contaminants_profiles:
                 contamination_patterns.append(pattern)
                 scenario.add_species_injection_source(species_id, node_id, pattern,
-                                                      EpanetConstants.EN_MASS)
+                                                      EpanetConstants.EN_MASS) # different types of injection to simulate, can choose, here use just MASS
 
         # Compute labels -- for each time step, 1 if a contamination present, 0 otherwise
         y = np.sum(contamination_patterns, axis=0) != 0
-        #print(y.shape)  # TODO: Export labels
+        print(y.shape)  # TODO: Export labels
 
         # TEST: run simulation
-        #scenario.place_bulk_species_node_sensors_everywhere(["P"])
-        #scada_data = scenario.run_simulation(verbose=True)
-        #scada_data.plot_bulk_species_node_concentration({"P": scenario.sensor_config.nodes})
+        scenario.place_bulk_species_node_sensors_everywhere(["P", "CL2"]) # choose what to mesure with the sensors (can also choose where to measure it)
+        # mesure also chlorine concenteration to detect contamination later 
+        # chlorine is used as a proxy to detect contamination 
+        scada_data = scenario.run_simulation(verbose=True) # run hydraulics then water quality 
+        # resultas stored as scada data
+        # plot the species concentration at all nodes, can be more specific (choose the nodes)
+        scada_data.plot_bulk_species_node_concentration({"CL2": ["dist71"]})
+        
+        # function to store it into a file, or export it into numpy array 
