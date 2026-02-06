@@ -13,7 +13,7 @@ if __name__ == "__main__":
     # we add an additional EPANET-MSX configuration file
     config, = load_leakdb_scenarios(scenarios_id=["1"], use_net1=True)
     config = ScenarioConfig(scenario_config=config,
-                            f_msx_in="arsenic_contamination.msx")
+                        f_msx_in="exploration\\arsenic_contamination.msx")
 
     with ScenarioSimulator(scenario_config=config) as sim:
         # Set simulation duration to 21 days
