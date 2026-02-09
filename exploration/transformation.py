@@ -1,12 +1,11 @@
 import pandas as pd
 
 def change_data_format(file_name):
+    "transform the data to have one row = one time step, the chlorine value, the arsenic value and the number of the node"
     df = pd.read_csv(file_name)
     
     df_cleaned = df.drop(columns=["pressure [meter] at 10","pressure [meter] at 11","pressure [meter] at 12","pressure [meter] at 13","pressure [meter] at 21","pressure [meter] at 22","pressure [meter] at 23","pressure [meter] at 31","pressure [meter] at 32","pressure [meter] at 9","pressure [meter] at 2","flow [cubic meter/hr] at 10","flow [cubic meter/hr] at 11","flow [cubic meter/hr] at 12","flow [cubic meter/hr] at 21","flow [cubic meter/hr] at 22","flow [cubic meter/hr] at 31","flow [cubic meter/hr] at 110","flow [cubic meter/hr] at 111","flow [cubic meter/hr] at 112","flow [cubic meter/hr] at 113","flow [cubic meter/hr] at 121","flow [cubic meter/hr] at 122","flow [cubic meter/hr] at 9"])
-    
-    print(df_cleaned.T)
-    # transform the data to have one row = one time step, the chlorine value, the arsenic value and the number of the node 
+
     new_data = {
         "timestep": [],
         "node": [],
@@ -37,7 +36,7 @@ def change_data_format(file_name):
     
 
 def get_node_number(column_name):
-    # extract the number from the column name to get the node number
+    "extract the number from the column name to get the node number"
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
 if __name__ == "__main__":
