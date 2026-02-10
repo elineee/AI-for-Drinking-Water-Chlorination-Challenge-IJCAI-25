@@ -1,6 +1,6 @@
 import pandas as pd
 
-def change_data_format(file_name):
+def change_data_format(file_name, to_csv=True):
     "transform the data to have one row = one time step, the chlorine value, the arsenic value and the number of the node"
     df = pd.read_csv(file_name)
     
@@ -32,14 +32,17 @@ def change_data_format(file_name):
         
     new_df = pd.DataFrame(new_data)
     
-    new_df.to_csv(file_name.replace(".csv", "_cleaned.csv"), index=False)
+    if to_csv:
+        new_df.to_csv(file_name.replace(".csv", "_cleaned.csv"), index=False)
+    
+    return new_df
     
 
 def get_node_number(column_name):
     "extract the number from the column name to get the node number"
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
-def get_data_for_one_node(file_name, node_number):
+def get_data_for_one_node(file_name, node_number, to_csv=True):
     "keep only the data for one node and save it in a new csv file"
     df = pd.read_csv(file_name)
     
@@ -58,7 +61,11 @@ def get_data_for_one_node(file_name, node_number):
             new_data["arsenic_concentration"].append(row["arsenic_concentration"])
     
     new_df = pd.DataFrame(new_data)
-    new_df.to_csv(file_name.replace(".csv", f"_node_{node_number}.csv"), index=False)
+    
+    if to_csv:
+        new_df.to_csv(file_name.replace(".csv", f"_node_{node_number}.csv"), index=False)
+        
+    return new_df
 
 if __name__ == "__main__":
     # change_data_format(".\data\data_arsenic\scada_data_node_22.csv")
