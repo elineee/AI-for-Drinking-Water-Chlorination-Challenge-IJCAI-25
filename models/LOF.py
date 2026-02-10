@@ -12,8 +12,9 @@ from exploration.data_transformation import change_data_format, get_data_for_one
 
 clean_file = ".\data\data_arsenic\scada_data_no_contamination.csv"
 contaminated_file = ".\data\data_arsenic\scada_data_conta_22.csv"
-NODE = 22
-WINDOW_SIZE = 10
+NODE = 31
+WINDOW_SIZE = 30
+# 15 score de 73, si 1, score de 40%, si 20, score de 67%, si 10, score de 70%, si 30, score de 76% (meilleur score)
 
 
 df_cleaned = change_data_format(clean_file, to_csv=False)
@@ -21,9 +22,6 @@ df_cleaned_node = get_data_for_one_node(df_cleaned, NODE, to_csv=False)
 
 df_contaminated = change_data_format(contaminated_file, to_csv=False)
 df_contaminated_node = get_data_for_one_node(df_contaminated, NODE, to_csv=False)
-
-
-    
 
 
 def create_features(df, feature_col, window_size=10):
@@ -76,12 +74,22 @@ def calculate_labels(df, feature_col, window_size=10):
     return np.array(labels)
 
         
-        
 X_train = create_features(df_cleaned_node, "chlorine_concentration", WINDOW_SIZE)
 
 X_test = create_features(df_contaminated_node, "chlorine_concentration", WINDOW_SIZE)
 
-y_true = calculate_labels(df_contaminated_node, "arsenic_concentration")
+y_true = calculate_labels(df_contaminated_node, "arsenic_concentration", WINDOW_SIZE)
+
+anomalies = 0
+normal = 0
+for i in y_true:
+    if i == -1:
+        anomalies += 1
+    else:
+        normal += 1
+print("number of anomalies:", anomalies)
+print("number of normal samples:", normal)
+    
     
 
 lof = LocalOutlierFactor(n_neighbors=20, novelty=True, contamination=0.1)
