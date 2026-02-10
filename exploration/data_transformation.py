@@ -39,6 +39,28 @@ def get_node_number(column_name):
     "extract the number from the column name to get the node number"
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
+def get_data_for_one_node(file_name, node_number):
+    "keep only the data for one node and save it in a new csv file"
+    df = pd.read_csv(file_name)
+    
+    new_data = {
+        "timestep": [],
+        "node": [],
+        "chlorine_concentration": [],
+        "arsenic_concentration": []
+    }
+    
+    for _, row in df.iterrows():
+        if row["node"] == node_number:
+            new_data["timestep"].append(int(row["timestep"]))
+            new_data["node"].append(int(row["node"]))
+            new_data["chlorine_concentration"].append(row["chlorine_concentration"])
+            new_data["arsenic_concentration"].append(row["arsenic_concentration"])
+    
+    new_df = pd.DataFrame(new_data)
+    new_df.to_csv(file_name.replace(".csv", f"_node_{node_number}.csv"), index=False)
+
 if __name__ == "__main__":
-    change_data_format(".\data\data_arsenic\scada_data_node_22.csv")
+    # change_data_format(".\data\data_arsenic\scada_data_node_22.csv")
+    get_data_for_one_node(".\data\data_arsenic\scada_data_node_22_cleaned.csv", 22)
     
