@@ -40,5 +40,5 @@ def get_node_number(column_name):
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
 if __name__ == "__main__":
-    change_data_format(".\data\data_arsenic\scada_data_100_contamination.csv")
+    change_data_format(".\data\data_arsenic\scada_data_node_22.csv")
     
