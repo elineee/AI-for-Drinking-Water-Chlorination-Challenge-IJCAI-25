@@ -1,18 +1,14 @@
 from sklearn.neighbors import LocalOutlierFactor
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix
 import pandas as pd
 import numpy as np
 
-import os, sys
-project_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-if project_root not in sys.path:
-    sys.path.insert(0, project_root)
     
-from exploration.data_transformation import change_data_format, get_data_for_one_node
+from data_transformation import change_data_format, get_data_for_one_node
 
-clean_file = ".\data\data_arsenic\scada_data_no_contamination.csv"
-contaminated_file = ".\data\data_arsenic\scada_data_conta_22.csv"
-NODE = 31
+clean_file = "..\data\data_arsenic\scada_data_no_contamination.csv"
+contaminated_file = "..\data\data_arsenic\scada_data_conta_22.csv"
+NODE = 22
 WINDOW_SIZE = 30
 # 15 score de 73, si 1, score de 40%, si 20, score de 67%, si 10, score de 70%, si 30, score de 76% (meilleur score)
 
@@ -90,7 +86,6 @@ for i in y_true:
 print("number of anomalies:", anomalies)
 print("number of normal samples:", normal)
     
-    
 
 lof = LocalOutlierFactor(n_neighbors=20, novelty=True, contamination=0.1)
 
@@ -99,3 +94,6 @@ lof.fit(X_train)
 y_pred = lof.predict(X_test)
 
 print("accuracy:", accuracy_score(y_true, y_pred))
+
+print("Matrice de confusion :")
+print(confusion_matrix(y_true, y_pred, labels=[1, -1]))
