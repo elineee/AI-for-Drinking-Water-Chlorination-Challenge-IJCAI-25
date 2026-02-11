@@ -1,19 +1,41 @@
 import numpy as np
 import pandas as pd
 
-# TODO : refactor to make it more general and only keep colums with chlorine and contaminants in the name  + add error if no columns for contaminant
-def change_data_format(file_name, to_csv=True):
+from experiment_config import ContaminationType
+
+def change_data_format(file_name, contaminants, to_csv=False):
     "transform the data to have one row = one time step, the chlorine value, the arsenic value and the number of the node"
     df = pd.read_csv(file_name)
     
-    df_cleaned = df.drop(columns=["pressure [meter] at 10","pressure [meter] at 11","pressure [meter] at 12","pressure [meter] at 13","pressure [meter] at 21","pressure [meter] at 22","pressure [meter] at 23","pressure [meter] at 31","pressure [meter] at 32","pressure [meter] at 9","pressure [meter] at 2","flow [cubic meter/hr] at 10","flow [cubic meter/hr] at 11","flow [cubic meter/hr] at 12","flow [cubic meter/hr] at 21","flow [cubic meter/hr] at 22","flow [cubic meter/hr] at 31","flow [cubic meter/hr] at 110","flow [cubic meter/hr] at 111","flow [cubic meter/hr] at 112","flow [cubic meter/hr] at 113","flow [cubic meter/hr] at 121","flow [cubic meter/hr] at 122","flow [cubic meter/hr] at 9"])
+    elements_to_keep = ["Chlorine"]
+    
+    contaminant_col_name = []
+    
+    # get id of contaminant to keep the right columns (e.g., AsIII for arsenic)
+    for contaminant in contaminants:
+        contaminant_id = get_contamination_id(contaminant.value)
+        elements_to_keep.append(contaminant_id)
+        contaminant_col_name.append(f'{contaminant.value}_concentration')
+    
+    columns_to_drop = []
+    
+    # drop the columns that do not contain chlorine or the contaminant in their name
+    for column in df.columns:
+        if not any(element in column for element in elements_to_keep):
+            columns_to_drop.append(column)
+    
+    
+    df_cleaned = df.drop(columns=columns_to_drop)
 
     new_data = {
         "timestep": [],
         "node": [],
-        "chlorine_concentration": [],
-        "arsenic_concentration": []
+        "chlorine_concentration": [],    
     }
+    
+    for col in contaminant_col_name:
+        new_data[col] = []
+    
     
     nodes = set()
     
@@ -23,14 +45,21 @@ def change_data_format(file_name, to_csv=True):
         
     for timestep, row in df_cleaned.iterrows():
         for node in nodes:
-            chlorine_col = f'bulk_species_node [MG] at Chlorine @ {node}'
-            arsenic_col = f'bulk_species_node [MG] at AsIII @ {node}'
             
-            if chlorine_col in df_cleaned.columns and arsenic_col in df_cleaned.columns:
-                new_data["timestep"].append(timestep)
-                new_data["node"].append(node)
+            chlorine_col = f'bulk_species_node [MG] at Chlorine @ {node}'
+            for contaminant in contaminants:
+                contaminant_id = get_contamination_id(contaminant.value)
+                contaminant_col = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
+                contaminant_col_name = f'{contaminant.value}_concentration'
+                new_data[contaminant_col_name].append(row[contaminant_col])
+            
+            new_data["timestep"].append(timestep)
+            new_data["node"].append(node)
+                                        
+            if chlorine_col in df_cleaned.columns:
                 new_data["chlorine_concentration"].append(row[chlorine_col])
-                new_data["arsenic_concentration"].append(row[arsenic_col])
+            else:
+                new_data["chlorine_concentration"].append(np.nan)
         
     new_df = pd.DataFrame(new_data)
     
@@ -62,20 +91,32 @@ def get_data_for_one_node(data, node_number, to_csv=True):
         df = data.copy()
     else:
         raise TypeError("`data` must be a file path (str) or a pandas DataFrame")
+    
+    col_names = df.columns
+    
+    new_data = {}
+    
+    for col in col_names:
+        new_data[col] = []
 
-    new_data = {
-        "timestep": [],
-        "node": [],
-        "chlorine_concentration": [],
-        "arsenic_concentration": []
-    }
+    # new_data = {
+    #     "timestep": [],
+    #     "node": [],
+    #     "chlorine_concentration": [],
+    #     "arsenic_concentration": []
+    # }
     
     for _, row in df.iterrows():
         if row["node"] == node_number:
-            new_data["timestep"].append(int(row["timestep"]))
-            new_data["node"].append(int(row["node"]))
-            new_data["chlorine_concentration"].append(row["chlorine_concentration"])
-            new_data["arsenic_concentration"].append(row["arsenic_concentration"])
+            for col in col_names:
+                new_data[col].append(row[col])
+            
+            
+            
+            # new_data["timestep"].append(int(row["timestep"]))
+            # new_data["node"].append(int(row["node"]))
+            # new_data["chlorine_concentration"].append(row["chlorine_concentration"])
+            # new_data["arsenic_concentration"].append(row["arsenic_concentration"])
     
     new_df = pd.DataFrame(new_data)
     
@@ -101,7 +142,6 @@ def create_features(df, feature_col, window_size=10):
             break
     
     feature = df[feature_col].values
-    print(feature)
     
     features = []
     
@@ -129,6 +169,8 @@ def calculate_labels(df, feature_col, window_size):
     Returns:
     - a numpy array containing the labels for each time step (1 if anomaly, 0 otherwise)
     """
+    
+    # get the col name containing the chlorine concentration for the node
     for column in df.columns:
         if feature_col in column:
             feature_col = column
@@ -145,4 +187,9 @@ def calculate_labels(df, feature_col, window_size):
     
     return np.array(labels)
 
-    
+def get_contamination_id(contaminant):
+    if contaminant == "arsenic":
+        return "AsIII"
+    else:
+        raise ValueError(f"Unknown contamination type: {contaminant}")
+

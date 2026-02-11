@@ -27,7 +27,7 @@ class IsolationForestModel(AnomalyModel):
         model = IsolationForest(contamination=contamination, random_state=42)
         y_pred = model.fit_predict(X)
         
-        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0], self.config.window_size)
+        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0].value, self.config.window_size)
 
         
         return {
@@ -37,7 +37,7 @@ class IsolationForestModel(AnomalyModel):
     
     def load_and_filter(self, file_path: str, nodes: List[int]) -> pd.DataFrame:
         # TODO : add parameter contaminants when changed in function 
-        df_all = change_data_format(file_path, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
+        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
         dfs = []
         

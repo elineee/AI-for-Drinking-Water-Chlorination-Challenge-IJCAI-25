@@ -18,13 +18,13 @@ class LOFModel(AnomalyModel):
         clean_dfs, contaminated_dfs = self.load_datasets()
         
         # TODO : handle multiple clean/contaminated files, for now only one of each is handled
-        X_train = create_features(clean_dfs[0], self.config.desinfectant, self.config.window_size)
+        X_train = create_features(clean_dfs[0], self.config.desinfectant.value, self.config.window_size)
 
         # TODO : handle multiple contaminants, for now only one contaminant is handled
-        X_test = create_features(contaminated_dfs[0], self.config.desinfectant, self.config.window_size)
+        X_test = create_features(contaminated_dfs[0], self.config.desinfectant.value, self.config.window_size)
 
         # TODO : handle multiple contaminants, for now only one contaminant is handled
-        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0], self.config.window_size)
+        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0].value, self.config.window_size)
         
         # TODO : voir pour mettre + de paramètres 
         n_neighbors = self.config.model_params.get("n_neighbors", 20)
@@ -43,7 +43,7 @@ class LOFModel(AnomalyModel):
     
     def load_and_filter(self, file_path: str, nodes: List[int]) -> pd.DataFrame:
         # TODO : add parameters contaminants when changed in function 
-        df_all = change_data_format(file_path, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
+        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
         dfs = []
         
