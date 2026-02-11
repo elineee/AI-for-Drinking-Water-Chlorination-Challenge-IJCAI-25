@@ -15,6 +15,13 @@ if __name__ == "__main__":
             window_size=30,
             model_name="LOF",
             model_params={"n_neighbors": 20, "contamination": 0.1}
+        ),
+        ExperimentConfig(
+            contaminated_files=CONTAMINATED_FILES,
+            nodes=[22],
+            window_size=0,
+            model_name="isolation_forest",
+            model_params={"contamination": 0.1}
         )
     ]
     

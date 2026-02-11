@@ -120,7 +120,7 @@ def create_features(df, feature_col, window_size=10):
     return np.array(features)
 
 # TODO : gère que pour une feature pour l'instant, à faire pour plusieurs contaminants
-def calculate_labels(df, feature_col, window_size=10):
+def calculate_labels(df, feature_col, window_size):
     """ calculate labels for anomaly detection
     Parameters:
     - df: a pandas DataFrame containing the data
