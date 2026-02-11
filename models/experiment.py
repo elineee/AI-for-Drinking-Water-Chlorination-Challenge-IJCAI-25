@@ -3,7 +3,7 @@ from LOF import LOFModel
 from experiment_config import ExperimentConfig
 from isolation_forest import IsolationForestModel
 
-
+""" Class to run an experiment based on a given configuration. It initializes the appropriate model based on the configuration and runs it to get the results. """
 class ExperimentRunner:
     def __init__(self, config: ExperimentConfig):
         self.config = config
