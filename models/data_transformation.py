@@ -1,5 +1,7 @@
+import numpy as np
 import pandas as pd
 
+# TODO : refactor to make it more general and only keep colums with chlorine and contaminants in the name  + add error if no columns for contaminant
 def change_data_format(file_name, to_csv=True):
     "transform the data to have one row = one time step, the chlorine value, the arsenic value and the number of the node"
     df = pd.read_csv(file_name)
@@ -42,6 +44,7 @@ def get_node_number(column_name):
     "extract the number from the column name to get the node number"
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
+# TODO add error if no nodes found in the data
 def get_data_for_one_node(data, node_number, to_csv=True):
     """ extract the data for one node
     Parameters:
@@ -80,5 +83,66 @@ def get_data_for_one_node(data, node_number, to_csv=True):
         new_df.to_csv(f"node_{node_number}.csv", index=False)
         
     return new_df
+
+def create_features(df, feature_col, window_size=10):
+    """ create features for anomaly detection using a sliding window approach
+    Parameters:
+    - df: a pandas DataFrame containing the data
+    - feature_col: the name of the column to use as feature
+    - window_size: the size of the sliding window
+    
+    Returns:
+    - a numpy array containing the features for each time step
+    """
+    # get the col name containing the chlorine concentration for the node
+    for column in df.columns:
+        if feature_col in column:
+            feature_col = column
+            break
+    
+    feature = df[feature_col].values
+    print(feature)
+    
+    features = []
+    
+    for i in range(window_size, len(feature)):
+        
+        window = feature[i-window_size:i]
+           
+        features.append([
+            feature[i],
+            window.mean(),
+            window.std(),
+            window.min(),
+            window.max()
+        ])
+    
+    return np.array(features)
+
+# TODO : gère que pour une feature pour l'instant, à faire pour plusieurs contaminants
+def calculate_labels(df, feature_col, window_size=10):
+    """ calculate labels for anomaly detection
+    Parameters:
+    - df: a pandas DataFrame containing the data
+    - feature_col: the name of the column to use as feature
+    
+    Returns:
+    - a numpy array containing the labels for each time step (1 if anomaly, 0 otherwise)
+    """
+    for column in df.columns:
+        if feature_col in column:
+            feature_col = column
+            break
+
+    feature = df[feature_col].values
+    labels = []
+    
+    for i in range(window_size, len(feature)):
+        if feature[i] > 0: 
+            labels.append(-1)
+        else:
+            labels.append(1)
+    
+    return np.array(labels)
 
     
