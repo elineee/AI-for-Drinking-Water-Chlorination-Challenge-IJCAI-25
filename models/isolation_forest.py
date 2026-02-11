@@ -15,7 +15,7 @@ class IsolationForestModel(AnomalyModel):
         super().__init__(config)
     
     
-    def get_results(self) -> dict:
+    def get_results(self):
         contaminated_dfs = self.load_datasets()
         
         # TODO : handle multiple contaminated files, for now only one of each is handled
@@ -23,6 +23,7 @@ class IsolationForestModel(AnomalyModel):
         
         # TODO : voir pour mettre + de paramètres 
         contamination = self.config.model_params.get("contamination", "auto")
+        
         
         model = IsolationForest(contamination=contamination, random_state=42)
         y_pred = model.fit_predict(X)
@@ -35,7 +36,7 @@ class IsolationForestModel(AnomalyModel):
             "y_pred": y_pred,
         }
     
-    def load_and_filter(self, file_path: str, nodes: List[int]) -> pd.DataFrame:
+    def load_and_filter(self, file_path: str, nodes: List[int]):
         # TODO : add parameter contaminants when changed in function 
         df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         

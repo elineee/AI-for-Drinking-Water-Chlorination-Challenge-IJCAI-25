@@ -3,7 +3,6 @@ from experiment_config import ExperimentConfig
 
 
 if __name__ == "__main__":
-    # Example: compare LOF vs IsolationForest on same node / same files
     CLEAN_FILES = [r".\data\data_arsenic\scada_data_no_contamination.csv"]
     CONTAMINATED_FILES = [r".\data\data_arsenic\scada_data_conta_22.csv"]
 

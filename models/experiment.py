@@ -8,7 +8,7 @@ class ExperimentRunner:
     def __init__(self, config: ExperimentConfig):
         self.config = config
 
-    def run(self) -> Dict:
+    def run(self):
         model_name = self.config.model_name
         
         if model_name == "LOF":
