@@ -12,7 +12,7 @@ import random
 
 def generate_contamination_event(species, contamination_node, injection_amount, source_type, start_day, duration_days):
     """
-    Function to generate a contamination event, which consists of an injection of a species at a node in the network.
+    Generates a contamination event, which consists of an injection of a species at a node in the network.
     The contamination event is defined as an injection of a species at a specific node in the network, with a specified profile and duration.
 
     Parameters:
