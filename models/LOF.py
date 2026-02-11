@@ -6,13 +6,13 @@ from traitlets import List
 from data_transformation import *
 from model import AnomalyModel
 
-
+""" Class for Local Outlier Factor (LOF) model"""
 class LOFModel(AnomalyModel):
     def __init__(self, config):
         super().__init__(config)
     
-    
     def get_results(self):
+        """ Return y_true and y_pred for the experiment, where y_true are the true labels and y_pred are the predicted labels by the model. """
         clean_dfs, contaminated_dfs = self.load_datasets()
         
         # TODO : handle multiple clean/contaminated files, for now only one of each is handled
@@ -40,6 +40,15 @@ class LOFModel(AnomalyModel):
         }
     
     def load_and_filter(self, file_path: str, nodes: List[int]):
+        """Load the dataset from the given file path and filter it based on the specified nodes. Return a list of dataframes corresponding to each node.
+        
+        Parameters:
+        - file_path: the path to the data file (csv) to load
+        - nodes: a list of node numbers to filter the data by
+        
+        Returns:
+        - a list of pandas DataFrames, each containing the data for one of the specified nodes
+        """
         # TODO : add parameters contaminants when changed in function 
         df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
@@ -57,40 +66,18 @@ class LOFModel(AnomalyModel):
         return dfs
 
     def load_datasets(self):
-        """Return lists of dataframes: (clean_dfs, contaminated_dfs) aligned with provided file lists."""
+        """Return lists of dataframes for each contaminated and example file.""" 
         
-        clean_dfs = []
+        example_dfs = []
         if self.config.example_files is not None:
             for fp in self.config.example_files:
-                clean_dfs.extend(self.load_and_filter(fp, self.config.nodes))
+                example_dfs.extend(self.load_and_filter(fp, self.config.nodes))
                 
         contaminated_dfs = []
         for fp in self.config.contaminated_files:
             contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
         
-        return clean_dfs, contaminated_dfs
-
-# clean_file = "..\data\data_arsenic\scada_data_no_contamination.csv"
-# contaminated_file = "..\data\data_arsenic\scada_data_conta_22.csv"
-# NODE = 22
-# WINDOW_SIZE = 30
-# # 15 score de 73, si 1, score de 40%, si 20, score de 67%, si 10, score de 70%, si 30, score de 76% (meilleur score)
-
-
-# df_cleaned = change_data_format(clean_file, to_csv=False)
-# df_cleaned_node = get_data_for_one_node(df_cleaned, NODE, to_csv=False)
-
-# df_contaminated = change_data_format(contaminated_file, to_csv=False)
-# df_contaminated_node = get_data_for_one_node(df_contaminated, NODE, to_csv=False)
-
-
-
-        
-# X_train = create_features(df_cleaned_node, "chlorine_concentration", WINDOW_SIZE)
-
-# X_test = create_features(df_contaminated_node, "chlorine_concentration", WINDOW_SIZE)
-
-# y_true = calculate_labels(df_contaminated_node, "arsenic_concentration", WINDOW_SIZE)
+        return example_dfs, contaminated_dfs
 
 # anomalies = 0
 # normal = 0
