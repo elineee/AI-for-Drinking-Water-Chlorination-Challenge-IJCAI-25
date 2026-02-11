@@ -2,10 +2,23 @@ from dataclasses import dataclass, field
 from typing import Dict, Optional, List
 from enum import Enum
 
+""" Contaminations types accepted """
 class ContaminationType(Enum):
     ARSENIC = "arsenic"
     CHLORINE = "chlorine"
 
+""" Configuration class for experiments. Contains all the parameters needed to run an experiment, including:
+- model_name: the name of the model to use (e.g., "LOF", "isolation_forest")
+- config_name: a name for the configuration (used for storing results)
+- window_size: the size of the sliding window for time series
+- desinfectant: the type of desinfectant used in the water (probably always chlorine)
+- contaminated_files: a list of file paths to the contaminated data files
+- nodes: a list of node numbers on which model will be trained/tested
+- contaminants: a list of ContaminationType to specify which contaminants to use
+- model_params: a dictionary of parameters to pass to the model (e.g., n_neighbors for LOF)
+- example_files: a list of file paths to the example data files (used for training if need of examples of clean data)
+- aggregate_method: whether to train models on each node separately or on aggregated nodes (e.g., mean/sum)
+"""
 @dataclass
 class ExperimentConfig:
     model_name: str
