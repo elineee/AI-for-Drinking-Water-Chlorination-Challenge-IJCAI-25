@@ -9,6 +9,7 @@ class ContaminationType(Enum):
 @dataclass
 class ExperimentConfig:
     model_name: str
+    config_name: str
     window_size: int = 30
     desinfectant: ContaminationType = ContaminationType.CHLORINE
     contaminated_files: List[str] = field(default_factory=list) # data files (used for train and test if no example file)

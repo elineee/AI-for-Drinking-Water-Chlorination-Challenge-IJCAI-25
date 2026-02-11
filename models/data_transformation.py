@@ -99,12 +99,6 @@ def get_data_for_one_node(data, node_number, to_csv=True):
     for col in col_names:
         new_data[col] = []
 
-    # new_data = {
-    #     "timestep": [],
-    #     "node": [],
-    #     "chlorine_concentration": [],
-    #     "arsenic_concentration": []
-    # }
     
     for _, row in df.iterrows():
         if row["node"] == node_number:
@@ -112,11 +106,7 @@ def get_data_for_one_node(data, node_number, to_csv=True):
                 new_data[col].append(row[col])
             
             
-            
-            # new_data["timestep"].append(int(row["timestep"]))
-            # new_data["node"].append(int(row["node"]))
-            # new_data["chlorine_concentration"].append(row["chlorine_concentration"])
-            # new_data["arsenic_concentration"].append(row["arsenic_concentration"])
+        
     
     new_df = pd.DataFrame(new_data)
     

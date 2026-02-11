@@ -9,6 +9,7 @@ if __name__ == "__main__":
 
     configs = [
         ExperimentConfig(
+            config_name="LOF_20_neighbors",
             example_files=CLEAN_FILES,
             contaminated_files=CONTAMINATED_FILES,
             nodes=[22],
@@ -17,6 +18,7 @@ if __name__ == "__main__":
             model_params={"n_neighbors": 20, "contamination": 0.1}
         ),
         ExperimentConfig(
+            config_name="IsolationForest",
             contaminated_files=CONTAMINATED_FILES,
             nodes=[22],
             window_size=0,
@@ -28,6 +30,7 @@ if __name__ == "__main__":
     
     
     all_results = []
+    i = 1
     for cfg in configs:
         runner = ExperimentRunner(cfg)
         res = runner.run()
