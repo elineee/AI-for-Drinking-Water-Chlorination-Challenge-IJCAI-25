@@ -4,7 +4,8 @@ from experiment_config import ExperimentConfig
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
-    All specific models (e.g., LOF, Isolation Forest) should inherit from this class and implement the `get_results` method."""
+    All specific models should inherit from this class and implement the `get_results` method.
+    """
 
     def __init__(self, config: ExperimentConfig):
         self.config = config

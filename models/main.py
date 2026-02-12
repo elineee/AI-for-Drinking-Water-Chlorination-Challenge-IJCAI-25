@@ -3,8 +3,8 @@ from experiment_config import ExperimentConfig, ModelName
 
 
 if __name__ == "__main__":
-    CLEAN_FILES = [r".\data\data_arsenic\scada_data_no_contamination.csv"]
-    CONTAMINATED_FILES = [r".\data\data_arsenic\scada_data_conta_22.csv"]
+    CLEAN_FILES = [".\\data\\data_arsenic\\scada_data_no_contamination.csv"]
+    CONTAMINATED_FILES = [".\\data\\data_arsenic\\scada_data_conta_22.csv"]
 
     configs = [
         ExperimentConfig(

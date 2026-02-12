@@ -78,7 +78,7 @@ def get_node_number(column_name: str):
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
 
-def get_data_for_one_node(data: str, node_number: int, to_csv: bool = False):
+def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bool = False):
     """ 
     Extracts data for one node and returns it as a pandas DataFrame.
 

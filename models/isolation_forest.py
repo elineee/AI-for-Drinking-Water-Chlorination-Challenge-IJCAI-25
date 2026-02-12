@@ -1,12 +1,6 @@
 from sklearn.ensemble import IsolationForest
-from sklearn.neighbors import LocalOutlierFactor
-from sklearn.metrics import accuracy_score, confusion_matrix
-import pandas as pd
-import numpy as np
-from traitlets import List, Tuple
-
-    
-from data_transformation import *
+from traitlets import List  
+from data_transformation import change_data_format, get_data_for_one_node, calculate_labels
 from model import AnomalyModel
 
 class IsolationForestModel(AnomalyModel):
