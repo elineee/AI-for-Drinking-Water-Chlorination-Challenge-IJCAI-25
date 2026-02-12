@@ -20,23 +20,16 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
     
     elements_to_keep = ["Chlorine"]
     
-    contaminant_col_name = []
+    contaminant_column_names = []
     
     # get id of contaminant to keep the right columns (e.g., AsIII for arsenic)
     for contaminant in contaminants:
-        contaminant_id = get_contaminant_id(contaminant.value)
+        contaminant_id = get_contaminant_id(contaminant)
         elements_to_keep.append(contaminant_id)
-        contaminant_col_name.append(f'{contaminant.value}_concentration')
+        contaminant_column_names.append(f'{contaminant.value}_concentration') 
     
-    columns_to_drop = []
-    
-    # drop the columns that do not contain chlorine or the contaminant in their name
-    for column in df.columns:
-        if not any(element in column for element in elements_to_keep):
-            columns_to_drop.append(column)
-    
-    
-    df_cleaned = df.drop(columns=columns_to_drop)
+    # keep columns containing chlorine or the contaminant in their name
+    df_cleaned = df[[column for column in df.columns if any(element in column for element in elements_to_keep)]]
 
     new_data = {
         "timestep": [],
@@ -44,34 +37,29 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
         "chlorine_concentration": [],    
     }
     
-    for col in contaminant_col_name:
-        new_data[col] = []
+    for column in contaminant_column_names:
+        new_data[column] = []
     
     
-    nodes = set()
-    
-    for column in df_cleaned.columns:
-        number = get_node_number(column)
-        nodes.add(number)
+    nodes = {get_node_number(column) for column in df_cleaned.columns}
         
     for timestep, row in df_cleaned.iterrows():
         for node in nodes:
-            
-            chlorine_col = f'bulk_species_node [MG] at Chlorine @ {node}'
+            chlorine_column = f'bulk_species_node [MG] at Chlorine @ {node}'
             for contaminant in contaminants:
-                contaminant_id = get_contaminant_id(contaminant.value)
-                contaminant_col = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
-                contaminant_col_name = f'{contaminant.value}_concentration'
-                new_data[contaminant_col_name].append(row[contaminant_col])
+                contaminant_id = get_contaminant_id(contaminant)
+                contaminant_column = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
+                column_name = f'{contaminant.value}_concentration'
+                new_data[column_name].append(row[contaminant_column])
             
             new_data["timestep"].append(timestep)
             new_data["node"].append(node)
                                         
-            if chlorine_col in df_cleaned.columns:
-                new_data["chlorine_concentration"].append(row[chlorine_col])
+            if chlorine_column in df_cleaned.columns:
+                new_data["chlorine_concentration"].append(row[chlorine_column])
             else:
                 new_data["chlorine_concentration"].append(np.nan)
-        
+    
     new_df = pd.DataFrame(new_data)
     
     if to_csv:
@@ -124,7 +112,7 @@ def get_data_for_one_node(data: str, node_number: int, to_csv: bool = False):
     return new_df
 
 
-def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
+def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10):
     """ 
     Creates features for anomaly detection using a sliding window approach. 
     For each time step, features are: current value, mean, std, min and max of the values in the sliding window.
@@ -138,11 +126,11 @@ def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
     - a numpy array containing the features for each time step
     """
     for column in df.columns:
-        if feature_col in column:
-            feature_col = column
+        if feature_column in column:
+            feature_column = column
             break
     
-    feature = df[feature_col].values
+    feature = df[feature_column].values
     
     features = []
     
@@ -161,7 +149,7 @@ def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
     return np.array(features)
 
 # TODO : gère que pour une feature pour l'instant, à faire pour plusieurs contaminants
-def calculate_labels(df: pd.DataFrame, feature_col: str, window_size: int): 
+def calculate_labels(df: pd.DataFrame, feature_column: str, window_size: int): 
     """ 
     Calculates labels for anomaly detection
 
@@ -173,13 +161,13 @@ def calculate_labels(df: pd.DataFrame, feature_col: str, window_size: int):
     - labels: a list containing the labels for each time step (1 if anomaly, 0 otherwise)
     """
     
-    # get the col name containing the chlorine concentration for the node
+    # get the column name containing the chlorine concentration for the node
     for column in df.columns:
-        if feature_col in column:
-            feature_col = column
+        if feature_column in column:
+            feature_column = column
             break
 
-    feature = df[feature_col].values
+    feature = df[feature_column].values
     labels = []
     
     for i in range(window_size, len(feature)):
@@ -200,8 +188,10 @@ CONTAMINANT_ID = {
 def get_contaminant_id(contaminant: ContaminationType):
     """
     Returns the ID of a contaminant given its ContaminationType.
+
     Parameters:
     - contaminant: a ContaminationType enum value representing the contaminant
+
     Returns: 
     - the ID of the contaminant as a string (e.g., "AsIII" for arsenic)
 
