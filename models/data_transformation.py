@@ -3,10 +3,14 @@ import pandas as pd
 
 from experiment_config import ContaminationType
 
+CONTAMINANT_ID = {
+    ContaminationType.ARSENIC: "AsIII",
+}
 
 def change_data_format(file_name: str, contaminants: list[ContaminationType], to_csv: bool = False):
     """ 
-    Changes data format to have 1 row per node and timestep, with columns for chlorine concentration and contaminant concentration (e.g., arsenic) 
+    Changes data format to obtain a new dataFrame with one row per node and timestep, with columns for chlorine concentration and contaminants concentration.
+    The original data format is a scada format with one column per node and species (e.g., "bulk_species_node [MG] at Chlorine @ 22" for chlorine concentration at node 22). 
 
     Parameters:
     - file_name: the path to the data file (csv) to transform
@@ -19,17 +23,6 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
     df = pd.read_csv(file_name)
     
     elements_to_keep = ["Chlorine"]
-    
-    contaminant_column_names = []
-    
-    # get id of contaminant to keep the right columns (e.g., AsIII for arsenic)
-    for contaminant in contaminants:
-        contaminant_id = get_contaminant_id(contaminant)
-        elements_to_keep.append(contaminant_id)
-        contaminant_column_names.append(f'{contaminant.value}_concentration') 
-    
-    # keep columns containing chlorine or the contaminant in their name
-    df_cleaned = df[[column for column in df.columns if any(element in column for element in elements_to_keep)]]
 
     new_data = {
         "timestep": [],
@@ -37,17 +30,22 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
         "chlorine_concentration": [],    
     }
     
-    for column in contaminant_column_names:
-        new_data[column] = []
-    
-    
+    # Get id of contaminants to keep the right columns (e.g., AsIII for arsenic)
+    for contaminant in contaminants:
+        contaminant_id = CONTAMINANT_ID[contaminant]
+        elements_to_keep.append(contaminant_id)
+        new_data[f'{contaminant.value}_concentration'] = []
+
+    df_cleaned = df[[column for column in df.columns if any(element in column for element in elements_to_keep)]]
+
     nodes = {get_node_number(column) for column in df_cleaned.columns}
         
+    # For each row in the cleaned dataframe, extract the timestep, node number, chlorine concentration and contaminant concentrations and store them in the new_data dictionary
     for timestep, row in df_cleaned.iterrows():
         for node in nodes:
             chlorine_column = f'bulk_species_node [MG] at Chlorine @ {node}'
             for contaminant in contaminants:
-                contaminant_id = get_contaminant_id(contaminant)
+                contaminant_id = CONTAMINANT_ID[contaminant]
                 contaminant_column = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
                 column_name = f'{contaminant.value}_concentration'
                 new_data[column_name].append(row[contaminant_column])
@@ -70,7 +68,7 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
 
 def get_node_number(column_name: str):
     """
-    Get the node number from a column name
+    Get the node number from a column name in the original data format (e.g., "bulk_species_node [MG] at Chlorine @ 22").
 
     Parameters:
     - column_name: the name of the column to extract the node number from
@@ -119,7 +117,7 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
 
     Parameters:
     - df: a pandas DataFrame containing the data
-    - feature_col: the name of the column to use as feature
+    - feature_column: the name of the column to use as feature
     - window_size: the size of the sliding window
     
     Returns:
@@ -135,9 +133,8 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
     features = []
     
     for i in range(window_size, len(feature)):
-        
         window = feature[i-window_size:i]
-           
+        
         features.append([
             feature[i],
             window.mean(),
@@ -148,26 +145,29 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
     
     return np.array(features)
 
-# TODO : gère que pour une feature pour l'instant, à faire pour plusieurs contaminants
-def calculate_labels(df: pd.DataFrame, feature_column: str, window_size: int): 
+# TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
+def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 
     """ 
-    Calculates labels for anomaly detection
+    Calculates labels for anomaly detection. For each time step, the label is 1 if the value of the contaminant column is an anomaly (> 0) and -1 otherwise.
 
     Parameters:
     - df: a pandas DataFrame containing the data
-    - feature_col: the name of the column to use as feature
+    - contaminant_column: the name of the contaminant column to use as feature
     
     Returns:
-    - labels: a list containing the labels for each time step (1 if anomaly, 0 otherwise)
+    - labels: a np.array containing the labels for each time step (1 if anomaly, -1 if normal)
     """
     
-    # get the column name containing the chlorine concentration for the node
+    matched_column = None
     for column in df.columns:
-        if feature_column in column:
-            feature_column = column
+        if contaminant_column in column:
+            matched_column = column
             break
 
-    feature = df[feature_column].values
+    if matched_column is None:
+        raise ValueError("No column matching in the dataFrame")
+    
+    feature = df[matched_column].values
     labels = []
     
     for i in range(window_size, len(feature)):
@@ -179,22 +179,3 @@ def calculate_labels(df: pd.DataFrame, feature_column: str, window_size: int):
     labels = np.array(labels)
     
     return labels
-
-
-CONTAMINANT_ID = {
-    ContaminationType.ARSENIC: "AsIII",
-}
-
-def get_contaminant_id(contaminant: ContaminationType):
-    """
-    Returns the ID of a contaminant given its ContaminationType.
-
-    Parameters:
-    - contaminant: a ContaminationType enum value representing the contaminant
-
-    Returns: 
-    - the ID of the contaminant as a string (e.g., "AsIII" for arsenic)
-
-    """
-    return CONTAMINANT_ID[contaminant]
-
