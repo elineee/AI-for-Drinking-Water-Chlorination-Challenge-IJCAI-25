@@ -1,20 +1,24 @@
-from typing import Dict
 from LOF import LOFModel
-from experiment_config import ExperimentConfig
+from experiment_config import ExperimentConfig, ModelName
 from isolation_forest import IsolationForestModel
 
-""" Class to run an experiment based on a given configuration. It initializes the appropriate model based on the configuration and runs it to get the results. """
+AVAILABLE_MODELS = {
+    ModelName.LOF: LOFModel,
+    ModelName.ISOLATION_FOREST: IsolationForestModel,
+}
+
 class ExperimentRunner:
+    """ 
+    Class to run an experiment based on a given configuration. It initializes the appropriate model based on the configuration and runs it to get the results.
+    The model is selected from the AVAILABLE_MODELS dictionary using the model_name specified in the configuration. 
+    """
+
     def __init__(self, config: ExperimentConfig):
         self.config = config
-
+    
     def run(self):
-        model_name = self.config.model_name
-        
-        if model_name == "LOF":
-            model = LOFModel(self.config)
-        elif model_name == "isolation_forest":
-            model = IsolationForestModel(self.config)
-        
+        model_type = AVAILABLE_MODELS[self.config.model_name]
+        model = model_type(self.config)
+
         results = model.get_results()
         return {self.config.config_name: results}

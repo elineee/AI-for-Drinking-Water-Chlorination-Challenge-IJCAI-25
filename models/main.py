@@ -1,5 +1,5 @@
 from experiment import ExperimentRunner
-from experiment_config import ExperimentConfig
+from experiment_config import ExperimentConfig, ModelName
 
 
 if __name__ == "__main__":
@@ -13,7 +13,7 @@ if __name__ == "__main__":
             contaminated_files=CONTAMINATED_FILES,
             nodes=[22],
             window_size=30,
-            model_name="LOF",
+            model_name=ModelName.LOF,
             model_params={"n_neighbors": 20, "contamination": 0.1}
         ),
         ExperimentConfig(
@@ -21,15 +21,13 @@ if __name__ == "__main__":
             contaminated_files=CONTAMINATED_FILES,
             nodes=[22],
             window_size=0,
-            model_name="isolation_forest",
+            model_name=ModelName.ISOLATION_FOREST,
             model_params={"contamination": 0.1}
         )
     ]
-    
-    
-    
+
+
     all_results = []
-    i = 1
     for cfg in configs:
         runner = ExperimentRunner(cfg)
         res = runner.run()
