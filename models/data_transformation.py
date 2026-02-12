@@ -4,14 +4,16 @@ import pandas as pd
 from experiment_config import ContaminationType
 
 def change_data_format(file_name: str, contaminants: list[ContaminationType], to_csv: bool = False):
-    """ Change data format to have 1 row per node and timestep, with columns for chlorine concentration and contaminant concentration (e.g., arsenic) 
+    """ 
+    Changes data format to have 1 row per node and timestep, with columns for chlorine concentration and contaminant concentration (e.g., arsenic) 
+
     Parameters:
     - file_name: the path to the data file (csv) to transform
     - contaminants: list of ContaminationType to specify which contaminants to extract from the data
     - to_csv: whether to save the transformed data to a csv file
     
     Returns:
-    - a pandas DataFrame containing the transformed data with columns: timestep, node, chlorine_concentration, contaminant_concentration (e.g., arsenic_concentration)
+    - new_df : a pandas DataFrame containing the transformed data with columns: timestep, node, chlorine_concentration, contaminant_concentration (e.g., arsenic_concentration)
     """
     df = pd.read_csv(file_name)
     
@@ -78,7 +80,9 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
     
 
 def get_node_number(column_name: str):
-    """extract the number from the column name to get the node number
+    """
+    Get the node number from a column name
+
     Parameters:
     - column_name: the name of the column to extract the node number from
     
@@ -89,14 +93,16 @@ def get_node_number(column_name: str):
 
 # TODO add error if no nodes found in the data
 def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bool = False):
-    """ extract the data for one node
+    """ 
+    Extracts data for one node
+
     Parameters:
     - data: a file path (str) or a pandas DataFrame containing the data
     - node_number: the number of the node to extract
     - to_csv: whether to save the extracted data to a csv file
     
     Returns:
-    - a pandas DataFrame containing the data for the specified node
+    - new_df: a pandas DataFrame containing the data for the specified node
     """
     
     if isinstance(data, str):
@@ -130,7 +136,9 @@ def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bo
     return new_df
 
 def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
-    """ create features for anomaly detection using a sliding window approach
+    """ 
+    Creates features for anomaly detection using a sliding window approach
+
     Parameters:
     - df: a pandas DataFrame containing the data
     - feature_col: the name of the column to use as feature
@@ -165,13 +173,15 @@ def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
 
 # TODO : gère que pour une feature pour l'instant, à faire pour plusieurs contaminants
 def calculate_labels(df: pd.DataFrame, feature_col: str, window_size: int): 
-    """ calculate labels for anomaly detection
+    """ 
+    Calculates labels for anomaly detection
+
     Parameters:
     - df: a pandas DataFrame containing the data
     - feature_col: the name of the column to use as feature
     
     Returns:
-    - a numpy array containing the labels for each time step (1 if anomaly, 0 otherwise)
+    - labels: a list containing the labels for each time step (1 if anomaly, 0 otherwise)
     """
     
     # get the col name containing the chlorine concentration for the node
@@ -188,8 +198,10 @@ def calculate_labels(df: pd.DataFrame, feature_col: str, window_size: int):
             labels.append(-1)
         else:
             labels.append(1)
+
+    labels = np.array(labels)
     
-    return np.array(labels)
+    return labels
 
 def get_contamination_id(contaminant: str):
     if contaminant == "arsenic":

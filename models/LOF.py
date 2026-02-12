@@ -1,8 +1,7 @@
 from sklearn.neighbors import LocalOutlierFactor
 import pandas as pd
 from traitlets import List
-
-    
+ 
 from data_transformation import *
 from model import AnomalyModel
 
@@ -12,7 +11,6 @@ class LOFModel(AnomalyModel):
         super().__init__(config)
     
     def get_results(self):
-        """ Return y_true and y_pred for the experiment, where y_true are the true labels and y_pred are the predicted labels by the model. """
         clean_dfs, contaminated_dfs = self.load_datasets()
         
         # TODO : handle multiple clean/contaminated files, for now only one of each is handled
