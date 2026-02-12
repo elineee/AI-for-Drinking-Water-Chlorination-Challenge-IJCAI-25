@@ -30,33 +30,32 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
         "chlorine_concentration": [],    
     }
     
-    # Get id of contaminants to keep the right columns (e.g., AsIII for arsenic)
+    # Clean the dataframe to keep only relevant columns and create new columns for each contaminant
+    contaminants_mappings = {}
+    
     for contaminant in contaminants:
         contaminant_id = CONTAMINANT_ID[contaminant]
         elements_to_keep.append(contaminant_id)
-        new_data[f'{contaminant.value}_concentration'] = []
+        contaminants_mappings[contaminant] = contaminant_id
+        column_name = f'{contaminant.value}_concentration'
+        new_data[column_name] = []
 
     df_cleaned = df[[column for column in df.columns if any(element in column for element in elements_to_keep)]]
-
     nodes = {get_node_number(column) for column in df_cleaned.columns}
         
     # For each row in the cleaned dataframe, extract the timestep, node number, chlorine concentration and contaminant concentrations and store them in the new_data dictionary
     for timestep, row in df_cleaned.iterrows():
         for node in nodes:
             chlorine_column = f'bulk_species_node [MG] at Chlorine @ {node}'
-            for contaminant in contaminants:
-                contaminant_id = CONTAMINANT_ID[contaminant]
-                contaminant_column = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
-                column_name = f'{contaminant.value}_concentration'
-                new_data[column_name].append(row[contaminant_column])
-            
+            new_data["chlorine_concentration"].append(row[chlorine_column] if chlorine_column in df_cleaned.columns else np.nan)
             new_data["timestep"].append(timestep)
             new_data["node"].append(node)
-                                        
-            if chlorine_column in df_cleaned.columns:
-                new_data["chlorine_concentration"].append(row[chlorine_column])
-            else:
-                new_data["chlorine_concentration"].append(np.nan)
+
+            for contaminant in contaminants_mappings:
+                contaminant_id = contaminants_mappings[contaminant]
+                contaminant_column = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
+                column_name = f'{contaminant.value}_concentration'
+                new_data[column_name].append(row[contaminant_column] if contaminant_column in df_cleaned.columns else np.nan)
     
     new_df = pd.DataFrame(new_data)
     
