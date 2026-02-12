@@ -1,6 +1,8 @@
 from experiment import ExperimentRunner
 from experiment_config import ExperimentConfig, ModelName
+from evaluation import Evaluation
 
+import pickle
 
 if __name__ == "__main__":
     CLEAN_FILES = [".\\data\\data_arsenic\\scada_data_no_contamination.csv"]
@@ -27,9 +29,17 @@ if __name__ == "__main__":
     ]
 
     all_results = []
+
     for cfg in configs:
         runner = ExperimentRunner(cfg)
         res = runner.run()
         all_results.append(res)
 
+    pickle.dump(all_results, open("all_results.pkl", "wb"))
     print(all_results)
+
+    evaluation = Evaluation()
+    evaluation_results = evaluation.evaluate("all_results.pkl")
+
+    print("Evaluation results:")
+    print(evaluation_results)
