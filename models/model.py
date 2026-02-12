@@ -20,7 +20,3 @@ class AnomalyModel(ABC):
           y_pred: predicted labels
          """
         pass
-
-    
-    
-    

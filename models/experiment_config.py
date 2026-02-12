@@ -38,5 +38,3 @@ class ExperimentConfig:
     model_params: Dict = field(default_factory=dict)
     aggregate_method: Optional[str] = None 
     
-
-    

@@ -1,5 +1,5 @@
 from sklearn.ensemble import IsolationForest
-from traitlets import List  
+from typing import List  
 from data_transformation import change_data_format, get_data_for_one_node, calculate_labels
 from model import AnomalyModel
 
