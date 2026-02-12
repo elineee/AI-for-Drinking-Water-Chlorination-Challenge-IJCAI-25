@@ -26,7 +26,6 @@ if __name__ == "__main__":
         )
     ]
 
-
     all_results = []
     for cfg in configs:
         runner = ExperimentRunner(cfg)

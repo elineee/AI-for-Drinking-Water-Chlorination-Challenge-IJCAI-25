@@ -14,10 +14,10 @@ class LOFModel(AnomalyModel):
         clean_dfs, contaminated_dfs = self.load_datasets()
         
         # TODO : handle multiple clean/contaminated files, for now only one of each is handled
-        X_train = create_features(clean_dfs[0], self.config.desinfectant.value, self.config.window_size)
+        X_train = create_features(clean_dfs[0], self.config.disinfectant.value, self.config.window_size)
 
         # TODO : handle multiple contaminants, for now only one contaminant is handled
-        X_test = create_features(contaminated_dfs[0], self.config.desinfectant.value, self.config.window_size)
+        X_test = create_features(contaminated_dfs[0], self.config.disinfectant.value, self.config.window_size)
 
         # TODO : handle multiple contaminants, for now only one contaminant is handled
         y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0].value, self.config.window_size)

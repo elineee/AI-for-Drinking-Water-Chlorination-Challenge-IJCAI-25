@@ -3,6 +3,7 @@ import pandas as pd
 
 from experiment_config import ContaminationType
 
+
 def change_data_format(file_name: str, contaminants: list[ContaminationType], to_csv: bool = False):
     """ 
     Changes data format to have 1 row per node and timestep, with columns for chlorine concentration and contaminant concentration (e.g., arsenic) 
@@ -23,7 +24,7 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
     
     # get id of contaminant to keep the right columns (e.g., AsIII for arsenic)
     for contaminant in contaminants:
-        contaminant_id = get_contamination_id(contaminant.value)
+        contaminant_id = get_contaminant_id(contaminant.value)
         elements_to_keep.append(contaminant_id)
         contaminant_col_name.append(f'{contaminant.value}_concentration')
     
@@ -58,7 +59,7 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
             
             chlorine_col = f'bulk_species_node [MG] at Chlorine @ {node}'
             for contaminant in contaminants:
-                contaminant_id = get_contamination_id(contaminant.value)
+                contaminant_id = get_contaminant_id(contaminant.value)
                 contaminant_col = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
                 contaminant_col_name = f'{contaminant.value}_concentration'
                 new_data[contaminant_col_name].append(row[contaminant_col])
@@ -91,10 +92,10 @@ def get_node_number(column_name: str):
     """
     return int(column_name.split(" @ ")[1].split(" ")[0])
 
-# TODO add error if no nodes found in the data
-def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bool = False):
+
+def get_data_for_one_node(data: str, node_number: int, to_csv: bool = False):
     """ 
-    Extracts data for one node
+    Extracts data for one node and returns it as a pandas DataFrame.
 
     Parameters:
     - data: a file path (str) or a pandas DataFrame containing the data
@@ -112,32 +113,21 @@ def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bo
     else:
         raise TypeError("`data` must be a file path (str) or a pandas DataFrame")
     
-    col_names = df.columns
-    
-    new_data = {}
-    
-    for col in col_names:
-        new_data[col] = []
+    new_df = df[df["node"] == node_number].copy()
 
-    
-    for _, row in df.iterrows():
-        if row["node"] == node_number:
-            for col in col_names:
-                new_data[col].append(row[col])
-            
-            
-        
-    
-    new_df = pd.DataFrame(new_data)
-    
+    if new_df.empty:
+        raise ValueError(f"No data found for node {node_number}")
+
     if to_csv:
         new_df.to_csv(f"node_{node_number}.csv", index=False)
         
     return new_df
 
+
 def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
     """ 
-    Creates features for anomaly detection using a sliding window approach
+    Creates features for anomaly detection using a sliding window approach. 
+    For each time step, features are: current value, mean, std, min and max of the values in the sliding window.
 
     Parameters:
     - df: a pandas DataFrame containing the data
@@ -147,7 +137,6 @@ def create_features(df: pd.DataFrame, feature_col: str, window_size: int = 10):
     Returns:
     - a numpy array containing the features for each time step
     """
-    # get the col name containing the chlorine concentration for the node
     for column in df.columns:
         if feature_col in column:
             feature_col = column
@@ -203,9 +192,19 @@ def calculate_labels(df: pd.DataFrame, feature_col: str, window_size: int):
     
     return labels
 
-def get_contamination_id(contaminant: str):
-    if contaminant == "arsenic":
-        return "AsIII"
-    else:
-        raise ValueError(f"Unknown contamination type: {contaminant}")
+
+CONTAMINANT_ID = {
+    ContaminationType.ARSENIC: "AsIII",
+}
+
+def get_contaminant_id(contaminant: ContaminationType):
+    """
+    Returns the ID of a contaminant given its ContaminationType.
+    Parameters:
+    - contaminant: a ContaminationType enum value representing the contaminant
+    Returns: 
+    - the ID of the contaminant as a string (e.g., "AsIII" for arsenic)
+
+    """
+    return CONTAMINANT_ID[contaminant]
 
