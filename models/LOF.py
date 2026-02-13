@@ -80,25 +80,3 @@ class LOFModel(AnomalyModel):
             contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
         
         return example_dfs, contaminated_dfs
-
-# anomalies = 0
-# normal = 0
-# for i in y_true:
-#     if i == -1:
-#         anomalies += 1
-#     else:
-#         normal += 1
-# print("number of anomalies:", anomalies)
-# print("number of normal samples:", normal)
-    
-
-# lof = LocalOutlierFactor(n_neighbors=20, novelty=True, contamination=0.1)
-
-# lof.fit(X_train)
-
-# y_pred = lof.predict(X_test)
-
-# print("accuracy:", accuracy_score(y_true, y_pred))
-
-# print("Matrice de confusion :")
-# print(confusion_matrix(y_true, y_pred, labels=[1, -1]))
