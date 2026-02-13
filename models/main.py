@@ -35,11 +35,11 @@ if __name__ == "__main__":
         res = runner.run()
         all_results.append(res)
 
-    # pickle.dump(all_results, open("all_results.pkl", "wb"))
+    pickle.dump(all_results, open("all_results.pkl", "wb"))
     print(all_results)
 
-    # evaluation = Evaluation()
-    # evaluation_results = evaluation.evaluate("all_results.pkl")
+    evaluation = Evaluation()
+    evaluation_results = evaluation.evaluate("all_results.pkl")
 
-    # print("Evaluation results:")
-    # print(evaluation_results)
+    print("Evaluation results:")
+    print(evaluation_results)

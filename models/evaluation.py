@@ -27,19 +27,21 @@ class Evaluation:
 
         for result in results:
             for config_name in result: 
-                values = result[config_name]
-                y_true = values["y_true"]
-                y_pred = values["y_pred"]
+                nodes_dict = result[config_name]
 
-                evaluation_results[config_name] = {
-                    "accuracy": accuracy_score(y_true, y_pred),
-                    "confusion_matrix": confusion_matrix(y_true, y_pred, labels=[1, -1]),
-                    "recall": recall_score(y_true, y_pred, pos_label=-1),
-                    "f1_score": f1_score(y_true, y_pred, pos_label=-1)
-                }
+                evaluation_results[config_name] = {}
+
+                for node in nodes_dict: 
+                    values = nodes_dict[node]
+
+                    y_true = values["y_true"]
+                    y_pred = values["y_pred"]
+               
+                    evaluation_results[config_name][node] = {
+                        "accuracy": accuracy_score(y_true, y_pred),
+                        "confusion_matrix": confusion_matrix(y_true, y_pred, labels=[1, -1]),
+                        "recall": recall_score(y_true, y_pred, pos_label=-1),
+                        "f1_score": f1_score(y_true, y_pred, pos_label=-1)
+                    }
 
         return evaluation_results
-
-
-        
-  
