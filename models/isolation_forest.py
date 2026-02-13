@@ -1,6 +1,6 @@
 from sklearn.ensemble import IsolationForest
 from typing import List  
-from data_transformation import change_data_format, get_data_for_one_node, calculate_labels
+from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels
 from model import AnomalyModel
 
 class IsolationForestModel(AnomalyModel):
@@ -17,7 +17,7 @@ class IsolationForestModel(AnomalyModel):
         
         for i in range(len(contaminated_dfs)):
             node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = int(node)
+            node = str(node)
         
             X = contaminated_dfs[i][['chlorine_concentration']]
             
@@ -59,8 +59,9 @@ class IsolationForestModel(AnomalyModel):
                 df_node = get_data_for_one_node(df_all, node, to_csv=False)
                 dfs.append(df_node)
         
-        else: # TODO : handle if aggregation
-            pass
+        else:
+            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
+            dfs.append(df)
         
         return dfs
 

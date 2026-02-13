@@ -1,6 +1,6 @@
 from sklearn.neighbors import LocalOutlierFactor
 from typing import List
-from data_transformation import change_data_format, get_data_for_one_node, calculate_labels, create_features
+from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features
 from model import AnomalyModel
 
 """ Class for Local Outlier Factor (LOF) model"""
@@ -15,7 +15,7 @@ class LOFModel(AnomalyModel):
         
         for i in range(len(contaminated_dfs)):
             node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = int(node)
+            node = str(node)
 
             X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
@@ -57,13 +57,13 @@ class LOFModel(AnomalyModel):
         dfs = []
         
         if self.config.aggregate_method is None:
-            dfs = []
             for node in nodes:
                 df_node = get_data_for_one_node(df_all, node, to_csv=False)
                 dfs.append(df_node)
         
-        else: # TODO : handle if aggregation
-            pass
+        else:
+            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
+            dfs.append(df)
         
         return dfs
 

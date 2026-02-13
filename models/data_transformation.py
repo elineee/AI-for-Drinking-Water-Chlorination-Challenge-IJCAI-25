@@ -108,6 +108,46 @@ def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bo
         
     return new_df
 
+def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: list[int], method: str = "mean", to_csv: bool = False):
+    """ 
+    Aggregates data for several nodes using the specified method (mean or sum) and returns it as a pandas DataFrame.
+
+    Parameters:
+    - data: a file path (str) or a pandas DataFrame containing the data in the form : timestep, node, chlorine_concentration, contaminant_concentration (e.g., arsenic_concentration)
+    - node_numbers: a list of node numbers to aggregate
+    - method: the method to use to aggregate the values of chlorine_concentration and contaminant_concentration columns ("mean" or "sum")
+    - to_csv: whether to save the aggregated data to a csv file
+    
+    Returns:
+    - new_df: a pandas DataFrame containing the aggregated data for the specified nodes
+    """
+    
+    if isinstance(data, str):
+        df = pd.read_csv(data)
+    elif isinstance(data, pd.DataFrame):
+        df = data.copy()
+    else:
+        raise TypeError("`data` must be a file path (str) or a pandas DataFrame")
+    
+    df = df[df.node.isin(node_numbers)]
+    
+    df_aggregated = None
+    if method == "mean":
+        df_aggregated = df.groupby("timestep").mean()
+    elif method == "sum":
+        df_aggregated = df.groupby("timestep").sum()
+    else:
+        raise ValueError("`method` must be either 'mean' or 'sum'")
+
+    # replace node column values by the list of node numbers aggregated
+    df_aggregated["node"] = str(node_numbers)
+    
+    
+    if to_csv:
+        df_aggregated.to_csv(f"nodes_{'_'.join(map(str, node_numbers))}_aggregated.csv", index=False)
+    
+    return df_aggregated
+
 
 def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10):
     """ 
