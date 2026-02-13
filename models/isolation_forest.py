@@ -13,23 +13,29 @@ class IsolationForestModel(AnomalyModel):
         
         contaminated_dfs = self.load_datasets()
         
-        # TODO : handle multiple contaminated files, for now only one of each is handled
-        X = contaminated_dfs[0][['chlorine_concentration']]
+        results = {}
         
-        # TODO : voir pour mettre + de paramètres 
-        contamination = self.config.model_params.get("contamination", "auto")
+        for i in range(len(contaminated_dfs)):
+            node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
+            node = int(node)
         
+            X = contaminated_dfs[i][['chlorine_concentration']]
+            
+            # TODO : voir pour mettre + de paramètres 
+            contamination = self.config.model_params.get("contamination", "auto")
+            
+            
+            model = IsolationForest(contamination=contamination, random_state=42)
+            y_pred = model.fit_predict(X)
+            
+            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            
+            results[node] = {
+                "y_true": y_true,
+                "y_pred": y_pred
+            }
         
-        model = IsolationForest(contamination=contamination, random_state=42)
-        y_pred = model.fit_predict(X)
-        
-        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0].value, self.config.window_size)
-
-        
-        return {
-            "y_true": y_true,
-            "y_pred": y_pred,
-        }
+        return results
     
     def load_and_filter(self, file_path: str, nodes: List[int]):
         """

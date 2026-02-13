@@ -13,7 +13,7 @@ if __name__ == "__main__":
             config_name="LOF_20_neighbors",
             example_files=CLEAN_FILES,
             contaminated_files=CONTAMINATED_FILES,
-            nodes=[22],
+            nodes=[22, 31],
             window_size=30,
             model_name=ModelName.LOF,
             model_params={"n_neighbors": 20, "contamination": 0.1}
@@ -21,7 +21,7 @@ if __name__ == "__main__":
         ExperimentConfig(
             config_name="IsolationForest",
             contaminated_files=CONTAMINATED_FILES,
-            nodes=[22],
+            nodes=[22, 31],
             window_size=0,
             model_name=ModelName.ISOLATION_FOREST,
             model_params={"contamination": 0.1}
@@ -35,11 +35,11 @@ if __name__ == "__main__":
         res = runner.run()
         all_results.append(res)
 
-    pickle.dump(all_results, open("all_results.pkl", "wb"))
+    # pickle.dump(all_results, open("all_results.pkl", "wb"))
     print(all_results)
 
-    evaluation = Evaluation()
-    evaluation_results = evaluation.evaluate("all_results.pkl")
+    # evaluation = Evaluation()
+    # evaluation_results = evaluation.evaluate("all_results.pkl")
 
-    print("Evaluation results:")
-    print(evaluation_results)
+    # print("Evaluation results:")
+    # print(evaluation_results)

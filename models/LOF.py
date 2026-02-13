@@ -11,29 +11,35 @@ class LOFModel(AnomalyModel):
     def get_results(self):
         clean_dfs, contaminated_dfs = self.load_datasets()
         
-        # TODO : handle multiple clean/contaminated files, for now only one of each is handled
-        X_train = create_features(clean_dfs[0], self.config.disinfectant.value, self.config.window_size)
-
-        # TODO : handle multiple contaminants, for now only one contaminant is handled
-        X_test = create_features(contaminated_dfs[0], self.config.disinfectant.value, self.config.window_size)
-
-        # TODO : handle multiple contaminants, for now only one contaminant is handled
-        y_true = calculate_labels(contaminated_dfs[0], self.config.contaminants[0].value, self.config.window_size)
+        results = {}
         
-        # TODO : voir pour mettre + de paramètres 
-        n_neighbors = self.config.model_params.get("n_neighbors", 20)
-        contamination = self.config.model_params.get("contamination", 0.1)
-        
-        lof = LocalOutlierFactor(n_neighbors=n_neighbors, novelty=True, contamination=contamination)
+        for i in range(len(contaminated_dfs)):
+            node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
+            node = int(node)
 
-        lof.fit(X_train)
+            X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
-        y_pred = lof.predict(X_test)
+            X_test = create_features(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
+
+            # TODO : handle multiple contaminants, for now only one contaminant is handled
+            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            
+            # TODO : voir pour mettre + de paramètres 
+            n_neighbors = self.config.model_params.get("n_neighbors", 20)
+            contamination = self.config.model_params.get("contamination", 0.1)
+            
+            lof = LocalOutlierFactor(n_neighbors=n_neighbors, novelty=True, contamination=contamination)
+
+            lof.fit(X_train)
+
+            y_pred = lof.predict(X_test)
+            
+            results[node] = {
+                "y_true": y_true,
+                "y_pred": y_pred
+            }
         
-        return {
-            "y_true": y_true,
-            "y_pred": y_pred,
-        }
+        return results
     
     def load_and_filter(self, file_path: str, nodes: List[int]):
         """Load the dataset from the given file path and filter it based on the specified nodes. Return a list of dataframes corresponding to each node.
