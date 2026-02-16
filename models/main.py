@@ -1,6 +1,6 @@
 from experiment import ExperimentRunner
 from experiment_config import ExperimentConfig, ModelName
-from evaluation import Evaluation
+from evaluation import Evaluation, Metrics
 
 import pickle
 
@@ -36,10 +36,13 @@ if __name__ == "__main__":
         all_results.append(res)
 
     pickle.dump(all_results, open("all_results.pkl", "wb"))
-    print(all_results)
 
     evaluation = Evaluation()
     evaluation_results = evaluation.evaluate("all_results.pkl")
 
     print("Evaluation results:")
-    print(evaluation_results)
+
+    evaluation.plot_confusion_matrices("LOF_20_neighbors", evaluation_results)
+    evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
+    evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+
