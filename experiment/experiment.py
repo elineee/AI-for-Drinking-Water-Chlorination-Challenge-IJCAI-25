@@ -1,10 +1,12 @@
-from experiment.models.LOF import LOFModel
 from experiment_config import ExperimentConfig, ModelName
-from experiment.models.isolation_forest import IsolationForestModel
+from models.LOF import LOFModel
+from models.isolation_forest import IsolationForestModel
+from models.one_class_SVM import OneClassSVMModel
 
 AVAILABLE_MODELS = {
     ModelName.LOF: LOFModel,
     ModelName.ISOLATION_FOREST: IsolationForestModel,
+    ModelName.ONE_CLASS_SVM: OneClassSVMModel
 }
 
 class ExperimentRunner:

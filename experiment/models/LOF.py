@@ -1,7 +1,7 @@
 from sklearn.neighbors import LocalOutlierFactor
 from typing import List
 from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features
-from experiment.models.model import AnomalyModel
+from models.model import AnomalyModel
 
 """ Class for Local Outlier Factor (LOF) model"""
 class LOFModel(AnomalyModel):

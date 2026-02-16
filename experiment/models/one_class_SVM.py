@@ -4,7 +4,7 @@ from typing import List
 
 from sklearn.discriminant_analysis import StandardScaler
 from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features
-from model import AnomalyModel
+from models.model import AnomalyModel
 
 """ Class for One Class SVM model"""
 class OneClassSVMModel(AnomalyModel):

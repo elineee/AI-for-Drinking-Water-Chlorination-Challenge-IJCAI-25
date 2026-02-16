@@ -11,6 +11,7 @@ class ModelName(Enum):
     """Enumeration of model names"""
     LOF = "LOF"
     ISOLATION_FOREST = "isolation_forest"
+    ONE_CLASS_SVM = "one_class_SVM"
 
 @dataclass
 class ExperimentConfig:
