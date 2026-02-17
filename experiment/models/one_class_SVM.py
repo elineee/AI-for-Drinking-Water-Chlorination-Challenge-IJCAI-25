@@ -47,7 +47,7 @@ class OneClassSVMModel(AnomalyModel):
             else: 
                 ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu)
 
-            ocsvm.fit(X_test)
+            ocsvm.fit(X_train)
 
             y_pred = ocsvm.predict(X_test)
             
