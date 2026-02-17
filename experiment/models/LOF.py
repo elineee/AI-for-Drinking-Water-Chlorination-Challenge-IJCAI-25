@@ -1,13 +1,10 @@
 from sklearn.neighbors import LocalOutlierFactor
-from typing import List
-from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features
+from data_transformation import calculate_labels, create_features
 from models.model import AnomalyModel
 
-""" Class for Local Outlier Factor (LOF) model"""
 class LOFModel(AnomalyModel):
-    def __init__(self, config):
-        super().__init__(config)
-    
+    """ Class for Local Outlier Factor (LOF) model"""
+  
     def get_results(self):
         clean_dfs, contaminated_dfs = self.load_datasets()
         
@@ -34,49 +31,6 @@ class LOFModel(AnomalyModel):
 
             y_pred = lof.predict(X_test)
             
-            results[node] = {
-                "y_true": y_true,
-                "y_pred": y_pred
-            }
+            results[node] = {"y_true": y_true,"y_pred": y_pred }
         
         return results
-    
-    def load_and_filter(self, file_path: str, nodes: List[int]):
-        """Load the dataset from the given file path and filter it based on the specified nodes. Return a list of dataframes corresponding to each node.
-        
-        Parameters:
-        - file_path: the path to the data file (csv) to load
-        - nodes: a list of node numbers to filter the data by
-        
-        Returns:
-        - a list of pandas DataFrames, each containing the data for one of the specified nodes
-        """
-        # TODO : add parameters contaminants when changed in function 
-        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
-        
-        dfs = []
-        
-        if self.config.aggregate_method is None:
-            for node in nodes:
-                df_node = get_data_for_one_node(df_all, node, to_csv=False)
-                dfs.append(df_node)
-        
-        else:
-            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
-            dfs.append(df)
-        
-        return dfs
-
-    def load_datasets(self):
-        """Return lists of dataframes for each contaminated and example file.""" 
-        
-        example_dfs = []
-        if self.config.example_files is not None:
-            for fp in self.config.example_files:
-                example_dfs.extend(self.load_and_filter(fp, self.config.nodes))
-                
-        contaminated_dfs = []
-        for fp in self.config.contaminated_files:
-            contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
-        
-        return example_dfs, contaminated_dfs
