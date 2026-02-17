@@ -206,9 +206,10 @@ def create_features_2(df: pd.DataFrame, feature_column: str, window_size: int = 
     
     features = []
     
-    for i in range(window_size, len(feature)):
-        window = feature[i-window_size:i]
-        features.append(window)
+    for i in range(len(feature)):
+        if i + window_size <= len(feature):
+            window = feature[i:i+window_size]
+            features.append(window)
     
     return np.array(features)
 
