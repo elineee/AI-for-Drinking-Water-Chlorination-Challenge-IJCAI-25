@@ -12,6 +12,7 @@ class ModelName(Enum):
     LOF = "LOF"
     ISOLATION_FOREST = "isolation_forest"
     ONE_CLASS_SVM = "one_class_SVM"
+    SVR = "SVR"
 
 @dataclass
 class ExperimentConfig:

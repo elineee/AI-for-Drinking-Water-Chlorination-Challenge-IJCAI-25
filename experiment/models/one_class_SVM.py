@@ -3,8 +3,9 @@ from sklearn import svm
 from typing import List
 
 from sklearn.discriminant_analysis import StandardScaler
-from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features
+from data_transformation import aggregate_data_for_several_nodes, change_data_format, get_data_for_one_node, calculate_labels, create_features, create_features_2
 from models.model import AnomalyModel
+
 
 """ Class for One Class SVM model"""
 class OneClassSVMModel(AnomalyModel):
@@ -19,6 +20,7 @@ class OneClassSVMModel(AnomalyModel):
         for i in range(len(contaminated_dfs)):
             node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
             node = str(node)
+            print(contaminated_dfs[i]['arsenic_concentration'][40:60])
 
             X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
@@ -45,9 +47,11 @@ class OneClassSVMModel(AnomalyModel):
             else: 
                 ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu)
 
-            ocsvm.fit(X_train)
+            ocsvm.fit(X_test)
 
             y_pred = ocsvm.predict(X_test)
+            # à investiguer : pq ça print que des anomalies?
+            print("coucou", y_pred)
             
             results[node] = {
                 "y_true": y_true,
