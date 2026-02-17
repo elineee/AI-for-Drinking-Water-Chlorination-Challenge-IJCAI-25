@@ -50,8 +50,6 @@ class OneClassSVMModel(AnomalyModel):
             ocsvm.fit(X_test)
 
             y_pred = ocsvm.predict(X_test)
-            # à investiguer : pq ça print que des anomalies?
-            print("coucou", y_pred)
             
             results[node] = {
                 "y_true": y_true,
