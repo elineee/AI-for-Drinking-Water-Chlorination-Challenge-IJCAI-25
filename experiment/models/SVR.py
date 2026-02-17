@@ -17,15 +17,18 @@ class SVRModel(AnomalyModel):
         super().__init__(config)
     
     def get_results(self):
-        clean_dfs, _ = self.load_datasets()
+        clean_dfs, contaminated_dfs = self.load_datasets()
         
         results = {}
         
+        # TODO : replace the test set by the contaminated data to test on it 
         for i in range(len(clean_dfs)):
             node = clean_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
             node = str(node)
-            train = clean_dfs[i].iloc[:800]
-            test = clean_dfs[i].iloc[800:]
+            # train = clean_dfs[i].iloc[:800]
+            # test = clean_dfs[i].iloc[800:]
+            train = clean_dfs[i]
+            test = contaminated_dfs[i]
             
             
             train = create_features_2(train, self.config.disinfectant.value, self.config.window_size)
@@ -74,8 +77,8 @@ class SVRModel(AnomalyModel):
             y_test = scaler_y.inverse_transform(y_test)
             
             # get timestamps for plotting
-            train_timestamps = clean_dfs[i].iloc[:800-self.config.window_size+1]['timestep']
-            test_timestamps = clean_dfs[i].iloc[800+self.config.window_size-1:]['timestep']
+            train_timestamps = clean_dfs[i].iloc[:-self.config.window_size+1]['timestep']
+            test_timestamps = contaminated_dfs[i].iloc[:-self.config.window_size+1:]['timestep']
             
             plt.figure(figsize=(25,6))
             plt.plot(train_timestamps, y_train, color = 'red', linewidth=2.0, alpha = 0.6)
@@ -92,13 +95,17 @@ class SVRModel(AnomalyModel):
             plt.xlabel('Timestamp')
             plt.show()
             
+            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
+            print(y_true.shape, y_test_pred.shape, y_test.shape)
+            
+            y_pred = self.get_anomalies(y_test_pred, y_test, 0.25) 
+            
             
             results[node] = {
-                "y_true": y_test,
-                "y_pred": y_test_pred
+                "y_true": y_true,
+                "y_pred": y_pred
             }
-        
-            
+                 
         return results
     
     def get_best_params(self, x_train, y_train):
@@ -116,6 +123,16 @@ class SVRModel(AnomalyModel):
         grid.fit(x_train, y_train.ravel())
         
         return grid.best_params_
+    
+    def get_anomalies(self, y_pred, y_true, threshold):
+        """Get the anomalies based on the predictions and the true values. An anomaly is detected if the absolute difference between the predicted value and the true value is greater than the threshold."""
+        anomalies = []
+        for i in range(len(y_true)):
+            if abs(y_pred[i] - y_true[i]) > threshold:
+                anomalies.append(1)
+            else:
+                anomalies.append(-1)
+        return np.array(anomalies)
     
     
     def load_and_filter(self, file_path: str, nodes: List[int]):
