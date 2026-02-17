@@ -184,6 +184,34 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
     
     return np.array(features)
 
+def create_features_2(df: pd.DataFrame, feature_column: str, window_size: int = 10):
+    """ 
+    Creates features for anomaly detection using a sliding window approach. 
+    One new feature will be (current value, current_value + 1, ..., current_value + window_size) where current_value + i is the value of the feature column at time step t + i.
+
+    Parameters:
+    - df: a pandas DataFrame containing the data
+    - feature_column: the name of the column to use as feature
+    - window_size: the size of the sliding window
+    
+    Returns:
+    - a numpy array containing the features for each time step
+    """
+    for column in df.columns:
+        if feature_column in column:
+            feature_column = column
+            break
+    
+    feature = df[feature_column].values
+    
+    features = []
+    
+    for i in range(window_size, len(feature)):
+        window = feature[i-window_size:i]
+        features.append(window)
+    
+    return np.array(features)
+
 # TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
 def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 
     """ 
