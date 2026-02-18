@@ -247,3 +247,26 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     labels = np.array(labels)
     
     return labels
+
+def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
+    """ 
+    Removes the first x days of data from the dataframe. 
+
+    Parameters:
+    - df: a pandas DataFrame containing the data with a "timestep" column
+    - days_to_remove: the number of days to remove from the beginning of the dataframe
+    
+    Returns:
+    - new_df: a pandas DataFrame containing the data with the first x days removed
+    """
+    timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
+    
+    new_df = df[df["timestep"] >= timesteps_to_remove].copy()
+    
+    print(new_df.head())
+    
+    return new_df
+
+if __name__ == "__main__":
+    file = ".\\data\\data_arsenic\\scada_data_conta_22_cleaned.csv"
+    df = remove_first_x_days(pd.read_csv(file), 3)
