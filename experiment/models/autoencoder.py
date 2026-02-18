@@ -1,28 +1,28 @@
 import torch
 import torch.nn as nn
 import torch.optim as optim
+import numpy as np
 from data_transformation import calculate_labels, create_features_2
 from models.model import AnomalyModel
 
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
 # Source: https://www.datacamp.com/tutorial/introduction-to-autoencoders
-
+# Source: https://keras.io/examples/timeseries/timeseries_anomaly_detection/
 class Autoencoder(nn.Module):
     """ Class for the autoencoder module"""
     def __init__(self, input_dim):
         super().__init__()
 
         self.encoder = nn.Sequential(
-            nn.Linear(input_dim, 32),
+            nn.Linear(input_dim, 16),
             nn.ReLU(),
-            nn.Linear(32, 16),
+            nn.Linear(16, 8),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
-            nn.Linear(16, 32),
+            nn.Linear(8, 16),
             nn.ReLU(),
-            nn.Linear(32, input_dim),
-            nn.ReLU(),
+            nn.Linear(16, input_dim)
         )
     def forward(self, x):
         encoded = self.encoder(x)
@@ -43,7 +43,7 @@ class AutoencoderModel(AnomalyModel):
         - epochs: the number of epochs to train the model 
 
         Returns:
-        - anomaly scores for the test data 
+        - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
         """
         torch.manual_seed(42)
 
@@ -54,22 +54,27 @@ class AutoencoderModel(AnomalyModel):
 
         # Training
         for epoch in range(epochs):
-            reconstruction = model(X_train)
-            train_loss = criterion(reconstruction, X_train)
+            train_reconstruction = model(X_train)
+            loss = criterion(train_reconstruction, X_train)
 
             optimizer.zero_grad()
-            train_loss.backward()
+            loss.backward()
             optimizer.step()
 
-            print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
+            print(f'Training: Epoch {epoch+1}, Loss: {loss}')
+        
+        model.eval()
 
+        with torch.no_grad():
+            train_reconstruction = model(X_train)
+            train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
+            threshold = train_error.max()
 
-        # # Testing
-        # reconstruction = model(X_test)
-        # loss = criterion(reconstruction, X_test)
-        # error = torch.mean((reconstruction - X_test) ** 2, dim=1)
-        # return error
-
+            # Testing
+            test_reconstruction = model(X_test)
+            test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
+            anomalies = test_error > threshold
+            return anomalies.cpu().numpy()
 
 
     def get_results(self):
@@ -87,10 +92,10 @@ class AutoencoderModel(AnomalyModel):
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
 
-            self.run_model(X_train, X_test, 20)
-            # results[node] = {"y_true": y_true,"y_pred": anomaly_scores }
-            results[node] = {"y_true": "1", "y_pred": "1"}
+            anomalies = self.run_model(X_train, X_test, 50)
+            y_pred = np.where(anomalies, -1, 1)  
+            results[node] = {"y_true": y_true, "y_pred": y_pred}
         
         return results
