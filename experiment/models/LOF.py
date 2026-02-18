@@ -17,15 +17,13 @@ class LOFModel(AnomalyModel):
             X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
             X_test = create_features(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
+            # TODO : handle multiple contaminants?
             y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
-            # TODO : voir pour mettre + de paramètres 
             n_neighbors = self.config.model_params.get("n_neighbors", 20)
             contamination = self.config.model_params.get("contamination", 0.1)
             
             lof = LocalOutlierFactor(n_neighbors=n_neighbors, novelty=True, contamination=contamination)
-
             lof.fit(X_train)
 
             y_pred = lof.predict(X_test)

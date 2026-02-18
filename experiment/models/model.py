@@ -12,12 +12,6 @@ class AnomalyModel(ABC):
     def __init__(self, config: ExperimentConfig):
         self.config = config
 
-    def apply_threshold(self, scores, threshold=0):
-        """
-        Converts scores to -1/1 labels if needed.
-        """
-        return np.where(scores < threshold, -1, 1)
-
     def load_and_filter(self, file_path: str, nodes: List[int]):
         """
         Loads the dataset from the given file path and filters it based on the specified nodes. It returns a list of dataframes corresponding to each node.
