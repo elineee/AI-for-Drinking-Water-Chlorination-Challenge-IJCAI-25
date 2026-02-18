@@ -3,13 +3,15 @@ from models.LOF import LOFModel
 from models.isolation_forest import IsolationForestModel
 from models.one_class_SVM import OneClassSVMModel
 from models.SVR import SVRModel
+from models.autoencoder import AutoencoderModel
 
 
 AVAILABLE_MODELS = {
     ModelName.LOF: LOFModel,
     ModelName.ISOLATION_FOREST: IsolationForestModel,
     ModelName.ONE_CLASS_SVM: OneClassSVMModel,
-    ModelName.SVR: SVRModel
+    ModelName.SVR: SVRModel,
+    ModelName.AUTOENCODER: AutoencoderModel
 }
 
 class ExperimentRunner:

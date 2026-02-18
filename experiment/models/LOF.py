@@ -15,7 +15,6 @@ class LOFModel(AnomalyModel):
             node = str(node)
 
             X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
-
             X_test = create_features(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled

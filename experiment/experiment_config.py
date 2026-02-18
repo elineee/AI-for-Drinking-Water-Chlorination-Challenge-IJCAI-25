@@ -13,6 +13,7 @@ class ModelName(Enum):
     ISOLATION_FOREST = "isolation_forest"
     ONE_CLASS_SVM = "one_class_SVM"
     SVR = "SVR"
+    AUTOENCODER = "autoencoder"
 
 @dataclass
 class ExperimentConfig:

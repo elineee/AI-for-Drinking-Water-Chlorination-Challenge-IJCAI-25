@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 from typing import List
 from experiment_config import ExperimentConfig
-from data_transformation import (get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format)
+from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
@@ -68,12 +68,7 @@ class AnomalyModel(ABC):
     @abstractmethod
     def get_results(self):
         """ 
-        Returns the results of the experiment 
-
-        Parameters:
-        - contaminated_dfs: list of dataframes for each contaminated file
-        - example_dfs: list of dataframes for each example file (clean data)
-        - threshold: threshold to apply to scores to get labels (if score_type is "scores")
+        Returns the results of the experiment as a dictionary containing the true labels and predicted labels for each node. 
     
         Returns:
           y_true: true labels 
