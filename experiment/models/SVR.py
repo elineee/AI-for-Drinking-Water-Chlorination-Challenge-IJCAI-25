@@ -6,7 +6,7 @@ from sklearn.svm import SVR
 from typing import List
 
 from sklearn.preprocessing import MinMaxScaler
-from data_transformation import aggregate_data_for_several_nodes, change_data_format, create_features_2, get_data_for_one_node, calculate_labels, create_features
+from data_transformation import aggregate_data_for_several_nodes, change_data_format, create_features_2, get_data_for_one_node, calculate_labels, create_features, remove_first_x_days
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -17,22 +17,52 @@ class SVRModel(AnomalyModel):
         super().__init__(config)
     
     def get_results(self):
-        clean_dfs, contaminated_dfs = self.load_datasets()
+        all_clean_dfs, all_contaminated_dfs = self.load_datasets()
         
         results = {}
         
-        # TODO : replace the test set by the contaminated data to test on it 
-        for i in range(len(clean_dfs)):
-            node = clean_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = str(node)
-            # train = clean_dfs[i].iloc[:800]
-            # test = clean_dfs[i].iloc[800:]
-            train = clean_dfs[i]
-            test = contaminated_dfs[i]
+        # iterate over the nodes
+        for key, value in all_clean_dfs.items():
+            print(key)
+            node = key
+            
+            # get contaminated dataset for the same key node
+
+            contaminated_dfs = all_contaminated_dfs[key]
+            clean_dfs = value
+
+            train = []
+            test = []
+            
+            new_clean_dfs = []
+            # iterate over datasets for each node
+            for i in range(len(clean_dfs)): 
+                train_data = remove_first_x_days(clean_dfs[i], 3)
+                new_clean_dfs.append(train_data)
+                train_data = create_features_2(train_data, self.config.disinfectant.value, self.config.window_size)
+                train.extend(train_data)
+            train = np.array(train)
+              
+            new_contaminated_dfs = []
+            for i in range(len(contaminated_dfs)): 
+                test_data = remove_first_x_days(contaminated_dfs[i], 3)
+                new_contaminated_dfs.append(test_data)
+                test_data = create_features_2(test_data, self.config.disinfectant.value, self.config.window_size)
+                test.extend(test_data)
+            test = np.array(test)
+
+        
+        # # TODO : ici, une boucle = gère pour un noeud
+        # for i in range(len(clean_dfs)):
+        #     node = clean_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
+        #     node = str(node)
+
+        #     train = clean_dfs[i]
+        #     test = contaminated_dfs[i]
             
             
-            train = create_features_2(train, self.config.disinfectant.value, self.config.window_size)
-            test = create_features_2(test, self.config.disinfectant.value, self.config.window_size)
+        #     train = create_features_2(train, self.config.disinfectant.value, self.config.window_size)
+        #     test = create_features_2(test, self.config.disinfectant.value, self.config.window_size)
             
             
             # get x and y to train on 
@@ -76,9 +106,12 @@ class SVRModel(AnomalyModel):
             y_train = scaler_y.inverse_transform(y_train)
             y_test = scaler_y.inverse_transform(y_test)
             
-            # get timestamps for plotting
-            train_timestamps = clean_dfs[i].iloc[:-self.config.window_size+1]['timestep']
-            test_timestamps = contaminated_dfs[i].iloc[:-self.config.window_size+1:]['timestep']
+
+            # train_timestamps = dataset.iloc[:-self.config.window_size+1]['timestep']
+            
+            train_timestamps = []
+            for dataset in new_clean_dfs:
+                train_timestamps += list(range(len(dataset)-self.config.window_size+1))
             
             plt.figure(figsize=(25,6))
             plt.plot(train_timestamps, y_train, color = 'red', linewidth=2.0, alpha = 0.6)
@@ -87,7 +120,12 @@ class SVRModel(AnomalyModel):
             plt.xlabel('Timestamp')
             plt.title("Training data prediction")
             plt.show()
-            
+                
+            test_timestamps = []
+            for dataset in new_contaminated_dfs:
+                test_timestamps += list(range(len(dataset)-self.config.window_size+1))
+                # test_timestamps += dataset.iloc[:-self.config.window_size+1:]['timestep']
+              
             plt.figure(figsize=(10,3))
             plt.plot(test_timestamps, y_test, color = 'red', linewidth=2.0, alpha = 0.6)
             plt.plot(test_timestamps, y_test_pred, color = 'blue', linewidth=0.8)
@@ -95,8 +133,16 @@ class SVRModel(AnomalyModel):
             plt.xlabel('Timestamp')
             plt.show()
             
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
-            print(y_true.shape, y_test_pred.shape, y_test.shape)
+            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
+            
+            ok = []
+            ano = []
+            for element in y_true:
+                if element == 1:
+                    ok.append(element)
+                else:
+                    ano.append(element)
+            print(f"ok: {len(ok)}, ano: {len(ano)}")
             
             y_pred = self.get_anomalies(y_test_pred, y_test, 0.25) 
             
@@ -105,7 +151,7 @@ class SVRModel(AnomalyModel):
                 "y_true": y_true,
                 "y_pred": y_pred
             }
-                 
+                
         return results
     
     def get_best_params(self, x_train, y_train):
@@ -148,30 +194,45 @@ class SVRModel(AnomalyModel):
         # TODO : add parameters contaminants when changed in function 
         df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
-        dfs = []
+        dfs = {}
         
         if self.config.aggregate_method is None:
             for node in nodes:
                 df_node = get_data_for_one_node(df_all, node, to_csv=False)
-                dfs.append(df_node)
+                dfs[str(node)] = df_node
         
         else:
             df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
-            dfs.append(df)
+            dfs[str(nodes)] = df 
         
         return dfs
 
     def load_datasets(self):
-        """Return lists of dataframes for each contaminated and example file.""" 
+        """Return dico of dataframes for each contaminated and example file where keys are nodes concern by dataframe.""" 
         
-        example_dfs = []
+        example_dfs = {}
         if self.config.example_files is not None:
             for fp in self.config.example_files:
-                example_dfs.extend(self.load_and_filter(fp, self.config.nodes))
+                dfs = self.load_and_filter(fp, self.config.nodes)
+                for key, value in dfs.items():
+                    if example_dfs.get(key) is None:
+                        example_dfs[key] = [value]
+                    else:
+                        example_dfs[key].append(value)
+                # example_dfs.extend(self.load_and_filter(fp, self.config.nodes))
                 
-        contaminated_dfs = []
+        contaminated_dfs = {}
         for fp in self.config.contaminated_files:
-            contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
+            dfs = self.load_and_filter(fp, self.config.nodes)
+            
+            # add df to corresponding node in the dico, each node can have several dataframes
+            for key, value in dfs.items():
+                if contaminated_dfs.get(key) is None:
+                    contaminated_dfs[key] = [value]
+                else:
+                    contaminated_dfs[key].append(value)
+
+            # contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
         
         return example_dfs, contaminated_dfs
     

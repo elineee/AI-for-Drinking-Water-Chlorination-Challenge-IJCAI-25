@@ -262,11 +262,5 @@ def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
     timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
     
     new_df = df[df["timestep"] >= timesteps_to_remove].copy()
-    
-    print(new_df.head())
-    
-    return new_df
 
-if __name__ == "__main__":
-    file = ".\\data\\data_arsenic\\scada_data_conta_22_cleaned.csv"
-    df = remove_first_x_days(pd.read_csv(file), 3)
+    return new_df
