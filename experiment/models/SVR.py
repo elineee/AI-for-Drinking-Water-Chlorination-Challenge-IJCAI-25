@@ -1,5 +1,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
+import pandas as pd
+from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
 
@@ -39,7 +41,7 @@ class SVRModel(AnomalyModel):
             for i in range(len(clean_dfs)): 
                 train_data = remove_first_x_days(clean_dfs[i], 3)
                 new_clean_dfs.append(train_data)
-                train_data = create_features_2(train_data, self.config.disinfectant.value, self.config.window_size)
+                train_data = self.create_features_svr(train_data, self.config.disinfectant.value, self.config.window_size)
                 train.extend(train_data)
             train = np.array(train)
               
@@ -47,22 +49,9 @@ class SVRModel(AnomalyModel):
             for i in range(len(contaminated_dfs)): 
                 test_data = remove_first_x_days(contaminated_dfs[i], 3)
                 new_contaminated_dfs.append(test_data)
-                test_data = create_features_2(test_data, self.config.disinfectant.value, self.config.window_size)
+                test_data = self.create_features_svr(test_data, self.config.disinfectant.value, self.config.window_size)
                 test.extend(test_data)
             test = np.array(test)
-
-        
-        # # TODO : ici, une boucle = gère pour un noeud
-        # for i in range(len(clean_dfs)):
-        #     node = clean_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-        #     node = str(node)
-
-        #     train = clean_dfs[i]
-        #     test = contaminated_dfs[i]
-            
-            
-        #     train = create_features_2(train, self.config.disinfectant.value, self.config.window_size)
-        #     test = create_features_2(test, self.config.disinfectant.value, self.config.window_size)
             
             
             # get x and y to train on 
@@ -70,9 +59,9 @@ class SVRModel(AnomalyModel):
             y_train = np.array([row[-1] for row in train]).reshape(-1,1)
 
             # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
-            scaler_X = MinMaxScaler()
+            scaler_X = StandardScaler()
             x_train = scaler_X.fit_transform(x_train)
-            scaler_y = MinMaxScaler()
+            scaler_y = StandardScaler()
             y_train = scaler_y.fit_transform(y_train)
             
             # params = self.get_best_params(x_train, y_train)
@@ -111,7 +100,7 @@ class SVRModel(AnomalyModel):
             
             train_timestamps = []
             for dataset in new_clean_dfs:
-                train_timestamps += list(range(len(dataset)-self.config.window_size+1))
+                train_timestamps += list(range(len(dataset)-self.config.window_size))
             
             plt.figure(figsize=(25,6))
             plt.plot(train_timestamps, y_train, color = 'red', linewidth=2.0, alpha = 0.6)
@@ -123,7 +112,7 @@ class SVRModel(AnomalyModel):
                 
             test_timestamps = []
             for dataset in new_contaminated_dfs:
-                test_timestamps += list(range(len(dataset)-self.config.window_size+1))
+                test_timestamps += list(range(len(dataset)-self.config.window_size))
                 # test_timestamps += dataset.iloc[:-self.config.window_size+1:]['timestep']
               
             plt.figure(figsize=(10,3))
@@ -133,7 +122,7 @@ class SVRModel(AnomalyModel):
             plt.xlabel('Timestamp')
             plt.show()
             
-            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
+            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
             ok = []
             ano = []
@@ -144,8 +133,22 @@ class SVRModel(AnomalyModel):
                     ano.append(element)
             print(f"ok: {len(ok)}, ano: {len(ano)}")
             
-            y_pred = self.get_anomalies(y_test_pred, y_test, 0.25) 
+            #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
+            residuals_train = np.abs(y_train_pred - y_train)
+            threshold = np.percentile(residuals_train, 95) 
             
+            print(f"Threshold: {threshold:.4f}")
+            
+            print(len(y_test), len(y_test_pred))
+            y_pred = self.get_anomalies(y_test_pred, y_test, threshold) 
+            
+            residual_test = np.abs(y_test - y_test_pred)
+            
+            
+            plt.plot(residual_test)
+            
+            plt.plot((y_true == -1)*max(residual_test))
+            plt.axhline(threshold, color='green')
             
             results[node] = {
                 "y_true": y_true,
@@ -153,6 +156,34 @@ class SVRModel(AnomalyModel):
             }
                 
         return results
+
+    def create_features_svr(self, df: pd.DataFrame, feature_column: str, window_size: int = 10):
+        for column in df.columns:
+            if feature_column in column:
+                feature_column = column
+                break
+        
+        feature = df[feature_column].values
+        features = []
+        
+        for i in range(window_size, len(feature)):
+            window = feature[i-window_size:i]
+            
+            current_value = feature[i]
+            mean = window.mean()
+            std = window.std()
+            slope = window[-1] - window[0]
+            delta = feature[i] - feature[i-1]
+            
+            row = np.concatenate([
+                window,              
+                [mean, std, slope, delta, current_value]
+            ])
+            
+            features.append(row)
+        
+        return np.array(features)
+
     
     def get_best_params(self, x_train, y_train):
         """Use grid search to find the best hyperparameters for the SVR model."""
@@ -175,9 +206,9 @@ class SVRModel(AnomalyModel):
         anomalies = []
         for i in range(len(y_true)):
             if abs(y_pred[i] - y_true[i]) > threshold:
-                anomalies.append(1)
-            else:
                 anomalies.append(-1)
+            else:
+                anomalies.append(1)
         return np.array(anomalies)
     
     

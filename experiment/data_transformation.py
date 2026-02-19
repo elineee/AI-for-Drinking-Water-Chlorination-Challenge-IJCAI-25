@@ -152,7 +152,7 @@ def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: lis
 def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10):
     """ 
     Creates features for anomaly detection using a sliding window approach. 
-    For each time step, features are: current value, mean, std, min and max of the values in the sliding window.
+    For each time step, features are: current value, mean, std, min, max of the values in the sliding window, difference between current value and previous value, difference between current value and mean of the window, relative change between the last and first value in the window.
 
     Parameters:
     - df: a pandas DataFrame containing the data
@@ -179,7 +179,10 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
             window.mean(),
             window.std(),
             window.min(),
-            window.max()
+            window.max(),
+            feature[i] - feature[i-1],
+            feature[i] - window.mean(),
+            (window[-1] - window[0]) / (window[0] + 1e-9), # relative change between the last and first value in the window, it can be useful to detect sudden changes in the feature value
         ])
     
     return np.array(features)
@@ -211,6 +214,29 @@ def create_features_2(df: pd.DataFrame, feature_column: str, window_size: int = 
             window = feature[i:i+window_size]
             features.append(window)
     
+    return np.array(features)
+    
+    for column in df.columns:
+        if feature_column in column:
+            feature_column = column
+            break
+    
+    x = df[feature_column].values
+    
+    features = []
+    
+    for i in range(window_size, len(x)):
+        w = x[i-window_size:i] # previous values in the window
+        features.append([
+            x[i], # current value
+            w.mean(), # mean of the values in the window
+            w.std(), 
+            w.min(),
+            w.max(),
+            x[i] - x[i-1],          
+            x[i] - w.mean(),         
+            (w[-1] - w[0]) / (w[0] + 1e-9),
+        ])
     return np.array(features)
 
 # TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
