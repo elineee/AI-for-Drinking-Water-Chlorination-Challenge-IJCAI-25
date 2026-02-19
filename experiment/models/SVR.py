@@ -25,7 +25,6 @@ class SVRModel(AnomalyModel):
             node = key
             
             # get contaminated dataset for the same key node
-
             contaminated_dfs = all_contaminated_dfs[key]
             clean_dfs = value
 
@@ -48,7 +47,6 @@ class SVRModel(AnomalyModel):
                 test_data = self.create_features_svr(test_data, self.config.disinfectant.value, self.config.window_size)
                 test.extend(test_data)
             test = np.array(test)
-            
             
             # get x and y to train on 
             x_train = np.array([row[:-1] for row in train])
@@ -90,7 +88,6 @@ class SVRModel(AnomalyModel):
             
             y_train = scaler_y.inverse_transform(y_train)
             y_test = scaler_y.inverse_transform(y_test)
-            
 
             # train_timestamps = dataset.iloc[:-self.config.window_size+1]['timestep']
             
@@ -136,13 +133,10 @@ class SVRModel(AnomalyModel):
             print(f"Threshold: {threshold:.4f}")
             
             print(len(y_test), len(y_test_pred))
-            y_pred = self.get_anomalies(y_test_pred, y_test, threshold) 
-        
-            
-            results[node] = {
-                "y_true": y_true,
-                "y_pred": y_pred
-            }
+            residual_test = np.abs(y_test - y_test_pred)
+            y_pred = np.where(residual_test > threshold, -1, 1)
+  
+            results[node] = {"y_true": y_true, "y_pred": y_pred}
                 
         return results
 
@@ -175,7 +169,9 @@ class SVRModel(AnomalyModel):
 
     
     def get_best_params(self, x_train, y_train):
-        """Use grid search to find the best hyperparameters for the SVR model."""
+        """
+        Uses grid search to find the best hyperparameters for the SVR model.
+        """
         
         param_grid = {
             'C': [0.1, 1, 10, 50, 100, 500, 1000],
@@ -185,17 +181,7 @@ class SVRModel(AnomalyModel):
         }
 
         grid = GridSearchCV(SVR(), param_grid, cv=5, scoring='neg_mean_squared_error')
-
         grid.fit(x_train, y_train.ravel())
         
-        return grid.best_params_
+        return grid.best_params
     
-    def get_anomalies(self, y_pred, y_true, threshold):
-        """Get the anomalies based on the predictions and the true values. An anomaly is detected if the absolute difference between the predicted value and the true value is greater than the threshold."""
-        anomalies = []
-        for i in range(len(y_true)):
-            if abs(y_pred[i] - y_true[i]) > threshold:
-                anomalies.append(-1)
-            else:
-                anomalies.append(1)
-        return np.array(anomalies)
