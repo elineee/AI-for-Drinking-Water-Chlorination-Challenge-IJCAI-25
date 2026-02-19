@@ -187,18 +187,18 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
     
     return np.array(features)
 
-def create_features_2(df: pd.DataFrame, feature_column: str, window_size: int = 10):
-    """ 
-    Creates features for anomaly detection using a sliding window approach. 
-    One new feature will be (current value, current_value + 1, ..., current_value + window_size) where current_value + i is the value of the feature column at time step t + i.
-
+def create_extended_features(df: pd.DataFrame, feature_column: str, window_size: int = 10):
+    """
+    Creates extended features for anomaly detection using a sliding window approach.
+    For each time step, features are: the values of the feature column in the sliding window, mean, std, slope and delta.
+    
     Parameters:
     - df: a pandas DataFrame containing the data
     - feature_column: the name of the column to use as feature
     - window_size: the size of the sliding window
-    
+
     Returns:
-    - a numpy array containing the features for each time step
+    - a numpy array containing the extended features for each time step
     """
     for column in df.columns:
         if feature_column in column:
@@ -206,38 +206,26 @@ def create_features_2(df: pd.DataFrame, feature_column: str, window_size: int = 
             break
     
     feature = df[feature_column].values
-    
     features = []
     
-    for i in range(len(feature)):
-        if i + window_size <= len(feature):
-            window = feature[i:i+window_size]
-            features.append(window)
-    
-    return np.array(features)
-    
-    for column in df.columns:
-        if feature_column in column:
-            feature_column = column
-            break
-    
-    x = df[feature_column].values
-    
-    features = []
-    
-    for i in range(window_size, len(x)):
-        w = x[i-window_size:i] # previous values in the window
-        features.append([
-            x[i], # current value
-            w.mean(), # mean of the values in the window
-            w.std(), 
-            w.min(),
-            w.max(),
-            x[i] - x[i-1],          
-            x[i] - w.mean(),         
-            (w[-1] - w[0]) / (w[0] + 1e-9),
+    for i in range(window_size, len(feature)):
+        window = feature[i-window_size:i]
+        
+        current_value = feature[i]
+        mean = window.mean()
+        std = window.std()
+        slope = window[-1] - window[0]
+        delta = feature[i] - feature[i-1]
+        
+        row = np.concatenate([
+            window,              
+            [mean, std, slope, delta, current_value]
         ])
+        
+        features.append(row)
+    
     return np.array(features)
+    
 
 # TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
 def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 

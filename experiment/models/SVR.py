@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from data_transformation import calculate_labels, remove_first_x_days
+from data_transformation import calculate_labels, create_extended_features, remove_first_x_days
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -36,7 +36,7 @@ class SVRModel(AnomalyModel):
             for i in range(len(clean_dfs)): 
                 train_data = remove_first_x_days(clean_dfs[i], 3)
                 new_clean_dfs.append(train_data)
-                train_data = self.create_features_svr(train_data, self.config.disinfectant.value, self.config.window_size)
+                train_data = create_extended_features(train_data, self.config.disinfectant.value, self.config.window_size)
                 train.extend(train_data)
             train = np.array(train)
               
@@ -44,7 +44,7 @@ class SVRModel(AnomalyModel):
             for i in range(len(contaminated_dfs)): 
                 test_data = remove_first_x_days(contaminated_dfs[i], 3)
                 new_contaminated_dfs.append(test_data)
-                test_data = self.create_features_svr(test_data, self.config.disinfectant.value, self.config.window_size)
+                test_data = create_extended_features(test_data, self.config.disinfectant.value, self.config.window_size)
                 test.extend(test_data)
             test = np.array(test)
             
@@ -131,41 +131,14 @@ class SVRModel(AnomalyModel):
             threshold = residual_train.mean() + 60 * residual_train.std()
             
             print(f"Threshold: {threshold:.4f}")
-            
             print(len(y_test), len(y_test_pred))
+
             residual_test = np.abs(y_test - y_test_pred)
             y_pred = np.where(residual_test > threshold, -1, 1)
   
             results[node] = {"y_true": y_true, "y_pred": y_pred}
                 
         return results
-
-    def create_features_svr(self, df: pd.DataFrame, feature_column: str, window_size: int = 10):
-        for column in df.columns:
-            if feature_column in column:
-                feature_column = column
-                break
-        
-        feature = df[feature_column].values
-        features = []
-        
-        for i in range(window_size, len(feature)):
-            window = feature[i-window_size:i]
-            
-            current_value = feature[i]
-            mean = window.mean()
-            std = window.std()
-            slope = window[-1] - window[0]
-            delta = feature[i] - feature[i-1]
-            
-            row = np.concatenate([
-                window,              
-                [mean, std, slope, delta, current_value]
-            ])
-            
-            features.append(row)
-        
-        return np.array(features)
 
     
     def get_best_params(self, x_train, y_train):
