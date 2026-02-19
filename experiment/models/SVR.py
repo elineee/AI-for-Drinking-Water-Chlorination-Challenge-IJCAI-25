@@ -134,21 +134,14 @@ class SVRModel(AnomalyModel):
             print(f"ok: {len(ok)}, ano: {len(ano)}")
             
             #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
-            residuals_train = np.abs(y_train_pred - y_train)
-            threshold = np.percentile(residuals_train, 95) 
+            residual_train = np.abs(y_train - y_train_pred)
+            threshold = residual_train.mean() + 60 * residual_train.std()
             
             print(f"Threshold: {threshold:.4f}")
             
             print(len(y_test), len(y_test_pred))
             y_pred = self.get_anomalies(y_test_pred, y_test, threshold) 
-            
-            residual_test = np.abs(y_test - y_test_pred)
-            
-            
-            plt.plot(residual_test)
-            
-            plt.plot((y_true == -1)*max(residual_test))
-            plt.axhline(threshold, color='green')
+        
             
             results[node] = {
                 "y_true": y_true,
