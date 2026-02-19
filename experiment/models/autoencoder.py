@@ -3,7 +3,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from data_transformation import calculate_labels, create_features_2
+import pandas as pd
+from data_transformation import calculate_labels, create_extended_features
 from models.model import AnomalyModel
 
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
@@ -69,6 +70,7 @@ class AutoencoderModel(AnomalyModel):
         with torch.no_grad():
             train_reconstruction = model(X_train)
             train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
+            
             threshold = train_error.max()
 
             # Testing
@@ -81,20 +83,20 @@ class AutoencoderModel(AnomalyModel):
 
     def get_results(self):
         results = {}
-        clean_dfs, contaminated_dfs = self.load_datasets()
+        all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
 
-        for i in range(len(contaminated_dfs)):
-            node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = str(node)
+        for node, clean_dfs in all_clean_dfs.items():
+            clean_df = pd.concat(clean_dfs)
+            contaminated_dfs = all_contaminated_dfs[node]
+            contaminated_df = pd.concat(contaminated_dfs)
 
-            X_train = create_features_2(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
-            X_test = create_features_2(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
+            X_train = create_extended_features(clean_df, self.config.disinfectant.value, self.config.window_size)
+            X_test = create_extended_features(contaminated_df, self.config.disinfectant.value, self.config.window_size)
 
+            # Normalize the data 
             mean = X_train.mean(axis=0)
             std = X_train.std(axis=0)
-
-            if np.any(std == 0): 
-                std[std == 0] = 1  
+            std[std == 0] = 1  
 
             X_train = (X_train - mean) / std
             X_test = (X_test - mean) / std
@@ -103,10 +105,20 @@ class AutoencoderModel(AnomalyModel):
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
-
-            anomalies = self.run_model(X_train, X_test, 20)
+            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
+            y_true = y_true[:len(X_test)]   
+            anomalies = self.run_model(X_train, X_test, 50)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
-        
+
+            # test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"]
+
+            # plt.figure(figsize=(17,5))
+            # plt.plot(test_timestamps, X_test[:,0].cpu().numpy(), label="Actual")
+            # plt.scatter(test_timestamps[anomalies], X_test[anomalies,0].cpu().numpy(),
+            #             color="red", label="Anomaly")
+            # plt.legend()
+            # plt.title(f"Node {node} anomalies")
+            # plt.show()
+
         return results

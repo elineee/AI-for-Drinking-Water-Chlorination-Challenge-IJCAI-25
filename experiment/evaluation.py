@@ -56,8 +56,8 @@ class Evaluation:
                     evaluation_results[config_name][node] = {
                         Metrics.ACCURACY.value : accuracy_score(y_true, y_pred),
                         Metrics.CONFUSION_MATRIX.value: confusion_matrix(y_true, y_pred, labels=[1, -1]),
-                        Metrics.RECALL.value: recall_score(y_true, y_pred, pos_label=-1),
-                        Metrics.F1_SCORE.value: f1_score(y_true, y_pred, pos_label=-1)
+                        Metrics.RECALL.value: recall_score(y_true, y_pred, pos_label=-1, zero_division=0),
+                        Metrics.F1_SCORE.value: f1_score(y_true, y_pred, pos_label=-1, zero_division=0)
                     }
 
         return evaluation_results
