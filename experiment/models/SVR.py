@@ -9,10 +9,8 @@ from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
 
-""" Class for SVR model"""
 class SVRModel(AnomalyModel):
-    def __init__(self, config):
-        super().__init__(config)
+    """ Class for SVR model"""
     
     def get_results(self):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
@@ -53,8 +51,8 @@ class SVRModel(AnomalyModel):
             y_train = np.array([row[-1] for row in train]).reshape(-1,1)
 
             # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
-            scaler_X = StandardScaler()
-            x_train = scaler_X.fit_transform(x_train)
+            scaler_x = StandardScaler()
+            x_train = scaler_x.fit_transform(x_train)
             scaler_y = StandardScaler()
             y_train = scaler_y.fit_transform(y_train)
             
@@ -75,7 +73,7 @@ class SVRModel(AnomalyModel):
             y_test = np.array([row[-1] for row in test]).reshape(-1,1)
             
             # scale the test data using the same scalers as for the training data
-            x_test = scaler_X.transform(x_test)
+            x_test = scaler_x.transform(x_test)
             y_test = scaler_y.transform(y_test)
             
             # reshape y to be in the right format for evaluation
