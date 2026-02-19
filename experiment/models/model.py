@@ -39,6 +39,35 @@ class AnomalyModel(ABC):
         
         return dfs
 
+    def load_and_filter_as_dict(self, file_path: str, nodes: List[int]):
+        """
+        Loads the dataset from the given file path and filters it based on the specified nodes. 
+        Return a dictionary of dataframes corresponding to each node.
+        
+        Parameters:
+        - file_path: the path to the data file (csv) to load
+        - nodes: a list of node numbers to filter the data by
+        
+        Returns:
+        - dfs: a dictionary where keys are node ids (str) and values are pandas DataFrames, each containing the data for one of the specified nodes
+        """
+        # TODO : add parameters contaminants when changed in function 
+        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
+        
+        dfs = {}
+        
+        if self.config.aggregate_method is None:
+            for node in nodes:
+                df_node = get_data_for_one_node(df_all, node, to_csv=False)
+                dfs[str(node)] = df_node
+        
+        else:
+            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
+            dfs[str(nodes)] = df 
+        
+        return dfs
+
+
     def load_datasets(self):
         """
         Loads the datasets for the experiment based on the examples files and contamined files specified in the configuration.
@@ -58,6 +87,48 @@ class AnomalyModel(ABC):
             contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
 
         return example_dfs, contaminated_dfs
+
+
+    def _group_dfs_by_node(self, files: List[str]):
+        """
+        Group dataframes by node for the given list of files. 
+
+        Parameters:
+        - files: list of files to load and group by node
+
+        Returns:
+        -  group : dict where keys are node ids (str) and values are lists of dataframes for that node.
+        """
+        group = {}
+
+        for f in files:
+            dfs = self.load_and_filter_as_dict(f, self.config.nodes)
+
+            for node, df in dfs.items():
+                if node not in group:
+                    group[node] = []
+                group[node].append(df)
+
+        return group
+    
+
+    def load_datasets_as_dict(self):
+        """
+        Returns dict of dataframes per node for clean and contaminated files.
+        
+        Returns:
+        - example_dfs: dict of dataframes for each example file (clean data), with node as key
+        - contaminated_dfs: dict of dataframes for each contaminated file, with node as key
+        """
+        example_dfs = {}
+
+        if self.config.example_files is not None:
+            example_dfs = self._group_dfs_by_node(self.config.example_files)
+
+        contaminated_dfs = self._group_dfs_by_node(self.config.contaminated_files)
+
+        return example_dfs, contaminated_dfs
+    
 
     @abstractmethod
     def get_results(self):

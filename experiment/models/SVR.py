@@ -4,11 +4,7 @@ import pandas as pd
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-
-from typing import List
-
-from sklearn.preprocessing import MinMaxScaler
-from data_transformation import aggregate_data_for_several_nodes, change_data_format, create_features_2, get_data_for_one_node, calculate_labels, create_features, remove_first_x_days
+from data_transformation import calculate_labels, remove_first_x_days
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -19,7 +15,7 @@ class SVRModel(AnomalyModel):
         super().__init__(config)
     
     def get_results(self):
-        all_clean_dfs, all_contaminated_dfs = self.load_datasets()
+        all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
         results = {}
         
@@ -203,60 +199,3 @@ class SVRModel(AnomalyModel):
             else:
                 anomalies.append(1)
         return np.array(anomalies)
-    
-    
-    def load_and_filter(self, file_path: str, nodes: List[int]):
-        """Load the dataset from the given file path and filter it based on the specified nodes. Return a list of dataframes corresponding to each node.
-        
-        Parameters:
-        - file_path: the path to the data file (csv) to load
-        - nodes: a list of node numbers to filter the data by
-        
-        Returns:
-        - a list of pandas DataFrames, each containing the data for one of the specified nodes
-        """
-        # TODO : add parameters contaminants when changed in function 
-        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
-        
-        dfs = {}
-        
-        if self.config.aggregate_method is None:
-            for node in nodes:
-                df_node = get_data_for_one_node(df_all, node, to_csv=False)
-                dfs[str(node)] = df_node
-        
-        else:
-            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
-            dfs[str(nodes)] = df 
-        
-        return dfs
-
-    def load_datasets(self):
-        """Return dico of dataframes for each contaminated and example file where keys are nodes concern by dataframe.""" 
-        
-        example_dfs = {}
-        if self.config.example_files is not None:
-            for fp in self.config.example_files:
-                dfs = self.load_and_filter(fp, self.config.nodes)
-                for key, value in dfs.items():
-                    if example_dfs.get(key) is None:
-                        example_dfs[key] = [value]
-                    else:
-                        example_dfs[key].append(value)
-                # example_dfs.extend(self.load_and_filter(fp, self.config.nodes))
-                
-        contaminated_dfs = {}
-        for fp in self.config.contaminated_files:
-            dfs = self.load_and_filter(fp, self.config.nodes)
-            
-            # add df to corresponding node in the dico, each node can have several dataframes
-            for key, value in dfs.items():
-                if contaminated_dfs.get(key) is None:
-                    contaminated_dfs[key] = [value]
-                else:
-                    contaminated_dfs[key].append(value)
-
-            # contaminated_dfs.extend(self.load_and_filter(fp, self.config.nodes))
-        
-        return example_dfs, contaminated_dfs
-    
