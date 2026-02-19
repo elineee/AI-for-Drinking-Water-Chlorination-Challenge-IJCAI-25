@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -74,8 +75,9 @@ class AutoencoderModel(AnomalyModel):
             test_reconstruction = model(X_test)
             test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
             anomalies = test_error > threshold
+            
             return anomalies.cpu().numpy()
-
+        
 
     def get_results(self):
         results = {}
@@ -88,13 +90,22 @@ class AutoencoderModel(AnomalyModel):
             X_train = create_features_2(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
             X_test = create_features_2(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
+            mean = X_train.mean(axis=0)
+            std = X_train.std(axis=0)
+
+            if np.any(std == 0): 
+                std[std == 0] = 1  
+
+            X_train = (X_train - mean) / std
+            X_test = (X_test - mean) / std
+    
             X_train = torch.tensor(X_train, dtype=torch.float32)
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
             y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size-1)
 
-            anomalies = self.run_model(X_train, X_test, 50)
+            anomalies = self.run_model(X_train, X_test, 20)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
         
