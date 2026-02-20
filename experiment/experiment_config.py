@@ -27,7 +27,7 @@ class ExperimentConfig:
     - nodes: a list of node numbers on which model will be trained/tested
     - contaminants: a list of ContaminationType to specify which contaminants to use (arsenic by default)
     - model_params: a dictionary of parameters to pass to the model (e.g., n_neighbors for LOF)
-    - aggregate_method: whether to train models on each node separately or on aggregated nodes (e.g., mean/sum) #TODO
+    - aggregate_method: whether to train models on each node separately or on aggregated nodes (e.g., mean/sum) 
     """
 
     model_name: ModelName

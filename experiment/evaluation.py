@@ -137,3 +137,6 @@ class Evaluation:
         plt.tight_layout()
         plt.show()
 
+        print(f"Mean of {metric_name.value} for each configuration:")
+        for i, config_name in enumerate(config_names):
+            print(f"  {config_name}: {mean_metric_values[i]}")

@@ -44,15 +44,15 @@ if __name__ == "__main__":
     #     model_name=ModelName.ONE_CLASS_SVM,
     #     model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
     # ),
-        # ExperimentConfig(
-        #             config_name="SVR",
-        #             contaminated_files=CONTAMINATED_FILES,
-        #             example_files=CLEAN_FILES,
-        #             nodes=[10, 11, 12, 21, 22, 31, 32],
-        #             window_size=50,
-        #             model_name=ModelName.SVR,
-        #             model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
-        #         ),
+        ExperimentConfig(
+                    config_name="SVR",
+                    contaminated_files=CONTAMINATED_FILES,
+                    example_files=CLEAN_FILES,
+                    nodes=[10, 11, 12, 21, 22, 31, 32],
+                    window_size=50,
+                    model_name=ModelName.SVR,
+                    model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                ),
     ]
     all_results = []
 
@@ -60,8 +60,6 @@ if __name__ == "__main__":
         runner = ExperimentRunner(cfg)
         res = runner.run()
         all_results.append(res)
-
-    # print(all_results)
 
     pickle.dump(all_results, open("all_results.pkl", "wb"))
 

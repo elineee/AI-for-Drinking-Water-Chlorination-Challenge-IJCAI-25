@@ -50,6 +50,9 @@ class AutoencoderModel(AnomalyModel):
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
+        - test_reconstruction: the reconstructed test data from the autoencoder
+        - test_error: the reconstruction error for each test sample
+        - threshold: the threshold used to classify anomalies
         """
         torch.manual_seed(42)
 
@@ -75,15 +78,20 @@ class AutoencoderModel(AnomalyModel):
             train_reconstruction = model(X_train)
             train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
             
-            threshold = train_error.max()
+            threshold = train_error.mean() + 60 * train_error.std()
+            # threshold = train_error.max()
 
             # Testing
             test_reconstruction = model(X_test)
             test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
             anomalies = test_error > threshold
             
-            return anomalies.cpu().numpy()
-        
+            return (
+                anomalies.cpu().numpy(),
+                test_reconstruction.cpu().numpy(),
+                test_error.cpu().numpy(),
+                threshold.item()
+            )        
 
     def get_results(self):
         results = {}
@@ -111,18 +119,65 @@ class AutoencoderModel(AnomalyModel):
             # TODO : handle multiple contaminants, for now only one contaminant is handled
             y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
             y_true = y_true[:len(X_test)]   
-            anomalies = self.run_model(X_train, X_test, 100)
+            anomalies, reconstructions, test_error, threshold = self.run_model(X_train, X_test, 100)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
-            # test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"]
+            test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
 
-            # plt.figure(figsize=(17,5))
-            # plt.plot(test_timestamps, X_test[:,0].cpu().numpy(), label="Actual")
-            # plt.scatter(test_timestamps[anomalies], X_test[anomalies,0].cpu().numpy(),
-            #             color="red", label="Anomaly")
-            # plt.legend()
-            # plt.title(f"Node {node} anomalies")
-            # plt.show()
+            # self.get_plots(node, test_timestamps, X_test, reconstructions, anomalies, y_true, threshold, test_error)
 
         return results
+    
+
+    def get_plots(self, node, timestamps, X_test, reconstructions, anomalies, y_true, threshold, test_error):
+        """
+        Plots:
+        1. Real vs reconstructed signal
+        2. Signal with detected anomalies and true anomalies
+        3. Reconstruction error with threshold
+        """
+
+        original = X_test.cpu().numpy()
+
+        # Real vs Reconstructed
+        plt.figure(figsize=(16,5))
+        plt.plot(timestamps, original[:, 0], label="Real signal")
+        plt.plot(timestamps, reconstructions[:, 0], label="Reconstructed signal")
+        plt.title(f"Node {node} - Real vs Reconstructed")
+        plt.legend()
+        plt.show()
+
+
+        # Detected vs True anomalies
+        plt.figure(figsize=(16,5))
+        plt.plot(timestamps, original[:, 0], label="Signal")
+
+
+        plt.scatter(
+            timestamps[anomalies],
+            original[anomalies, 0],
+            color="red",
+            label="Detected anomalies"
+        )
+
+        true_anomalies = y_true == -1
+        plt.scatter(
+            timestamps[true_anomalies],
+            original[true_anomalies, 0],
+            color="green",
+            marker="x",
+            label="True anomalies"
+        )
+
+        plt.title(f"Node {node} - Detected vs True anomalies")
+        plt.legend()
+        plt.show()
+
+        # Reconstruction error
+        plt.figure(figsize=(16,4))
+        plt.plot(timestamps, test_error, label="Reconstruction error")
+        plt.axhline(y=threshold, color='r', linestyle='--', label="Threshold")
+        plt.title(f"Node {node} - Reconstruction error")
+        plt.legend()
+        plt.show()

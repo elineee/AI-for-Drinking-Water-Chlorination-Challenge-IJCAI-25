@@ -86,8 +86,6 @@ class SVRModel(AnomalyModel):
             
             y_train = scaler_y.inverse_transform(y_train)
             y_test = scaler_y.inverse_transform(y_test)
-
-            # train_timestamps = dataset.iloc[:-self.config.window_size+1]['timestep']
             
             train_timestamps = []
             for dataset in new_clean_dfs:
@@ -104,7 +102,6 @@ class SVRModel(AnomalyModel):
             test_timestamps = []
             for dataset in new_contaminated_dfs:
                 test_timestamps += list(range(len(dataset)-self.config.window_size))
-                # test_timestamps += dataset.iloc[:-self.config.window_size+1:]['timestep']
               
             # plt.figure(figsize=(10,3))
             # plt.plot(test_timestamps, y_test, color = 'red', linewidth=2.0, alpha = 0.6)
