@@ -18,11 +18,15 @@ class Autoencoder(nn.Module):
         self.encoder = nn.Sequential(
             nn.Linear(input_dim, 16),
             nn.ReLU(),
+            nn.Linear(16, 16),
+            nn.ReLU(),
             nn.Linear(16, 8),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
             nn.Linear(8, 16),
+            nn.ReLU(),
+            nn.Linear(16, 16),
             nn.ReLU(),
             nn.Linear(16, input_dim)
         )
@@ -107,7 +111,7 @@ class AutoencoderModel(AnomalyModel):
             # TODO : handle multiple contaminants, for now only one contaminant is handled
             y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
             y_true = y_true[:len(X_test)]   
-            anomalies = self.run_model(X_train, X_test, 50)
+            anomalies = self.run_model(X_train, X_test, 100)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
