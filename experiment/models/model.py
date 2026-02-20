@@ -23,8 +23,7 @@ class AnomalyModel(ABC):
         Returns:
         - a list of pandas DataFrames, each containing the data for one of the specified nodes
         """
-        # TODO : add parameters contaminants when changed in function 
-        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
+        df_all = change_data_format(file_path, self.config.contaminant, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
         dfs = []
         
@@ -51,8 +50,7 @@ class AnomalyModel(ABC):
         Returns:
         - dfs: a dictionary where keys are node ids (str) and values are pandas DataFrames, each containing the data for one of the specified nodes
         """
-        # TODO : add parameters contaminants when changed in function 
-        df_all = change_data_format(file_path, self.config.contaminants, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
+        df_all = change_data_format(file_path, self.config.contaminant, to_csv=False)  # returns rows with columns: timestep, node, chlorine_concentration, arsenic_concentration
         
         dfs = {}
         

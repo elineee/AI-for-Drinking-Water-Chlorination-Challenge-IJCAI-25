@@ -6,7 +6,7 @@ import pickle
 
 if __name__ == "__main__":
     CLEAN_FILES = [".\\data\\data_arsenic\\scada_data_no_conta_53_days_1.csv", ".\\data\\data_arsenic\\scada_data_no_conta_53_days_2.csv", ".\\data\\data_arsenic\\scada_data_no_conta_53_days_3.csv", ".\\data\\data_arsenic\\scada_data_no_conta_53_days_4.csv"]
-    CONTAMINATED_FILES = [".\\data\\data_arsenic\\scada_data.csv"]
+    CONTAMINATED_FILES = [".\\data\\data_arsenic\\scada_data.csv", ".\\data\\data_arsenic\\scada_data_conta_22.csv"]
 
     configs = [
     ExperimentConfig(

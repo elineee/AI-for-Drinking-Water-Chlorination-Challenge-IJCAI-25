@@ -108,21 +108,21 @@ class AutoencoderModel(AnomalyModel):
             X_train = torch.tensor(X_train, dtype=torch.float32)
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
+            y_true = calculate_labels(contaminated_df, self.config.contaminant.value, self.config.window_size-1)
             y_true = y_true[:len(X_test)]   
             anomalies = self.run_model(X_train, X_test, 100)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
-            # test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"]
+            # PLOT 
+            test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"]
 
-            # plt.figure(figsize=(17,5))
-            # plt.plot(test_timestamps, X_test[:,0].cpu().numpy(), label="Actual")
-            # plt.scatter(test_timestamps[anomalies], X_test[anomalies,0].cpu().numpy(),
-            #             color="red", label="Anomaly")
-            # plt.legend()
-            # plt.title(f"Node {node} anomalies")
-            # plt.show()
+            plt.figure(figsize=(17,5))
+            plt.plot(test_timestamps, X_test[:,0].cpu().numpy(), label="Actual")
+            plt.scatter(test_timestamps[anomalies], X_test[anomalies,0].cpu().numpy(),
+                        color="red", label="Anomaly")
+            plt.legend()
+            plt.title(f"Node {node} anomalies")
+            plt.show()
 
         return results
