@@ -19,7 +19,8 @@ class OneClassSVMModel(AnomalyModel):
 
             X_test = create_features(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
 
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminant.value, self.config.window_size)
+            # TODO : handle multiple contaminants, for now only one contaminant is handled
+            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
             # standardize the features before applying the model 
             scaler = StandardScaler()

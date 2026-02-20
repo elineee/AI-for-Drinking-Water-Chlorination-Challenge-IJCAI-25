@@ -93,7 +93,7 @@ class SVRModel(AnomalyModel):
             for dataset in new_clean_dfs:
                 train_timestamps += list(range(len(dataset)-self.config.window_size))
             
-            # plt.figure(figsize=(17,6))
+            # plt.figure(figsize=(25,6))
             # plt.plot(train_timestamps, y_train, color = 'red', linewidth=2.0, alpha = 0.6)
             # plt.plot(train_timestamps, y_train_pred, color = 'blue', linewidth=0.8)
             # plt.legend(['Actual','Predicted'])
@@ -113,7 +113,7 @@ class SVRModel(AnomalyModel):
             # plt.xlabel('Timestamp')
             # plt.show()
             
-            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminant.value, self.config.window_size)
+            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
             ok = []
             ano = []
