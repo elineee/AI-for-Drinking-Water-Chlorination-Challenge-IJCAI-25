@@ -13,7 +13,7 @@ if __name__ == "__main__":
         config_name="AUTOENCODER",
         example_files=CLEAN_FILES,
         contaminated_files=CONTAMINATED_FILES,
-        nodes=[10, 11, 12, 21, 22, 31, 32],
+        nodes=[11, 12, 21, 22, 31, 32],
         window_size=50,
         model_name=ModelName.AUTOENCODER,
         model_params={}
@@ -48,7 +48,7 @@ if __name__ == "__main__":
                     config_name="SVR",
                     contaminated_files=CONTAMINATED_FILES,
                     example_files=CLEAN_FILES,
-                    nodes=[10, 11, 12, 21, 22, 31, 32],
+                    nodes=[11, 12, 21, 22, 31, 32],
                     window_size=50,
                     model_name=ModelName.SVR,
                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},

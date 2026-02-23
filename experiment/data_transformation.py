@@ -230,14 +230,14 @@ def create_extended_features(df: pd.DataFrame, feature_column: str, window_size:
 # TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
 def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 
     """ 
-    Calculates labels for anomaly detection. For each time step, the label is 1 if the value of the contaminant column is an anomaly (> 0) and -1 otherwise.
+    Calculates labels for anomaly detection. For each time step, the label is -1 if the value of the contaminant column is an anomaly (> 0) and 1 otherwise.
 
     Parameters:
     - df: a pandas DataFrame containing the data
     - contaminant_column: the name of the contaminant column to use as feature
     
     Returns:
-    - labels: a np.array containing the labels for each time step (1 if anomaly, -1 if normal)
+    - labels: a np.array containing the labels for each time step (-1 if anomaly, 1 if normal)
     """
     
     matched_column = None
