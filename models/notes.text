@@ -1,0 +1,4 @@
+OneClassSVM nul ou alors je comprends pas bien
+
+Pour SVR : détecte bien le début quand y'a une anomalie mais détecte plus quand l'arsenic se dissipe et donc que le chlore reprend un pattern classique 
+(mais juste la concentration est légèrement plus basse)

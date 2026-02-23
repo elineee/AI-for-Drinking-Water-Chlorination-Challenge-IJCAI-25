@@ -253,7 +253,7 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     labels = []
     
     for i in range(window_size, len(feature)):
-        if feature[i] > 0: 
+        if feature[i] > 0.01: 
             labels.append(-1)
         else:
             labels.append(1)
