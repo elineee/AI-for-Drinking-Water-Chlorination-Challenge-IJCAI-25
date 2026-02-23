@@ -187,7 +187,7 @@ def create_features(df: pd.DataFrame, feature_column: str, window_size: int = 10
     
     return np.array(features)
 
-def create_extended_features(df: pd.DataFrame, feature_column: str, window_size: int = 10):
+def create_extended_features(df: pd.DataFrame, feature_column: str, window_size: int = 10, stats: bool = True):
     """
     Creates extended features for anomaly detection using a sliding window approach.
     For each time step, features are: the values of the feature column in the sliding window, mean, std, slope and delta.
@@ -196,7 +196,7 @@ def create_extended_features(df: pd.DataFrame, feature_column: str, window_size:
     - df: a pandas DataFrame containing the data
     - feature_column: the name of the column to use as feature
     - window_size: the size of the sliding window
-
+    - stats: whether to include statistics (mean, std, slope, delta) in the extended features
     Returns:
     - a numpy array containing the extended features for each time step
     """
@@ -211,16 +211,20 @@ def create_extended_features(df: pd.DataFrame, feature_column: str, window_size:
     for i in range(window_size, len(feature)):
         window = feature[i-window_size:i]
         
-        current_value = feature[i]
-        mean = window.mean()
-        std = window.std()
-        slope = window[-1] - window[0]
-        delta = feature[i] - feature[i-1]
+        if stats:
         
-        row = np.concatenate([
-            window,              
-            [mean, std, slope, delta, current_value]
-        ])
+            current_value = feature[i]
+            mean = window.mean()
+            std = window.std()
+            slope = window[-1] - window[0]
+            delta = feature[i] - feature[i-1]
+            
+            row = np.concatenate([
+                window,              
+                [mean, std, slope, delta, current_value]
+            ])
+        else:
+            row = window
         
         features.append(row)
     

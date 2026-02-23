@@ -4,6 +4,7 @@ from models.isolation_forest import IsolationForestModel
 from models.one_class_SVM import OneClassSVMModel
 from models.SVR import SVRModel
 from models.autoencoder import AutoencoderModel
+from models.LSTM_AE import LSTMAutoEncoderModel
 
 
 AVAILABLE_MODELS = {
@@ -11,7 +12,8 @@ AVAILABLE_MODELS = {
     ModelName.ISOLATION_FOREST: IsolationForestModel,
     ModelName.ONE_CLASS_SVM: OneClassSVMModel,
     ModelName.SVR: SVRModel,
-    ModelName.AUTOENCODER: AutoencoderModel
+    ModelName.AUTOENCODER: AutoencoderModel,
+    ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel
 }
 
 class ExperimentRunner:
