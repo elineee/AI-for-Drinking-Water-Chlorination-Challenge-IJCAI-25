@@ -178,7 +178,7 @@ class AutoencoderModel(AnomalyModel):
         plt.show()
 
 
-        # Reconstruction error with threshold
+        #3. Reconstruction error with threshold
         plt.figure(figsize=(15,5))
         plt.plot(timestamps, test_error, label="Reconstruction error")
         plt.axhline(y=threshold, color="red", linestyle="--", label="Threshold")

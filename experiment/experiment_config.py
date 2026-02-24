@@ -15,6 +15,7 @@ class ModelName(Enum):
     SVR = "SVR"
     AUTOENCODER = "autoencoder"
     LSTM_AUTOENCODER = "LSTM_autoencoder"
+    GAN = "GAN"
 
 @dataclass
 class ExperimentConfig:
