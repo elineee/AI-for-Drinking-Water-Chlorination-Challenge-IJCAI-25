@@ -107,7 +107,8 @@ class LSTMAutoEncoderModel(AnomalyModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001)
         
-        if os.path.exists('lstm_autoencoder.pth'):
+        # if os.path.exists('lstm_autoencoder.pth'):
+        if False:
             model.load_state_dict(torch.load('lstm_autoencoder.pth', weights_only=True))
             
         else: 
@@ -247,7 +248,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             print(f"Training data shape: {X_train.shape}")
             
-            mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=30)
+            mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
             y_true = calculate_labels(new_contaminated_dfs[0], self.config.contaminants[0].value, 0)
             print(len(y_true), len(anomalies))
