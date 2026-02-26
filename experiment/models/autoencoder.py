@@ -64,10 +64,11 @@ class AutoencoderModel(AnomalyModel):
 
         # Training
         for epoch in range(epochs):
+            optimizer.zero_grad()
+
             train_reconstruction = model(X_train)
             loss = criterion(train_reconstruction, X_train)
 
-            optimizer.zero_grad()
             loss.backward()
             optimizer.step()
 
@@ -81,6 +82,10 @@ class AutoencoderModel(AnomalyModel):
             
             threshold = train_error.mean() + 60 * train_error.std()
             # Alternative: threshold = train_error.max()
+
+            print(f"train_error mean: {train_error.mean():.6f}")
+            print(f"train_error std: {train_error.std():.6f}")
+            print(f"threshold: {threshold:.6f}")
 
             # Testing
             test_reconstruction = model(X_test)
@@ -118,16 +123,15 @@ class AutoencoderModel(AnomalyModel):
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
-            y_true = y_true[:len(X_test)]   
+            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             anomalies, reconstructions, test_error, threshold = self.run_model(X_train, X_test, 100)
             y_pred = np.where(anomalies, -1, 1)  
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
             test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
-            test_timestamps = test_timestamps[:len(reconstructions)]
             signal = X_test[:, 0].cpu().numpy()
 
             plot_prediction(test_timestamps, signal, reconstructions[:, 0], f"Test prediction node {node}")
+
         return results
     
