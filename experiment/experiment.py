@@ -1,8 +1,10 @@
+
 from experiment_config import ExperimentConfig, ModelName
 from models.LOF import LOFModel
 from models.isolation_forest import IsolationForestModel
 from models.one_class_SVM import OneClassSVMModel
 from models.SVR import SVRModel
+from models.SVR_alarm import SVRAlarmModel
 from models.autoencoder import AutoencoderModel
 from models.LSTM_AE import LSTMAutoEncoderModel
 from models.GAN import GANModel
@@ -12,6 +14,7 @@ AVAILABLE_MODELS = {
     ModelName.ISOLATION_FOREST: IsolationForestModel,
     ModelName.ONE_CLASS_SVM: OneClassSVMModel,
     ModelName.SVR: SVRModel,
+    ModelName.SVR_ALARM: SVRAlarmModel,
     ModelName.AUTOENCODER: AutoencoderModel,
     ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel,
     ModelName.GAN: GANModel
