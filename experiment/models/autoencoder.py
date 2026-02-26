@@ -5,6 +5,7 @@ import torch.optim as optim
 import numpy as np
 import pandas as pd
 from data_transformation import calculate_labels, create_extended_features
+from utils import plot_prediction
 from models.model import AnomalyModel
 
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
@@ -79,7 +80,7 @@ class AutoencoderModel(AnomalyModel):
             train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
             
             threshold = train_error.mean() + 60 * train_error.std()
-            # threshold = train_error.max()
+            # Alternative: threshold = train_error.max()
 
             # Testing
             test_reconstruction = model(X_test)
@@ -124,64 +125,9 @@ class AutoencoderModel(AnomalyModel):
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
             test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
-            self.get_plots(node, test_timestamps, X_test, reconstructions, anomalies, y_true, threshold, test_error)
+            test_timestamps = test_timestamps[:len(reconstructions)]
+            signal = X_test[:, 0].cpu().numpy()
 
+            plot_prediction(test_timestamps, signal, reconstructions[:, 0], f"Test prediction node {node}")
         return results
     
-
-    def get_plots(self, node, timestamps, X_test, reconstructions, anomalies, y_true, threshold, test_error):
-        """
-        Generates the following plots for a given node:
-        - Real vs reconstructed time series signal
-        - Signal with detected anomalies and true anomalies
-        - Reconstruction error with threshold
-
-        Parameters:
-        - node: the node number
-        - timestamps: the timestamps corresponding to the test data
-        - X_test: the original test data (normalized)
-        - reconstructions: the reconstructed test data from the autoencoder
-        - anomalies: a boolean array indicating which test samples are detected as anomalies
-        - y_true: the true labels for the test data (-1 for anomaly, 1 for normal)
-        - threshold: the threshold used to classify anomalies
-        - test_error: the reconstruction error for each test sample
-        """
-
-        original_data = X_test.cpu().numpy()
-
-        # 1. Real vs reconstructed time series signal
-        plt.figure(figsize=(15,5))
-        plt.plot(timestamps, original_data[:, 0], label="Real signal")
-        plt.plot(timestamps, reconstructions[:, 0], label="Reconstructed signal")
-        plt.title(f"Node {node} - Real vs reconstructed signal")
-        plt.legend()
-        plt.show()
-
-
-        #2. Signal with detected anomalies and true anomalies
-        plt.figure(figsize=(15,5))
-        plt.plot(timestamps, original_data[:, 0], label="Signal")
-
-        plt.scatter( timestamps[anomalies],  original_data[anomalies, 0], color="red", label="Detected anomalies")
-
-        true_anomalies = []
-        for label in y_true:
-            if label == -1:
-                true_anomalies.append(True)   
-            else:
-                true_anomalies.append(False)  
-        
-        plt.scatter(timestamps[true_anomalies], original_data[true_anomalies, 0], color="green", marker="x", label="True anomalies")
-
-        plt.title(f"Node {node} - Detected vs true anomalies")
-        plt.legend()
-        plt.show()
-
-
-        #3. Reconstruction error with threshold
-        plt.figure(figsize=(15,5))
-        plt.plot(timestamps, test_error, label="Reconstruction error")
-        plt.axhline(y=threshold, color="red", linestyle="--", label="Threshold")
-        plt.title(f"Node {node} - Reconstruction error")
-        plt.legend()
-        plt.show()

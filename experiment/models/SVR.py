@@ -1,10 +1,11 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.discriminant_analysis import StandardScaler
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
 from data_transformation import calculate_labels, create_extended_features, remove_first_x_days
+from utils import plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -87,29 +88,13 @@ class SVRModel(AnomalyModel):
             y_train = scaler_y.inverse_transform(y_train)
             y_test = scaler_y.inverse_transform(y_test)
             
-            train_timestamps = []
-            for dataset in new_clean_dfs:
-                train_timestamps += list(range(len(dataset)-self.config.window_size))
-            
-            plt.figure(figsize=(18,6))
-            plt.plot(train_timestamps, y_train, color = 'red', linewidth=2.0, alpha = 0.6)
-            plt.plot(train_timestamps, y_train_pred, color = 'blue', linewidth=0.8)
-            plt.legend(['Actual','Predicted'])
-            plt.xlabel('Timestamp')
-            plt.title("Training data prediction")
-            plt.show()
-                
-            test_timestamps = []
-            for dataset in new_contaminated_dfs:
-                test_timestamps += list(range(len(dataset)-self.config.window_size))
-              
-            plt.figure(figsize=(10,3))
-            plt.plot(test_timestamps, y_test, color = 'red', linewidth=2.0, alpha = 0.6)
-            plt.plot(test_timestamps, y_test_pred, color = 'blue', linewidth=0.8)
-            plt.legend(['Actual','Predicted'])
-            plt.xlabel('Timestamp')
-            plt.show()
-            
+            # Plots
+            train_timestamps = build_timestamps(new_clean_dfs, self.config.window_size)
+            plot_prediction( train_timestamps, y_train, y_train_pred, title=f"Training prediction node {node} ")
+
+            test_timestamps = build_timestamps(new_contaminated_dfs, self.config.window_size)
+            plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
+                        
             y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
             ok = []
