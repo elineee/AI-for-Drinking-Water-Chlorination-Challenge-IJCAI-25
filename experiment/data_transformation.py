@@ -266,6 +266,45 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     
     return labels
 
+def calculate_labels_alarm(df: pd.DataFrame, contaminant_column: str, window_size: int):
+    """ 
+    Calculates labels for anomaly detection. Labels are -1 from the moment the value of the contaminant column becomes an anomaly (> 0) and 1 before that.
+
+    Parameters:
+    - df: a pandas DataFrame containing the data
+    - contaminant_column: the name of the contaminant column to use as feature
+    
+    Returns:
+    - labels: a np.array containing the labels for each time step (-1 if anomaly, 1 if normal)
+    """
+    
+    matched_column = None
+    for column in df.columns:
+        if contaminant_column in column:
+            matched_column = column
+            break
+
+    if matched_column is None:
+        raise ValueError("No column matching in the dataFrame")
+    
+    feature = df[matched_column].values
+    labels = []
+    
+    anomaly_started = False
+    for i in range(window_size, len(feature)):
+        if feature[i] > 0.01: 
+            anomaly_started = True
+        
+        if anomaly_started:
+            labels.append(-1)
+        else:
+            labels.append(1)
+
+    labels = np.array(labels)
+    
+    return labels
+    
+
 def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
     """ 
     Removes the first x days of data from the dataframe. 
