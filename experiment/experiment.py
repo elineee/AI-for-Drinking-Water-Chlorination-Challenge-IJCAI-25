@@ -1,6 +1,7 @@
 
 from experiment_config import ExperimentConfig, ModelName
 from models.LOF import LOFModel
+from models.LOF_alarm import LOFAlarmModel
 from models.isolation_forest import IsolationForestModel
 from models.one_class_SVM import OneClassSVMModel
 from models.one_class_SVM_alarm import OneClassSVMAlarmModel
@@ -12,6 +13,7 @@ from models.GAN import GANModel
 
 AVAILABLE_MODELS = {
     ModelName.LOF: LOFModel,
+    ModelName.LOF_ALARM: LOFAlarmModel,
     ModelName.ISOLATION_FOREST: IsolationForestModel,
     ModelName.ONE_CLASS_SVM: OneClassSVMModel,
     ModelName.ONE_CLASS_SVM_ALARM: OneClassSVMAlarmModel,

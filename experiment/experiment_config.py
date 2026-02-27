@@ -10,6 +10,7 @@ class ContaminationType(Enum):
 class ModelName(Enum):
     """Enumeration of model names"""
     LOF = "LOF"
+    LOF_ALARM = "LOF_alarm"
     ISOLATION_FOREST = "isolation_forest"
     ONE_CLASS_SVM = "one_class_SVM"
     ONE_CLASS_SVM_ALARM = "one_class_SVM_alarm"

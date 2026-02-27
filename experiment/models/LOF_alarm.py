@@ -1,13 +1,13 @@
 import numpy as np
-from sklearn import svm
-from sklearn.discriminant_analysis import StandardScaler
+from sklearn.neighbors import LocalOutlierFactor
 from data_transformation import calculate_labels_alarm, create_features, remove_first_x_days
 from models.model import AnomalyModel
 
-class OneClassSVMAlarmModel(AnomalyModel):
-    """ Class for One Class SVM model"""
-
+class LOFAlarmModel(AnomalyModel):
+    """ Class for Local Outlier Factor (LOF) model"""
+  
     def get_results(self):
+        
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
         results = {}
@@ -41,35 +41,18 @@ class OneClassSVMAlarmModel(AnomalyModel):
             X_test = np.array(X_test)
             
             
-            # standardize the data before applying the model
-            scaler = StandardScaler()
-            X_train = scaler.fit_transform(X_train) 
-            X_test = scaler.transform(X_test)
+            n_neighbors = self.config.model_params.get("n_neighbors", 20)
+            contamination = self.config.model_params.get("contamination", 0.1)
             
-            # larger gamma if more complex patterns of anomalies
-            gamma = self.config.model_params.get("gamma", "scale")
-            # smaller nu if scenarios with a lot of anomalies
-            nu = self.config.model_params.get("nu", 0.1)
-    
-            kernel = self.config.model_params.get("kernel", "rbf")
-            
-            # add degree parameter if the kernel is polynomial
-            if kernel == "poly":
-                degree = self.config.model_params.get("degree", 4)
-                ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu, degree=degree)
-            else: 
-                ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu)
-
-            ocsvm.fit(X_train)
+            lof = LocalOutlierFactor(n_neighbors=n_neighbors, novelty=True, contamination=contamination)
+            lof.fit(X_train)
             
             y_true = calculate_labels_alarm(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
-
-            y_pred_temp = ocsvm.predict(X_test)
-            
+            y_pred_temp = lof.predict(X_test)
             y_pred = self.detect_change_points(y_pred_temp)
             
-            results[node] = {"y_true": y_true, "y_pred": y_pred}
-        
+            results[node] = {"y_true": y_true,"y_pred": y_pred }
+            
         return results
     
     def detect_change_points(self, predictions: np.array, count_required=20):

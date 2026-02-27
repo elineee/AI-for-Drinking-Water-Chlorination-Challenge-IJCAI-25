@@ -27,6 +27,17 @@ if __name__ == "__main__":
     #     model_name=ModelName.LOF,
     #     model_params={"n_neighbors": 20, "contamination": 0.1}
     # ),
+    
+    ExperimentConfig(
+        config_name="LOF_alarm",
+        example_files=CLEAN_FILES,
+        contaminated_files=CONTAMINATED_FILES,
+        nodes=[11, 12, 13, 21, 22, 31, 32],
+        window_size=48,
+        model_name=ModelName.LOF_ALARM,
+        model_params={"n_neighbors": 20, "contamination": 0.1}
+    ),
+    
     # ExperimentConfig(
     #     config_name="IsolationForest",
     #     contaminated_files=CONTAMINATED_FILES,
@@ -45,15 +56,15 @@ if __name__ == "__main__":
     #     model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
     # ),
     
-        ExperimentConfig(
-            config_name="OneClassSVM_ALARM",
-            contaminated_files=CONTAMINATED_FILES,
-            example_files=CLEAN_FILES,
-            nodes=[11, 12, 13, 21, 22, 31, 32],
-            window_size=10,
-            model_name=ModelName.ONE_CLASS_SVM_ALARM,
-            model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
-        ),
+        # ExperimentConfig(
+        #     config_name="OneClassSVM_ALARM",
+        #     contaminated_files=CONTAMINATED_FILES,
+        #     example_files=CLEAN_FILES,
+        #     nodes=[11, 12, 13, 21, 22, 31, 32],
+        #     window_size=10,
+        #     model_name=ModelName.ONE_CLASS_SVM_ALARM,
+        #     model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
+        # ),
         # ExperimentConfig(
         #             config_name="SVR",
         #             contaminated_files=CONTAMINATED_FILES,
@@ -100,7 +111,7 @@ if __name__ == "__main__":
 
     print("Evaluation results:")
 
-    evaluation.plot_confusion_matrices("OneClassSVM_ALARM", evaluation_results)
+    evaluation.plot_confusion_matrices("LOF_alarm", evaluation_results)
     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
 
