@@ -8,7 +8,6 @@ class OneClassSVMModel(AnomalyModel):
     """ Class for One Class SVM model"""
 
     def get_results(self):
-        clean_dfs, contaminated_dfs = self.load_datasets()
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
         results = {}
