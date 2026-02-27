@@ -1,4 +1,7 @@
 from matplotlib import pyplot as plt
+import numpy as np
+from sklearn.metrics import f1_score
+
 
 def plot_prediction(timestamps , actual, pred, title, figsize=(15,6)):
     """
@@ -35,3 +38,39 @@ def build_timestamps(datasets, window_size):
     for dataset in datasets:
         timestamps += list(range(len(dataset) - window_size))
     return timestamps
+
+    
+def cusum_detection(data, reference_mean, reference_std, k, threshold):
+    """
+    Detects anomalies using the CUSUM algorithm.
+    
+    Parameters:
+    - data: array of reconstruction errors
+    - reference_mean: mean of the reconstruction errors on the training set (normal behavior)
+    - reference_std: standard deviation of the reconstruction errors on the training set (normal behavior)
+    - k: integer that represents the noise
+    - threshold: alarm threshold
+    
+    Returns:
+    - anomalies: array of 1 (normal) and -1 (anomaly)
+    - cusum : CUSUM scores over time
+    """    
+
+    n = len(data)
+    cusum = np.zeros(n)
+    
+    for i in range(1, n):
+        cusum[i] = max(0, cusum[i-1] + data[i] - reference_mean - k * reference_std)
+    
+    # When cusum > threshold, then alarm 
+    anomalies = []
+    alarm = False
+    for c in cusum:
+        if c > threshold or alarm:
+            alarm = True
+            anomalies.append(-1)
+        else:
+            anomalies.append(1)
+
+    return np.array(anomalies), cusum
+

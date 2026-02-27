@@ -9,6 +9,7 @@ from models.SVR import SVRModel
 from models.SVR_alarm import SVRAlarmModel
 from models.autoencoder import AutoencoderModel
 from models.LSTM_AE import LSTMAutoEncoderModel
+from models.autoencoder_alarm import AutoencoderAlarmModel 
 from models.GAN import GANModel
 
 AVAILABLE_MODELS = {
@@ -21,6 +22,7 @@ AVAILABLE_MODELS = {
     ModelName.SVR_ALARM: SVRAlarmModel,
     ModelName.AUTOENCODER: AutoencoderModel,
     ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel,
+    ModelName.AUTOENCODER_ALARM : AutoencoderAlarmModel,
     ModelName.GAN: GANModel
 }
 
