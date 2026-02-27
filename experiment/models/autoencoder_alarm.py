@@ -10,7 +10,7 @@ from models.autoencoder import Autoencoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
 # https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
-
+# NOTE: Testé avec la fonction de Eline, mais que ce soit count_required à 10 ou à 20, donne de - bons résultats qu'avec CUSUM
 class AutoencoderAlarmModel(AnomalyModel):
     """ Class for Autoencoder with alarm model"""
     
@@ -64,7 +64,7 @@ class AutoencoderAlarmModel(AnomalyModel):
             test_error_np = test_error.cpu().numpy()
 
             # CUSUM 
-            _, cusum_train, _ = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
+            _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
             threshold = cusum_train.max() * 1.2
             print(f'Threshold {threshold}')
             anomalies, cusum_scores = cusum_detection(test_error_np, train_mean, train_std, k=0.9, threshold=threshold)
