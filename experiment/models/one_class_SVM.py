@@ -1,6 +1,7 @@
+import numpy as np
 from sklearn import svm
 from sklearn.discriminant_analysis import StandardScaler
-from data_transformation import calculate_labels, create_features
+from data_transformation import calculate_labels, create_features, remove_first_x_days
 from models.model import AnomalyModel
 
 class OneClassSVMModel(AnomalyModel):
@@ -8,21 +9,38 @@ class OneClassSVMModel(AnomalyModel):
 
     def get_results(self):
         clean_dfs, contaminated_dfs = self.load_datasets()
+        all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
         results = {}
         
-        for i in range(len(contaminated_dfs)):
-            node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = str(node)
-
-            X_train = create_features(clean_dfs[i], self.config.disinfectant.value, self.config.window_size)
-
-            X_test = create_features(contaminated_dfs[i], self.config.disinfectant.value, self.config.window_size)
-
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+        for key, value in all_clean_dfs.items():
+            print(key)
+            node = key
             
-            # standardize the features before applying the model 
+            contaminated_dfs = all_contaminated_dfs[key]
+            clean_dfs = value
+            
+            X_train = []
+            X_test = []
+            
+            new_clean_dfs = []
+            for i in range(len(clean_dfs)):
+                train_data = remove_first_x_days(clean_dfs[i], 3)
+                new_clean_dfs.append(train_data)
+                train_data = create_features(train_data, self.config.disinfectant.value, self.config.window_size)
+                X_train.extend(train_data)
+            X_train = np.array(X_train)
+            
+            new_contaminated_dfs = []
+            for i in range(len(contaminated_dfs)):
+                test_data = remove_first_x_days(contaminated_dfs[i], 3)
+                new_contaminated_dfs.append(test_data)
+                test_data = create_features(test_data, self.config.disinfectant.value, self.config.window_size)
+                X_test.extend(test_data)
+            X_test = np.array(X_test)
+            
+            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            
             scaler = StandardScaler()
             X_train = scaler.fit_transform(X_train) 
             X_test = scaler.transform(X_test)
@@ -44,5 +62,5 @@ class OneClassSVMModel(AnomalyModel):
             y_pred = ocsvm.predict(X_test)
             
             results[node] = {"y_true": y_true, "y_pred": y_pred}
-            
+        
         return results
