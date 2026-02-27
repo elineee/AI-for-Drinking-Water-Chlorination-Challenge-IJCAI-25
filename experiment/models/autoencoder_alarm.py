@@ -64,17 +64,17 @@ class AutoencoderAlarmModel(AnomalyModel):
             test_error_np = test_error.cpu().numpy()
 
             # CUSUM 
-            _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
+            _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=float('inf')) # Or k=0.5?
             threshold = cusum_train.max() * 1.2
             print(f'Threshold {threshold}')
             anomalies, cusum_scores = cusum_detection(test_error_np, train_mean, train_std, k=0.9, threshold=threshold)
 
-            plt.figure(figsize=(18, 4))
-            plt.plot(cusum_scores, label='CUSUM score')
-            plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
-            plt.legend()
-            plt.title("CUSUM score")
-            plt.show()
+            # plt.figure(figsize=(18, 4))
+            # plt.plot(cusum_scores, label='CUSUM score')
+            # plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+            # plt.legend()
+            # plt.title("CUSUM score")
+            # plt.show()
         
             return (anomalies, test_reconstruction_np, test_error_np)        
 
