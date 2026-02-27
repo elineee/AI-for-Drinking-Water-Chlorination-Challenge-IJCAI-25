@@ -2,43 +2,17 @@ from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import numpy as np
 import pandas as pd
-from data_transformation import calculate_labels, create_extended_features
-from utils import plot_prediction
+from data_transformation import calculate_labels_alarm, create_extended_features
+from utils import cusum_detection
 from models.model import AnomalyModel
+from models.autoencoder import Autoencoder
 
-# Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
-# Source: https://www.datacamp.com/tutorial/introduction-to-autoencoders
-# Source: https://keras.io/examples/timeseries/timeseries_anomaly_detection/
-class Autoencoder(nn.Module):
-    """ Class for the autoencoder module"""
-    def __init__(self, input_dim):
-        super().__init__()
+# https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
+# https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
 
-        self.encoder = nn.Sequential(
-            nn.Linear(input_dim, 16),
-            nn.ReLU(),
-            nn.Linear(16, 16),
-            nn.ReLU(),
-            nn.Linear(16, 8),
-            nn.ReLU()
-        )
-        self.decoder = nn.Sequential(
-            nn.Linear(8, 16),
-            nn.ReLU(),
-            nn.Linear(16, 16),
-            nn.ReLU(),
-            nn.Linear(16, input_dim)
-        )
-    def forward(self, x):
-        encoded = self.encoder(x)
-        decoded = self.decoder(encoded)
-        return decoded
-    
-    
-class AutoencoderModel(AnomalyModel):
-    """ Class for Autoencoder model"""
+class AutoencoderAlarmModel(AnomalyModel):
+    """ Class for Autoencoder with alarm model"""
     
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
@@ -79,21 +53,31 @@ class AutoencoderModel(AnomalyModel):
         with torch.no_grad():
             train_reconstruction = model(X_train)
             train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
-            
-            threshold = train_error.mean() + 1.5 * train_error.std()
-            # Alternative: threshold = train_error.max()
+            train_error_np = train_error.cpu().numpy()
+            train_mean = train_error.mean().item()
+            train_std = train_error.std().item()
 
             # Testing
             test_reconstruction = model(X_test)
+            test_reconstruction_np = test_reconstruction.cpu().numpy()
             test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
-            anomalies = test_error > threshold
-            
-            return (
-                anomalies.cpu().numpy(),
-                test_reconstruction.cpu().numpy(),
-                test_error.cpu().numpy(),
-                threshold.item()
-            )        
+            test_error_np = test_error.cpu().numpy()
+
+            # CUSUM 
+            _, cusum_train, _ = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
+            threshold = cusum_train.max() * 1.2
+            print(f'Threshold {threshold}')
+            anomalies, cusum_scores = cusum_detection(test_error_np, train_mean, train_std, k=0.9, threshold=threshold)
+
+            plt.figure(figsize=(18, 4))
+            plt.plot(cusum_scores, label='CUSUM score')
+            plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+            plt.legend()
+            plt.title("CUSUM score")
+            plt.show()
+        
+            return (anomalies, test_reconstruction_np, test_error_np)        
+
 
     def get_results(self):
         results = {}
@@ -119,15 +103,9 @@ class AutoencoderModel(AnomalyModel):
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            anomalies, reconstructions, test_error, threshold = self.run_model(X_train, X_test, 100)
-            y_pred = np.where(anomalies, -1, 1)  
-            results[node] = {"y_true": y_true, "y_pred": y_pred}
-
-            test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
-            signal = X_test[:, 0].cpu().numpy()
-
-            plot_prediction(test_timestamps, signal, reconstructions[:, 0], f"Test prediction node {node}")
+            y_true = calculate_labels_alarm(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
+            anomalies, _, _ = self.run_model(X_train, X_test, 100)
+            results[node] = {"y_true": y_true, "y_pred": anomalies}
 
         return results
-    
+
