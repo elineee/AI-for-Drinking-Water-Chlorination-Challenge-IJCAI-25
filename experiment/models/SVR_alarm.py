@@ -107,10 +107,9 @@ class SVRAlarmModel(AnomalyModel):
             # print(f"ok: {len(ok)}, ano: {len(ano)}")
             
             #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
-            
-    
             residual_train = np.abs(y_train - y_train_pred)
-            threshold = residual_train.mean() + 35 * residual_train.std()
+            # 35 was the previous value 
+            threshold = residual_train.mean() + 25 * residual_train.std()
             
             print(f"Threshold: {threshold:.4f}")
             
@@ -160,6 +159,7 @@ class SVRAlarmModel(AnomalyModel):
                     y_pred.extend([-1] * (len(residuals) - i - 1))
                     return np.array(y_pred)
             else:
+                count = 0
                 y_pred.append(1)
 
         
