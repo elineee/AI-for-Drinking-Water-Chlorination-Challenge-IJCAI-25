@@ -1,28 +1,36 @@
-from sklearn.ensemble import IsolationForest 
+import pandas as pd
+from sklearn.ensemble import IsolationForest
 from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
+
 class IsolationForestModel(AnomalyModel):
-    """ Class for Isolation Forest model"""
+    """Class for IsolationForest Model."""
 
     def get_results(self):
-        
-        _, contaminated_dfs = self.load_datasets()
-
         results = {}
-        
-        for i in range(len(contaminated_dfs)):
-            node = contaminated_dfs[i]['node'].iloc[0] # get node number (should be the same for all rows inside one dataframe)
-            node = str(node)
-        
-            X = contaminated_dfs[i][['chlorine_concentration']]
-            
+        _, all_contaminated_dfs = self.load_datasets_as_dict()
+
+        for node, contaminated_dfs in all_contaminated_dfs.items():
+            contaminated_df = pd.concat(contaminated_dfs)
+
+            feature_col = None
+            for col in contaminated_df.columns:
+                if self.config.disinfectant.value in col:  
+                    feature_col = col
+                    break
+
+            if feature_col is None:
+                raise ValueError(f"No column matching '{self.config.disinfectant.value}' found")
+
+            X = contaminated_df[[feature_col]].values
+
             contamination = self.config.model_params.get("contamination", "auto")
-            
             model = IsolationForest(contamination=contamination, random_state=42)
             y_pred = model.fit_predict(X)
-            y_true = calculate_labels(contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
-            
+
+            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, 0)
+
             results[node] = {"y_true": y_true, "y_pred": y_pred}
-        
+
         return results
