@@ -12,6 +12,7 @@ from models.model import AnomalyModel
 
 # from https://github.com/vincrichard/LSTM-AutoEncoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
 # and from https://github.com/matanle51/LSTM_AutoEncoder/blob/master/models/LSTMAE.py
+
 class LSTMAutoEncoder(nn.Module):
     """ Class for the LSTM autoencoder module"""
     def __init__(self, input_size, hidden_size, num_layers, dropout, seq_len):
@@ -91,7 +92,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
         - test_error: the reconstruction error for each test sample
         - threshold: the threshold used to classify anomalies
         """
-        torch.manual_seed(42)
 
         # Get tensor shape: (batch_size, seq_len, num_features)
         sample_batch = next(iter(train_batches))
@@ -112,6 +112,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
             model.load_state_dict(torch.load('lstm_autoencoder.pth', weights_only=True))
             
         else: 
+            # train the model
             model.train()
             for epoch in range(epochs):
                 train_loss = 0
@@ -131,6 +132,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             torch.save(model.state_dict(), "lstm_autoencoder.pth")
         
+        # evaluate the model
         model.eval()
         with torch.no_grad():
             # get training reconstruction errors to calculate the threshold for anomaly detection
@@ -146,7 +148,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
         
             print(f"Threshold for anomaly detection: {threshold}")
             
-        seq_decoded = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)]
+        seq_decoded = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)] 
         true_seq = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)]
         anomalies = []
         scores_per_timestep = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)]
@@ -160,31 +162,36 @@ class LSTMAutoEncoderModel(AnomalyModel):
                 # accumulate error per timestep 
                 j = 0
                 for element in batch.cpu().numpy()[0]:
-                    # error = (decoded.cpu().numpy()[0][j] - element) ** 2
                     error = float(np.mean((decoded.cpu().numpy()[0][j] - element) ** 2))
+                    
                     scores_per_timestep[i+j][0] += error
                     scores_per_timestep[i+j][1] += 1
+                    
                     true_seq[i+j][0] += element
                     true_seq[i+j][1] += 1
+                    
                     seq_decoded[i+j][0] += decoded.cpu().numpy()[0][j]
                     seq_decoded[i+j][1] += 1
+                    
                     j += 1
                 i += 1
-        print(scores_per_timestep[0:10])
 
         # calculate mean error per timestep
         mean_scores_per_timestep = []
         for total_error, count in scores_per_timestep:
             mean_scores_per_timestep.append(total_error / count if count > 0 else 0)
         
+        # calculate mean true value per timestep for plotting
         mean_true_seq_per_timestep = []
-        mean_decoded_seq_per_timestep = []
         for total_true, count_true in true_seq:
             mean_true_seq_per_timestep.append(total_true / count_true if count_true > 0 else 0)
-            
+        
+        # calculate mean decoded value per timestep for plotting
+        mean_decoded_seq_per_timestep = [] 
         for total_decoded, count_decoded in seq_decoded:
             mean_decoded_seq_per_timestep.append(total_decoded / count_decoded if count_decoded > 0 else 0)
         
+        # get anomalies based on the threshold
         for element in mean_scores_per_timestep:
             if element > threshold:
                 anomalies.append(-1) # anomaly
@@ -210,8 +217,8 @@ class LSTMAutoEncoderModel(AnomalyModel):
             train = []
             test = []
             
+            # create features for training and concatenate the example datasets
             new_clean_dfs = []
-            # iterate over datasets for each node
             for i in range(len(clean_dfs)): 
                 train_data = remove_first_x_days(clean_dfs[i], 3)
                 new_clean_dfs.append(train_data)
@@ -219,6 +226,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
                 train.extend(train_data)
             train = np.array(train)
 
+            # create features for testing and concatenate the contaminated datasets
             new_contaminated_dfs = []
             for i in range(len(contaminated_dfs)): 
                 test_data = remove_first_x_days(contaminated_dfs[i], 3)
@@ -237,16 +245,14 @@ class LSTMAutoEncoderModel(AnomalyModel):
             X_test = X_test.astype(np.float32)
             
             # Reshape to 3D: (num_samples, seq_len, num_features)
-            X_train = X_train[:, :, np.newaxis]  # (num_samples, window_size, 1)
-            X_test = X_test[:, :, np.newaxis]    # (num_samples, window_size, 1)
+            X_train = X_train[:, :, np.newaxis]  # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
+            X_test = X_test[:, :, np.newaxis]    # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
     
             X_train = torch.from_numpy(X_train)
             X_test = torch.from_numpy(X_test)
             
             train_batches = torch.utils.data.DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = torch.utils.data.DataLoader(X_test, batch_size=1, shuffle=False) 
-            
-            print(f"Training data shape: {X_train.shape}")
             
             mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
