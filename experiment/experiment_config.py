@@ -12,14 +12,15 @@ class ModelName(Enum):
     LOF = "LOF"
     LOF_ALARM = "LOF_alarm"
     ISOLATION_FOREST = "isolation_forest"
+    ISOLATION_FOREST_ALARM = "isolation_forest_alarm"
     ONE_CLASS_SVM = "one_class_SVM"
     ONE_CLASS_SVM_ALARM = "one_class_SVM_alarm"
     SVR = "SVR"
     SVR_ALARM = "SVR_alarm"
     AUTOENCODER = "autoencoder"
+    AUTOENCODER_ALARM = "autoencoder_alarm"
     LSTM_AUTOENCODER = "LSTM_autoencoder"
     LSTM_AUTOENCODER_ALARM = "LSTM_autoencoder_alarm"
-    AUTOENCODER_ALARM = "autoencoder_alarm"
     GAN = "GAN"
 
 @dataclass

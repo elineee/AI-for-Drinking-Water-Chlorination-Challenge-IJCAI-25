@@ -3,28 +3,30 @@ from experiment_config import ExperimentConfig, ModelName
 from models.LOF import LOFModel
 from models.LOF_alarm import LOFAlarmModel
 from models.isolation_forest import IsolationForestModel
+from models.isolation_forest_alarm import IsolationForestAlarmModel
 from models.one_class_SVM import OneClassSVMModel
 from models.one_class_SVM_alarm import OneClassSVMAlarmModel
 from models.SVR import SVRModel
 from models.SVR_alarm import SVRAlarmModel
 from models.autoencoder import AutoencoderModel
+from models.autoencoder_alarm import AutoencoderAlarmModel 
 from models.LSTM_AE import LSTMAutoEncoderModel
 from models.LSTM_AE_alarm import LSTMAutoEncoderAlarmModel
-from models.autoencoder_alarm import AutoencoderAlarmModel 
 from models.GAN import GANModel
 
 AVAILABLE_MODELS = {
     ModelName.LOF: LOFModel,
     ModelName.LOF_ALARM: LOFAlarmModel,
     ModelName.ISOLATION_FOREST: IsolationForestModel,
+    ModelName.ISOLATION_FOREST_ALARM : IsolationForestAlarmModel, 
     ModelName.ONE_CLASS_SVM: OneClassSVMModel,
     ModelName.ONE_CLASS_SVM_ALARM: OneClassSVMAlarmModel,
     ModelName.SVR: SVRModel,
     ModelName.SVR_ALARM: SVRAlarmModel,
     ModelName.AUTOENCODER: AutoencoderModel,
+    ModelName.AUTOENCODER_ALARM : AutoencoderAlarmModel,
     ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel,
     ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoEncoderAlarmModel,
-    ModelName.AUTOENCODER_ALARM : AutoencoderAlarmModel,
     ModelName.GAN: GANModel
 }
 
