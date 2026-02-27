@@ -12,6 +12,7 @@ class ModelName(Enum):
     LOF = "LOF"
     ISOLATION_FOREST = "isolation_forest"
     ONE_CLASS_SVM = "one_class_SVM"
+    ONE_CLASS_SVM_ALARM = "one_class_SVM_alarm"
     SVR = "SVR"
     SVR_ALARM = "SVR_alarm"
     AUTOENCODER = "autoencoder"

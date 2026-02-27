@@ -22,7 +22,7 @@ if __name__ == "__main__":
     #     config_name="LOF_20_neighbors",
     #     example_files=CLEAN_FILES,
     #     contaminated_files=CONTAMINATED_FILES,
-    #     nodes=[22, 31],
+    #     nodes=[11, 12, 13, 21, 22, 31, 32],
     #     window_size=20,
     #     model_name=ModelName.LOF,
     #     model_params={"n_neighbors": 20, "contamination": 0.1}
@@ -39,20 +39,40 @@ if __name__ == "__main__":
     #     config_name="OneClassSVM",
     #     contaminated_files=CONTAMINATED_FILES,
     #     example_files=CLEAN_FILES,
-    #     nodes=[10, 11, 12, 21, 22, 31, 32],
+    #     nodes=[11, 12, 21, 22, 31, 32],
     #     window_size=10,
     #     model_name=ModelName.ONE_CLASS_SVM,
     #     model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
     # ),
+    
         ExperimentConfig(
-                    config_name="SVR",
-                    contaminated_files=CONTAMINATED_FILES,
-                    example_files=CLEAN_FILES,
-                    nodes=[13],
-                    window_size=48, # 48 correspond à 48*30 min donc 1 jour
-                    model_name=ModelName.SVR,
-                    model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
-                ),
+            config_name="OneClassSVM_ALARM",
+            contaminated_files=CONTAMINATED_FILES,
+            example_files=CLEAN_FILES,
+            nodes=[11, 12, 13, 21, 22, 31, 32],
+            window_size=10,
+            model_name=ModelName.ONE_CLASS_SVM_ALARM,
+            model_params={"gamma": "scale", "nu": 0.05, "kernel": "rbf"},
+        ),
+        # ExperimentConfig(
+        #             config_name="SVR",
+        #             contaminated_files=CONTAMINATED_FILES,
+        #             example_files=CLEAN_FILES,
+        #             nodes=[32],
+        #             window_size=48, # 48 correspond à 48*30 min donc 1 jour
+        #             model_name=ModelName.SVR,
+        #             model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+        #         ),
+        
+        # ExperimentConfig(
+        #             config_name="SVR_ALARM",
+        #             contaminated_files=CONTAMINATED_FILES,
+        #             example_files=CLEAN_FILES,
+        #             nodes=[13, 22, 31, 32],
+        #             window_size=48, # 48 correspond à 48*30 min donc 1 jour
+        #             model_name=ModelName.SVR_ALARM,
+        #             model_params={"gamma": 0.01, "epsilon": 0.01, "kernel": "rbf", "C": 1},
+        #         ),
         
     #     ExperimentConfig(
     #         config_name="LSTM_AUTOENCODER",
@@ -78,9 +98,9 @@ if __name__ == "__main__":
     evaluation_results = evaluation.evaluate("all_results.pkl")
     print(evaluation_results)
 
-    # print("Evaluation results:")
+    print("Evaluation results:")
 
-    # evaluation.plot_confusion_matrices("SVR", evaluation_results)
-    # # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
+    evaluation.plot_confusion_matrices("OneClassSVM_ALARM", evaluation_results)
+    # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
 
