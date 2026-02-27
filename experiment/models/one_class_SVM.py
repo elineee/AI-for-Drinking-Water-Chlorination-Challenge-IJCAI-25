@@ -23,6 +23,7 @@ class OneClassSVMModel(AnomalyModel):
             X_train = []
             X_test = []
             
+            # create features and concatenate the example datasets for each node 
             new_clean_dfs = []
             for i in range(len(clean_dfs)):
                 train_data = remove_first_x_days(clean_dfs[i], 3)
@@ -31,6 +32,7 @@ class OneClassSVMModel(AnomalyModel):
                 X_train.extend(train_data)
             X_train = np.array(X_train)
             
+            # create features and concatenate the contaminated datasets for each node
             new_contaminated_dfs = []
             for i in range(len(contaminated_dfs)):
                 test_data = remove_first_x_days(contaminated_dfs[i], 3)
@@ -41,6 +43,7 @@ class OneClassSVMModel(AnomalyModel):
             
             y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
+            # standardize the data before applying the model
             scaler = StandardScaler()
             X_train = scaler.fit_transform(X_train) 
             X_test = scaler.transform(X_test)
@@ -51,6 +54,8 @@ class OneClassSVMModel(AnomalyModel):
             nu = self.config.model_params.get("nu", 0.1)
     
             kernel = self.config.model_params.get("kernel", "rbf")
+            
+            # add degree parameter if the kernel is polynomial
             if kernel == "poly":
                 degree = self.config.model_params.get("degree", 4)
                 ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu, degree=degree)
