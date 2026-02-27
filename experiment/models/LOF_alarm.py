@@ -1,6 +1,7 @@
 import numpy as np
 from sklearn.neighbors import LocalOutlierFactor
 from data_transformation import calculate_labels_alarm, create_features, remove_first_x_days
+from utils import detect_change_point
 from models.model import AnomalyModel
 
 class LOFAlarmModel(AnomalyModel):
@@ -49,25 +50,8 @@ class LOFAlarmModel(AnomalyModel):
             
             y_true = calculate_labels_alarm(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             y_pred_temp = lof.predict(X_test)
-            y_pred = self.detect_change_points(y_pred_temp)
+            y_pred = detect_change_point(y_pred_temp)
             
             results[node] = {"y_true": y_true,"y_pred": y_pred }
             
         return results
-    
-    def detect_change_points(self, predictions: np.array, count_required=20):
-        """Detects the change point and returns an array of 1 until the change point and -1 after the change point """
-        y_pred = []
-        counter = 0
-        for i in range(len(predictions)):
-            element = predictions[i]
-            if element == -1:
-                y_pred.append(-1)
-                counter += 1
-                if counter >= count_required:
-                    y_pred.extend([-1] * (len(predictions) - i - 1))
-                    return np.array(y_pred)
-            else:
-                counter = 0
-                y_pred.append(1)
-        return np.array(y_pred)

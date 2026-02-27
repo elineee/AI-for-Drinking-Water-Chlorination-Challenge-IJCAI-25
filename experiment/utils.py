@@ -74,3 +74,20 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
 
     return np.array(anomalies), cusum
 
+def detect_change_point(predictions: np.array, count_required=20):
+        """Detects the change point and returns an array of 1 until the change point and -1 after the change point """
+        y_pred = []
+        counter = 0
+        for i in range(len(predictions)):
+            element = predictions[i]
+            if element == -1:
+                y_pred.append(-1)
+                counter += 1
+                if counter >= count_required:
+                    y_pred.extend([-1] * (len(predictions) - i - 1))
+                    return np.array(y_pred)
+            else:
+                counter = 0
+                y_pred.append(1)
+        return np.array(y_pred)
+

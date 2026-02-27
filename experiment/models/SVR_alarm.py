@@ -5,7 +5,7 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
 from data_transformation import calculate_labels_alarm, create_extended_features, remove_first_x_days
-from utils import cusum_detection, plot_prediction, build_timestamps
+from utils import cusum_detection, detect_change_point, plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -105,7 +105,9 @@ class SVRAlarmModel(AnomalyModel):
             # ---- counter based change point detection ----
              # 35 was the previous value 
             threshold = residual_train.mean() + 25 * residual_train.std()
-            y_pred = self.detect_change_point(residual_test, threshold, 3)
+            y_pred = np.where(residual_test > threshold, -1, 1)
+            
+            y_pred = detect_change_point(y_pred, 3)
             print(f"Threshold: {threshold:.4f}")
                 
             
@@ -138,25 +140,5 @@ class SVRAlarmModel(AnomalyModel):
         grid.fit(x_train, y_train.ravel())
         
         return grid.best_params
-    
-    def detect_change_point(self, residuals, threshold, count_required=3):
-        """ Detects the change point and returns an array of 1 until the change point and -1 after the change point
-        """
-        
-        count = 0
-        y_pred = []
-        for i in range(len(residuals)):
-            if residuals[i] > threshold:
-                y_pred.append(-1)
-                count += 1
-                if count >= count_required:
-                    y_pred.extend([-1] * (len(residuals) - i - 1))
-                    return np.array(y_pred)
-            else:
-                count = 0
-                y_pred.append(1)
-
-        
-        return np.array(y_pred) 
     
     
