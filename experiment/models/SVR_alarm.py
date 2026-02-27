@@ -4,8 +4,8 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from data_transformation import calculate_labels, calculate_labels_alarm, create_extended_features, remove_first_x_days
-from utils import plot_prediction, build_timestamps
+from data_transformation import calculate_labels_alarm, create_extended_features, remove_first_x_days
+from utils import cusum_detection, plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -97,34 +97,28 @@ class SVRAlarmModel(AnomalyModel):
                         
             y_true = calculate_labels_alarm(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
             
-            # ok = []
-            # ano = []
-            # for element in y_true:
-            #     if element == 1:
-            #         ok.append(element)
-            #     else:
-            #         ano.append(element)
-            # print(f"ok: {len(ok)}, ano: {len(ano)}")
-            
             #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
-            residual_train = np.abs(y_train - y_train_pred)
-            # 35 was the previous value 
+            residual_train = ((y_train - y_train_pred)**2).flatten()
+            residual_test = ((y_test - y_test_pred)**2).flatten() 
+            
+            
+            # ---- counter based change point detection ----
+             # 35 was the previous value 
             threshold = residual_train.mean() + 25 * residual_train.std()
-            
-            print(f"Threshold: {threshold:.4f}")
-            
-            
-
-            residual_test = np.abs(y_test - y_test_pred)
-
-            
             y_pred = self.detect_change_point(residual_test, threshold, 3)
-            
-            # print(f"y_true: {y_true}")
-            # print(f"y_pred: {y_pred}")
-  
-            results[node] = {"y_true": y_true, "y_pred": y_pred}
+            print(f"Threshold: {threshold:.4f}")
                 
+            
+            # --- CUSUM detection ---
+            # train_mean = residual_train.mean()
+            # train_std = residual_train.std()
+            
+            # _, cusum_train = cusum_detection(residual_train, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
+            # threshold = cusum_train.max() * 1.2
+            # print(f'Threshold {threshold}')
+            # y_pred, _ = cusum_detection(residual_test, train_mean, train_std, k=0.5, threshold=4)
+
+            results[node] = {"y_true": y_true, "y_pred": y_pred}
         return results
 
     
@@ -164,3 +158,5 @@ class SVRAlarmModel(AnomalyModel):
 
         
         return np.array(y_pred) 
+    
+    
