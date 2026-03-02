@@ -1,5 +1,4 @@
 import pandas as pd
-import numpy as np
 from models.LOF import LOFModel
 from sklearn.neighbors import LocalOutlierFactor
 from utils import detect_change_point

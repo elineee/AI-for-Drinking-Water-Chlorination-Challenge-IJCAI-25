@@ -5,13 +5,12 @@ import torch.optim as optim
 import pandas as pd
 from data_transformation import calculate_labels_alarm, create_extended_features
 from utils import cusum_detection
-from models.model import AnomalyModel
-from models.autoencoder import Autoencoder
+from models.autoencoder import AutoencoderModel, Autoencoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
 # https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
 # NOTE: Testé avec la fonction de Eline, mais que ce soit count_required à 10 ou à 20, donne de - bons résultats qu'avec CUSUM
-class AutoencoderAlarmModel(AnomalyModel):
+class AutoencoderAlarmModel(AutoencoderModel):
     """ Class for Autoencoder with alarm model"""
     
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
@@ -69,12 +68,12 @@ class AutoencoderAlarmModel(AnomalyModel):
             print(f'Threshold {threshold}')
             anomalies, cusum_scores = cusum_detection(test_error_np, train_mean, train_std, k=0.9, threshold=threshold)
 
-            # plt.figure(figsize=(18, 4))
-            # plt.plot(cusum_scores, label='CUSUM score')
-            # plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
-            # plt.legend()
-            # plt.title("CUSUM score")
-            # plt.show()
+            plt.figure(figsize=(18, 4))
+            plt.plot(cusum_scores, label='CUSUM score')
+            plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+            plt.legend()
+            plt.title("CUSUM score")
+            plt.show()
         
             return (anomalies, test_reconstruction_np, test_error_np)        
 

@@ -2,10 +2,10 @@ import numpy as np
 import pandas as pd
 from sklearn.ensemble import IsolationForest
 from data_transformation import calculate_labels_alarm
-from models.model import AnomalyModel
+from models.isolation_forest import IsolationForestModel
 from utils import detect_change_point
 
-class IsolationForestAlarmModel(AnomalyModel):
+class IsolationForestAlarmModel(IsolationForestModel):
     """Class for IsolationForest Model with change point detection."""
 
     def get_results(self):
