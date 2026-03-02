@@ -2,7 +2,8 @@ from models.LOF import LOFModel
 from utils import detect_change_point
 
 class LOFAlarmModel(LOFModel):
-
+    """ Class for Local Outlier Factor (LOF) model"""
+    
     def get_results(self):
 
         results = super().get_results()

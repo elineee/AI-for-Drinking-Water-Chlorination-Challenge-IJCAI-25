@@ -6,7 +6,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import pandas as pd
-from data_transformation import calculate_labels, create_extended_features, remove_first_x_days
+from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
 # from https://github.com/vincrichard/LSTM-AutoEncoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
@@ -72,7 +72,7 @@ class Decoder(nn.Module):
     
     
 class LSTMAutoEncoderModel(AnomalyModel):
-    """ Class for Autoencoder model"""
+    """ Class for LSTM Autoencoder model"""
     
     def run_model(self, train_batches, test_batches, epochs):
         """ 
@@ -245,29 +245,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
             results[node] = { "y_true": y_true, "y_pred": anomalies,}
 
         return results
-    
-    def _prepare_dataset(self, dfs: list[pd.DataFrame]):
-        """
-        Cleans datasets and generates sliding window features.
-
-        Parameters:
-        - dfs: List of datasets.
-
-        Returns: 
-        - datasets: cleaned datasets
-        - array of sliding window features
-        """
-        datasets = []
-        windows = []
-
-        for df in dfs:
-            df = remove_first_x_days(df, 3)
-            datasets.append(df)
-
-            features = create_extended_features( df, self.config.disinfectant.value, self.config.window_size, stats=False)
-            windows.extend(features)
-
-        return datasets, np.array(windows)
     
 
     def _prepare_tensors(self, train, test):

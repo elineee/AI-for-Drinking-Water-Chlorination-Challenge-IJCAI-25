@@ -1,8 +1,9 @@
 from abc import ABC, abstractmethod
 import numpy as np
+import pandas as pd
 from typing import List
 from experiment_config import ExperimentConfig
-from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format
+from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_extended_features, remove_first_x_days
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
@@ -130,6 +131,29 @@ class AnomalyModel(ABC):
         return example_dfs, contaminated_dfs
     
 
+    def _prepare_dataset(self, dfs: list[pd.DataFrame]):
+        """
+        Cleans datasets and generates sliding window features.
+
+        Parameters:
+        - dfs: List of datasets.
+
+        Returns: 
+        - datasets: cleaned datasets
+        - array of sliding window features
+        """
+        datasets = []
+        windows = []
+
+        for df in dfs:
+            df = remove_first_x_days(df, 3)
+            datasets.append(df)
+
+            features = create_extended_features( df, self.config.disinfectant.value, self.config.window_size, stats=False)
+            windows.extend(features)
+
+        return datasets, np.array(windows)
+        
     @abstractmethod
     def get_results(self):
         """ 
@@ -140,3 +164,6 @@ class AnomalyModel(ABC):
           y_pred: predicted labels
          """
         pass
+
+
+        
