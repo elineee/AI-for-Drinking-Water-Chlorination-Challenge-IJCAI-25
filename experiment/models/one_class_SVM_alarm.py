@@ -1,6 +1,6 @@
 import numpy as np
 from sklearn import svm
-from sklearn.discriminant_analysis import StandardScaler
+from sklearn.preprocessing import StandardScaler
 from data_transformation import calculate_labels_alarm, create_features, remove_first_x_days
 from utils import detect_change_point
 from models.model import AnomalyModel

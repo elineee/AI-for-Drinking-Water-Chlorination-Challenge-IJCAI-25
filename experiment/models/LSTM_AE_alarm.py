@@ -1,7 +1,7 @@
 import os
 
 from matplotlib import pyplot as plt
-from sklearn.discriminant_analysis import StandardScaler
+from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
