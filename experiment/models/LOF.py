@@ -1,7 +1,9 @@
 import numpy as np
+import pandas as pd
 from sklearn.neighbors import LocalOutlierFactor
 from data_transformation import calculate_labels, create_features, remove_first_x_days
 from models.model import AnomalyModel
+
 
 class LOFModel(AnomalyModel):
     """ Class for Local Outlier Factor (LOF) model"""
@@ -12,11 +14,9 @@ class LOFModel(AnomalyModel):
         
         results = {}
         
-        for key, value in all_clean_dfs.items():
-            print(key)
-            node = key
-            
-            contaminated_dfs = all_contaminated_dfs[key]
+        for node, value in all_clean_dfs.items():
+
+            contaminated_dfs = all_contaminated_dfs[node]
             clean_dfs = value
             
             X_train = []
@@ -38,9 +38,10 @@ class LOFModel(AnomalyModel):
                 new_contaminated_dfs.append(test_data)
                 test_data = create_features(test_data, self.config.disinfectant.value, self.config.window_size)
                 X_test.extend(test_data)
+
             X_test = np.array(X_test)
-            
-            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            new_contaminated_df = pd.concat(new_contaminated_dfs)
+            y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             n_neighbors = self.config.model_params.get("n_neighbors", 20)
             contamination = self.config.model_params.get("contamination", 0.1)
