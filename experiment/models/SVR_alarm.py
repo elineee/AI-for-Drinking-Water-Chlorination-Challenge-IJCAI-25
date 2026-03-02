@@ -1,16 +1,14 @@
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
-from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from data_transformation import calculate_labels_alarm, create_extended_features, remove_first_x_days
+from data_transformation import calculate_labels_alarm
 from utils import cusum_detection, detect_change_point, plot_prediction, build_timestamps
-from models.model import AnomalyModel
+from models.SVR import SVRModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
 
-class SVRAlarmModel(AnomalyModel):
+class SVRAlarmModel(SVRModel):
     """ Class for SVR model that alarms when start of contamination is detected"""
     
     def get_results(self):
@@ -19,34 +17,15 @@ class SVRAlarmModel(AnomalyModel):
         results = {}
         
         # iterate over the nodes
-        for key, value in all_clean_dfs.items():
-            print(key)
-            node = key
-            
-            # get contaminated dataset for the same key node
-            contaminated_dfs = all_contaminated_dfs[key]
-            clean_dfs = value
+        for node, clean_dfs in all_clean_dfs.items():
 
-            train = []
-            test = []
-            
-            new_clean_dfs = []
-            # iterate over datasets for each node
-            for i in range(len(clean_dfs)): 
-                train_data = remove_first_x_days(clean_dfs[i], 3)
-                new_clean_dfs.append(train_data)
-                train_data = create_extended_features(train_data, self.config.disinfectant.value, self.config.window_size)
-                train.extend(train_data)
-            train = np.array(train)
-              
-            new_contaminated_dfs = []
-            for i in range(len(contaminated_dfs)): 
-                test_data = remove_first_x_days(contaminated_dfs[i], 3)
-                new_contaminated_dfs.append(test_data)
-                test_data = create_extended_features(test_data, self.config.disinfectant.value, self.config.window_size)
-                test.extend(test_data)
-            test = np.array(test)
-            
+            # get contaminated dataset for the same node
+            contaminated_dfs = all_contaminated_dfs[node]
+
+            new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
+            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+            new_contaminated_df = pd.concat(new_contaminated_dfs)
+
             # get x and y to train on 
             x_train = np.array([row[:-1] for row in train])
             y_train = np.array([row[-1] for row in train]).reshape(-1,1)
@@ -95,7 +74,7 @@ class SVRAlarmModel(AnomalyModel):
             test_timestamps = build_timestamps(new_contaminated_dfs, self.config.window_size)
             plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
                         
-            y_true = calculate_labels_alarm(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            y_true = calculate_labels_alarm(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
             residual_train = ((y_train - y_train_pred)**2).flatten()
@@ -122,23 +101,3 @@ class SVRAlarmModel(AnomalyModel):
 
             results[node] = {"y_true": y_true, "y_pred": y_pred}
         return results
-
-    
-    def get_best_params(self, x_train, y_train):
-        """
-        Uses grid search to find the best hyperparameters for the SVR model.
-        """
-        
-        param_grid = {
-            'C': [0.1, 1, 10, 50, 100, 500, 1000],
-            'epsilon': [0.001, 0.01, 0.1, 0.5, 1],
-            'gamma': ['scale', 0.0001, 0.001, 0.01, 0.1, 1],
-            'kernel': ['rbf']
-        }
-
-        grid = GridSearchCV(SVR(), param_grid, cv=5, scoring='neg_mean_squared_error')
-        grid.fit(x_train, y_train.ravel())
-        
-        return grid.best_params
-    
-    

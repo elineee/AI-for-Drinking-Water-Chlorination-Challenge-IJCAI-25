@@ -84,14 +84,9 @@ class SVRModel(AnomalyModel):
                     
         y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
         
-        ok = []
-        ano = []
-        for element in y_true:
-            if element == 1:
-                ok.append(element)
-            else:
-                ano.append(element)
-        print(f"ok: {len(ok)}, ano: {len(ano)}")
+        y_true = np.array(y_true)
+        print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
+        
         
         #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
         residual_train = np.abs(y_train - y_train_pred)
@@ -111,13 +106,10 @@ class SVRModel(AnomalyModel):
         results = {}
         
         # iterate over the nodes
-        for key, value in all_clean_dfs.items():
-            print(key)
-            node = key
+        for node, clean_dfs in all_clean_dfs.items():
             
-            # get contaminated dataset for the same key node
-            contaminated_dfs = all_contaminated_dfs[key]
-            clean_dfs = value
+            # get contaminated dataset for the same node
+            contaminated_dfs = all_contaminated_dfs[node]
             
             y_true, y_pred, _, _ = self.predict(node, clean_dfs, contaminated_dfs)
   

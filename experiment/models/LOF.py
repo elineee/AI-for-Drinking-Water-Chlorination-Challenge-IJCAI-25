@@ -25,9 +25,8 @@ class LOFModel(AnomalyModel):
             # create features and concatenate the datasets for each node 
             _ , X_train = self._prepare_dataset(clean_dfs)
             new_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs)
-
-            X_test = np.array(X_test)
             new_contaminated_df = pd.concat(new_contaminated_dfs)
+
             y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             n_neighbors = self.config.model_params.get("n_neighbors", 20)

@@ -1,44 +1,25 @@
-import numpy as np
+import pandas as pd
 from sklearn import svm
 from sklearn.preprocessing import StandardScaler
-from data_transformation import calculate_labels_alarm, create_features, remove_first_x_days
+from data_transformation import calculate_labels_alarm
 from utils import detect_change_point
-from models.model import AnomalyModel
+from models.one_class_SVM import OneClassSVMModel
 
-class OneClassSVMAlarmModel(AnomalyModel):
-    """ Class for One Class SVM model"""
+class OneClassSVMAlarmModel(OneClassSVMModel):
+    """ Class for One Class SVM with alarm model"""
 
     def get_results(self):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
-        
         results = {}
         
-        for node, value in all_clean_dfs.items():
+        for node, clean_dfs in all_clean_dfs.items():
             
             contaminated_dfs = all_contaminated_dfs[node]
-            clean_dfs = value
-            
-            X_train = []
-            X_test = []
             
             # create features and concatenate the example datasets for each node 
-            new_clean_dfs = []
-            for i in range(len(clean_dfs)):
-                train_data = remove_first_x_days(clean_dfs[i], 3)
-                new_clean_dfs.append(train_data)
-                train_data = create_features(train_data, self.config.disinfectant.value, self.config.window_size)
-                X_train.extend(train_data)
-            X_train = np.array(X_train)
-            
-            # create features and concatenate the contaminated datasets for each node
-            new_contaminated_dfs = []
-            for i in range(len(contaminated_dfs)):
-                test_data = remove_first_x_days(contaminated_dfs[i], 3)
-                new_contaminated_dfs.append(test_data)
-                test_data = create_features(test_data, self.config.disinfectant.value, self.config.window_size)
-                X_test.extend(test_data)
-            X_test = np.array(X_test)
-            
+            _ , X_train = self._prepare_dataset(clean_dfs)
+            new_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs)
+            new_contaminated_df = pd.concat(new_contaminated_dfs)            
             
             # standardize the data before applying the model
             scaler = StandardScaler()
@@ -61,7 +42,7 @@ class OneClassSVMAlarmModel(AnomalyModel):
 
             ocsvm.fit(X_train)
             
-            y_true = calculate_labels_alarm(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            y_true = calculate_labels_alarm(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
 
             y_pred_temp = ocsvm.predict(X_test)
             

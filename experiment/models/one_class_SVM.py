@@ -12,12 +12,10 @@ class OneClassSVMModel(AnomalyModel):
         
         results = {}
         
-        for key, value in all_clean_dfs.items():
-            print(key)
-            node = key
+        for node, clean_dfs in all_clean_dfs.items():
             
-            contaminated_dfs = all_contaminated_dfs[key]
-            clean_dfs = value
+            contaminated_dfs = all_contaminated_dfs[node]
+    
             
             # create features and concatenate the datasets for each node 
             _ , X_train = self._prepare_dataset(clean_dfs)
