@@ -206,8 +206,8 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             contaminated_dfs = all_contaminated_dfs[node]
 
-            new_clean_dfs, train = self._prepare_dataset(clean_dfs)
-            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs)
+            new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
+            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
             new_contaminated_df = pd.concat(new_contaminated_dfs)
 
             X_train, X_test = self._prepare_tensors(train, test)

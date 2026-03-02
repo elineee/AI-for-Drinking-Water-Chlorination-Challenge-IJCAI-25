@@ -13,11 +13,9 @@ class OneClassSVMAlarmModel(AnomalyModel):
         
         results = {}
         
-        for key, value in all_clean_dfs.items():
-            print(key)
-            node = key
+        for node, value in all_clean_dfs.items():
             
-            contaminated_dfs = all_contaminated_dfs[key]
+            contaminated_dfs = all_contaminated_dfs[node]
             clean_dfs = value
             
             X_train = []

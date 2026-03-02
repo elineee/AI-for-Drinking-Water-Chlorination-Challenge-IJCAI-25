@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from typing import List
 from experiment_config import ExperimentConfig
-from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_extended_features, remove_first_x_days
+from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_features, create_extended_features, remove_first_x_days
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
@@ -131,29 +131,34 @@ class AnomalyModel(ABC):
         return example_dfs, contaminated_dfs
     
 
-    def _prepare_dataset(self, dfs: list[pd.DataFrame]):
+    def _prepare_dataset(self, dfs: list[pd.DataFrame], feature_type="stats"):
         """
-        Cleans datasets and generates sliding window features.
+        Cleans datasets and generates features (statistical or extended) using sliding windows.
 
         Parameters:
-        - dfs: List of datasets.
-
-        Returns: 
+        - dfs: List of pandas DataFrames
+        - feature_type: "stats" for create_features, "extended" for create_extended_features
+        
+        Returns:
         - datasets: cleaned datasets
-        - array of sliding window features
+        - windows: array of features for each timestep
         """
         datasets = []
         windows = []
 
         for df in dfs:
-            df = remove_first_x_days(df, 3)
-            datasets.append(df)
+            df_clean = remove_first_x_days(df, 3)
+            datasets.append(df_clean)
 
-            features = create_extended_features( df, self.config.disinfectant.value, self.config.window_size, stats=False)
+            if feature_type == "extended":
+                features = create_extended_features(df_clean, self.config.disinfectant.value, self.config.window_size, stats=False)
+            else:
+                features = create_features(df_clean, self.config.disinfectant.value, self.config.window_size)
+
             windows.extend(features)
 
         return datasets, np.array(windows)
-        
+
     @abstractmethod
     def get_results(self):
         """ 

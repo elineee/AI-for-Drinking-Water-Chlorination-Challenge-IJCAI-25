@@ -1,7 +1,7 @@
-import numpy as np
+import pandas as pd 
 from sklearn import svm
 from sklearn.preprocessing import StandardScaler
-from data_transformation import calculate_labels, create_features, remove_first_x_days
+from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
 class OneClassSVMModel(AnomalyModel):
@@ -19,28 +19,12 @@ class OneClassSVMModel(AnomalyModel):
             contaminated_dfs = all_contaminated_dfs[key]
             clean_dfs = value
             
-            X_train = []
-            X_test = []
-            
-            # create features and concatenate the example datasets for each node 
-            new_clean_dfs = []
-            for i in range(len(clean_dfs)):
-                train_data = remove_first_x_days(clean_dfs[i], 3)
-                new_clean_dfs.append(train_data)
-                train_data = create_features(train_data, self.config.disinfectant.value, self.config.window_size)
-                X_train.extend(train_data)
-            X_train = np.array(X_train)
-            
-            # create features and concatenate the contaminated datasets for each node
-            new_contaminated_dfs = []
-            for i in range(len(contaminated_dfs)):
-                test_data = remove_first_x_days(contaminated_dfs[i], 3)
-                new_contaminated_dfs.append(test_data)
-                test_data = create_features(test_data, self.config.disinfectant.value, self.config.window_size)
-                X_test.extend(test_data)
-            X_test = np.array(X_test)
-            
-            y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+            # create features and concatenate the datasets for each node 
+            _ , X_train = self._prepare_dataset(clean_dfs)
+            new_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs)
+            new_contaminated_df = pd.concat(new_contaminated_dfs)
+
+            y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             # standardize the data before applying the model
             scaler = StandardScaler()
