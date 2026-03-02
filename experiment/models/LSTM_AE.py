@@ -1,5 +1,4 @@
 import os
-
 from matplotlib import pyplot as plt
 from sklearn.preprocessing import StandardScaler
 import torch
@@ -70,8 +69,6 @@ class Decoder(nn.Module):
         output, _ = self.lstm(x)  # (batch, seq_len, hidden_size)
         output = self.linear(output)  # (batch, seq_len, input_size)
         return output
-
-    
     
     
 class LSTMAutoEncoderModel(AnomalyModel):
@@ -107,9 +104,9 @@ class LSTMAutoEncoderModel(AnomalyModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001)
         
-        # if os.path.exists('lstm_autoencoder.pth'):
+        # if os.path.exists("lstm_autoencoder.pth"):
         if False:
-            model.load_state_dict(torch.load('lstm_autoencoder.pth', weights_only=True))
+            model.load_state_dict(torch.load("lstm_autoencoder.pth", weights_only=True))
             
         else: 
             # train the model
@@ -154,7 +151,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
         scores_per_timestep = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)]
         with torch.no_grad(): 
             i = 0
-            print(len(test_batches.dataset))
             for batch in test_batches:
                 batch = batch.to(device) # shape : (batch_size, seq_len, num_features), here batch_size is 1 since we set batch_size=1 for the test data loader to get predictions for each sample in the test set
 
@@ -197,7 +193,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
                 anomalies.append(-1) # anomaly
             else:
                 anomalies.append(1) # normal
-        print(f"len(anomalies): {len(anomalies)}")
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
           
@@ -206,105 +201,99 @@ class LSTMAutoEncoderModel(AnomalyModel):
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
 
-        for key, value in all_clean_dfs.items():
-            print(f"Calculating results for node {key}")
-            node = key
+        for node, clean_dfs in all_clean_dfs.items():
+            print(f"Calculating results for node {node}")
             
-            # get contaminated dataset for the same key node
-            contaminated_dfs = all_contaminated_dfs[key]
-            clean_dfs = value
+            contaminated_dfs = all_contaminated_dfs[node]
 
-            train = []
-            test = []
-            
-            # create features for training and concatenate the example datasets
-            new_clean_dfs = []
-            for i in range(len(clean_dfs)): 
-                train_data = remove_first_x_days(clean_dfs[i], 3)
-                new_clean_dfs.append(train_data)
-                train_data = create_extended_features(train_data, self.config.disinfectant.value, self.config.window_size, stats=False)
-                train.extend(train_data)
-            train = np.array(train)
+            new_clean_dfs, train = self._prepare_dataset(clean_dfs)
+            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs)
+            new_contaminated_df = pd.concat(new_contaminated_dfs)
 
-            # create features for testing and concatenate the contaminated datasets
-            new_contaminated_dfs = []
-            for i in range(len(contaminated_dfs)): 
-                test_data = remove_first_x_days(contaminated_dfs[i], 3)
-                new_contaminated_dfs.append(test_data)
-                test_data = create_extended_features(test_data, self.config.disinfectant.value, self.config.window_size, stats=False)
-                test.extend(test_data)
-            test = np.array(test)
+            X_train, X_test = self._prepare_tensors(train, test)
 
-            # Normalize the data 
-            scaler = StandardScaler()
-            X_train = scaler.fit_transform(train)
-            X_test = scaler.transform(test)
-            
-            # convert numpy arrays of type float64 to type float32 for PyTorch
-            X_train = X_train.astype(np.float32)
-            X_test = X_test.astype(np.float32)
-            
-            # Reshape to 3D: (num_samples, seq_len, num_features)
-            X_train = X_train[:, :, np.newaxis]  # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
-            X_test = X_test[:, :, np.newaxis]    # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
-    
-            X_train = torch.from_numpy(X_train)
-            X_test = torch.from_numpy(X_test)
-            
             train_batches = torch.utils.data.DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = torch.utils.data.DataLoader(X_test, batch_size=1, shuffle=False) 
             
             mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
-            y_true = calculate_labels(new_contaminated_dfs[0], self.config.contaminants[0].value, 0)
-            print(len(y_true), len(anomalies))
+            y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, 0)
             
             # convert mean_true_seq_per_timestep and mean_decoded_seq_per_timestep to float for plotting
-            float_mean_true_seq_per_timestep = []
-            for val in mean_true_seq_per_timestep:
-                if isinstance(val, np.ndarray):
-                    if val.size == 1:
-                        val = float(val.item())
-                    else:
-                        val = float(val.mean())
-                else:
-                    val = float(val)
-                float_mean_true_seq_per_timestep.append(val)
+            float_mean_true_seq_per_timestep = [
+                float(val.mean()) if isinstance(val, np.ndarray) else float(val)
+                for val in mean_true_seq_per_timestep
+            ]
 
-            float_mean_decoded_seq_per_timestep = []
-            for val in mean_decoded_seq_per_timestep:
-                if isinstance(val, np.ndarray):
-                    if val.size == 1:
-                        val = float(val.item())
-                    else:
-                        val = float(val.mean())
-                else:
-                    val = float(val) 
-                float_mean_decoded_seq_per_timestep.append(val)
-
+            float_mean_decoded_seq_per_timestep = [
+                float(val.mean()) if isinstance(val, np.ndarray) else float(val)
+                for val in mean_decoded_seq_per_timestep
+            ]
 
             # Visualize the prediction 
-            x = np.arange(len(float_mean_true_seq_per_timestep))
             plt.figure(figsize=(18,6))
-            plt.plot(x, float_mean_true_seq_per_timestep, color = 'red', linewidth=2.0, alpha = 0.6)
-            plt.plot(x, float_mean_decoded_seq_per_timestep, color = 'blue', linewidth=0.8)
-            plt.legend(['Actual','Predicted'])
-            plt.xlabel('Timestamp')
-            plt.title("Training data prediction")
+            plt.plot(float_mean_true_seq_per_timestep, color = "red", linewidth=2.0, alpha = 0.6)
+            plt.plot(float_mean_decoded_seq_per_timestep, color = "blue", linewidth=0.8)
+            plt.legend(["Actual","Predicted"])
+            plt.xlabel("Timestamp")
+            plt.title("Test data reconstruction")
             plt.show()
             
-            ok = []
-            ano = []
-            for element in y_true:
-                if element == 1:
-                    ok.append(element)
-                else:
-                    ano.append(element)
-            print(f"ok: {len(ok)}, ano: {len(ano)}")
+            y_true = np.array(y_true)
+            print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
             
-            results[node] = {
-                "y_true": y_true,
-                "y_pred": anomalies,
-            }
+            results[node] = { "y_true": y_true, "y_pred": anomalies,}
 
         return results
+    
+    def _prepare_dataset(self, dfs: list[pd.DataFrame]):
+        """
+        Cleans datasets and generates sliding window features.
+
+        Parameters:
+        - dfs: List of datasets.
+
+        Returns: 
+        - datasets: cleaned datasets
+        - array of sliding window features
+        """
+        datasets = []
+        windows = []
+
+        for df in dfs:
+            df = remove_first_x_days(df, 3)
+            datasets.append(df)
+
+            features = create_extended_features( df, self.config.disinfectant.value, self.config.window_size, stats=False)
+            windows.extend(features)
+
+        return datasets, np.array(windows)
+    
+
+    def _prepare_tensors(self, train, test):
+        """
+        Normalizes sliding window datasets and converts them into PyTorch tensors.
+
+        Parameters: 
+        - train : training sliding windows 
+        - test : test sliding windows
+
+        Returns:
+        - train and test tensors. 
+        """
+
+        # Normalize the data 
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(train)
+        X_test = scaler.transform(test)
+
+        # convert numpy arrays of type float64 to type float32 for PyTorch
+        X_train = X_train.astype(np.float32)
+        X_test = X_test.astype(np.float32)
+
+        # Reshape to 3D: (num_samples, seq_len, num_features)
+        X_train = X_train[:, :, np.newaxis] # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
+        X_test = X_test[:, :, np.newaxis] # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
+
+        return torch.from_numpy(X_train), torch.from_numpy(X_test)
+    
