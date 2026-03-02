@@ -262,7 +262,7 @@ class LSTMAutoEncoderAlarmModel(AnomalyModel):
                     else:
                         val = float(val.mean())
                 else:
-                    val = float(val)  # Si c'est déjà un int ou un float
+                    val = float(val)  
                 float_mean_true_seq_per_timestep.append(val)
 
             float_mean_decoded_seq_per_timestep = []
@@ -273,7 +273,7 @@ class LSTMAutoEncoderAlarmModel(AnomalyModel):
                     else:
                         val = float(val.mean())
                 else:
-                    val = float(val)  # Si c'est déjà un int ou un float
+                    val = float(val)  
                 float_mean_decoded_seq_per_timestep.append(val)
 
 
@@ -294,17 +294,6 @@ class LSTMAutoEncoderAlarmModel(AnomalyModel):
                 "y_pred": y_pred,
             }
             
-
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
-            # y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
-            # y_true = y_true[:len(X_test)]   
-            # anomalies, reconstructions, test_error, threshold = self.run_model(X_train, X_test, 100)
-            # y_pred = np.where(anomalies, -1, 1)  
-            # results[node] = {"y_true": y_true, "y_pred": y_pred}
-
-            # test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
-
-            # self.get_plots(node, test_timestamps, X_test, reconstructions, anomalies, y_true, threshold, test_error)
 
         return results
     
