@@ -16,7 +16,6 @@ class OneClassSVMModel(AnomalyModel):
             
             contaminated_dfs = all_contaminated_dfs[node]
     
-            
             # create features and concatenate the datasets for each node 
             _ , X_train = self._prepare_dataset(clean_dfs)
             new_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs)
