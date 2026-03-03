@@ -206,8 +206,9 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             contaminated_dfs = all_contaminated_dfs[node]
 
-            new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
-            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+            
+            _ , train = self._prepare_dataset(clean_dfs, feature_type="extended", stats = "False")
+            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats = "False")
             new_contaminated_df = pd.concat(new_contaminated_dfs)
 
             X_train, X_test = self._prepare_tensors(train, test)
@@ -266,6 +267,9 @@ class LSTMAutoEncoderModel(AnomalyModel):
         
         Parameters: 
         - seq: the sequence to convert 
+
+        Returns: 
+        - a list of floats with the sequence values 
         """
         return [
             float(val.mean()) if isinstance(val, np.ndarray) else float(val)
