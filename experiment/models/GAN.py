@@ -93,7 +93,7 @@ class GANModel(AnomalyModel):
                 loss_generator.backward()
                 optimizer_generator.step()
 
-            print(f'Training: Epoch {epoch+1}, Loss discriminator: {loss_discriminator}, Loss generator: {loss_generator}')
+            print(f"Training: Epoch {epoch+1}, Loss discriminator: {loss_discriminator}, Loss generator: {loss_generator}")
 
             
     def get_results(self):

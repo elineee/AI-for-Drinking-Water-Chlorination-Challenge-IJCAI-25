@@ -9,7 +9,7 @@ from models.autoencoder import AutoencoderModel, Autoencoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
 # https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
-# NOTE: Testé avec la fonction de Eline, mais que ce soit count_required à 10 ou à 20, donne de - bons résultats qu'avec CUSUM
+# NOTE: Testé avec la fonction de Eline, mais que ce soit count_required à 10 ou à 20, donne de - bons résultats qu"avec CUSUM
 class AutoencoderAlarmModel(AutoencoderModel):
     """ Class for Autoencoder with alarm model"""
     
@@ -44,7 +44,7 @@ class AutoencoderAlarmModel(AutoencoderModel):
             loss.backward()
             optimizer.step()
 
-            print(f'Training: Epoch {epoch+1}, Loss: {loss}')
+            print(f"Training: Epoch {epoch+1}, Loss: {loss}")
         
         model.eval()
 
@@ -62,14 +62,14 @@ class AutoencoderAlarmModel(AutoencoderModel):
             test_error_np = test_error.cpu().numpy()
 
             # CUSUM 
-            _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=float('inf')) # Or k=0.5?
+            _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=float("inf")) # Or k=0.5?
             threshold = cusum_train.max() * 1.2
-            print(f'Threshold {threshold}')
+            print(f"Threshold {threshold}")
             anomalies, cusum_scores = cusum_detection(test_error_np, train_mean, train_std, k=0.9, threshold=threshold)
 
             plt.figure(figsize=(18, 4))
-            plt.plot(cusum_scores, label='CUSUM score')
-            plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+            plt.plot(cusum_scores, label="CUSUM score")
+            plt.axhline(y=threshold, color="r", linestyle="--", label="Threshold")
             plt.legend()
             plt.title("CUSUM score")
             plt.show()
