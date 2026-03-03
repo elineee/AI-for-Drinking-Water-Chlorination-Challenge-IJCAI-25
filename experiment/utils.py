@@ -42,13 +42,14 @@ def build_timestamps(datasets, window_size):
     
 def cusum_detection(data, reference_mean, reference_std, k, threshold):
     """
-    Detects anomalies using the CUSUM algorithm.
+    Detects anomalies using CUSUM applied on reconstruction errors. Since reconstruction errors are always >= 0, only increases are monitored.
+    Once the alarm is triggered, it remains active until the end.
     
     Parameters:
     - data: array of reconstruction errors
-    - reference_mean: mean of the reconstruction errors on the training set (normal behavior)
-    - reference_std: standard deviation of the reconstruction errors on the training set (normal behavior)
-    - k: integer that represents the noise
+    - reference_mean: mean of the training reconstruction errors (normal behavior)
+    - reference_std: std of the training reconstruction errors (normal behavior)
+    - k: parameter controlling sensitivity
     - threshold: alarm threshold
     
     Returns:
@@ -61,8 +62,7 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
     
     for i in range(1, n):
         cusum[i] = max(0, cusum[i-1] + data[i] - reference_mean - k * reference_std)
-    
-    # When cusum > threshold, then alarm 
+     
     anomalies = []
     alarm = False
     for c in cusum:
@@ -74,8 +74,20 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
 
     return np.array(anomalies), cusum
 
+
 def detect_change_point(predictions: np.array, count_required=20):
         """Detects the change point and returns an array of 1 until the change point and -1 after the change point """
+        """
+        Scans predictions sequentially and triggers an alarm when detecting a change point. All remaining predictions after the alarm are set to -1.
+
+        Parameters:
+        - predictions: array of 1 (normal) and -1 (anomaly)
+        - count_required: number of consecutive anomalies required to trigger the alarm (default=20)
+
+        Returns:
+        - numpy array of 1 (normal) and -1 (anomaly), with permanent alarm after change point
+        """
+        
         y_pred = []
         counter = 0
         for i in range(len(predictions)):

@@ -19,8 +19,6 @@ class CusumModel(AnomalyModel):
         for node, clean_dfs in all_clean_dfs.items():
             
             contaminated_dfs = all_contaminated_dfs[node] 
-    
-            X_test = []
             
             _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended", stats=False)
             X_train = np.array(X_train)
@@ -33,14 +31,13 @@ class CusumModel(AnomalyModel):
             new_contaminated_df = pd.concat(new_contaminated_dfs)
             
             cusum_train = self.cusum(X_train, X_train.mean(), X_train.std())
-            
-            cusum = self.cusum(X_test, X_test.mean(), X_test.std())
+            cusum_scores = self.cusum(X_test, X_train.mean(), X_train.std())
             
             threshold = cusum_train.mean() + self._get_threshold_multiplier() *cusum_train.std()
             print(f"Threshold: {threshold}")
             
             y_pred = []
-            for c in cusum:
+            for c in cusum_scores:
                 if c > threshold:
                     y_pred.append(-1)
                 else:
@@ -49,10 +46,10 @@ class CusumModel(AnomalyModel):
             y_pred = self._post_predictions(y_pred)
             y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
 
-            # plot
+            # Plot
             plt.figure(figsize=(10, 6))
             plt.plot(X_test, label="Data")
-            plt.plot(cusum, label="CUSUM", color="red")
+            plt.plot(cusum_scores, label="CUSUM", color="red")
             plt.axhline(y=0, color="gray", linestyle="--")
             plt.xlabel("Time")
             plt.ylabel("Value")

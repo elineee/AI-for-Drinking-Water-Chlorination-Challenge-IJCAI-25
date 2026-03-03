@@ -2,19 +2,21 @@ from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
-import pandas as pd
-from data_transformation import calculate_labels_alarm, create_extended_features
-from utils import cusum_detection
+from data_transformation import calculate_labels_alarm
+from utils import cusum_detection, detect_change_point
 from models.autoencoder import AutoencoderModel, Autoencoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
 # https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
-# NOTE: Testé avec la fonction de Eline, mais que ce soit count_required à 10 ou à 20, donne de - bons résultats qu'avec CUSUM
 class AutoencoderAlarmModel(AutoencoderModel):
     """ Class for Autoencoder with alarm model"""
     
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
+    
+    # Detect change point (not used here, we use CUSUM detection)
+    # def _post_predictions(self, y_pred):
+    #     return detect_change_point(y_pred)
 
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
@@ -64,7 +66,7 @@ class AutoencoderAlarmModel(AutoencoderModel):
             test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
             test_error_np = test_error.cpu().numpy()
 
-            # CUSUM 
+            # CUSUM on the reconstruction error 
             _, cusum_train = cusum_detection(train_error_np, train_mean, train_std, k=0.6, threshold=float('inf')) # Or k=0.5?
             threshold = cusum_train.max() * 1.2
             print(f'Threshold {threshold}')

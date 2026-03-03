@@ -14,4 +14,3 @@ class CusumAlarmModel(CusumModel):
 
     def _post_predictions(self, y_pred):
         return detect_change_point(y_pred, 15)
-

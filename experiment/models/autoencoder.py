@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import pandas as pd
-from data_transformation import calculate_labels, create_extended_features
+from data_transformation import create_extended_features
 from utils import plot_prediction
 from models.model import AnomalyModel
 
