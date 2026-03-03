@@ -52,7 +52,6 @@ class AutoencoderModel(AnomalyModel):
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
         - test_reconstruction: the reconstructed test data from the autoencoder
         - test_error: the reconstruction error for each test sample
-        - threshold: the threshold used to classify anomalies
         """
         torch.manual_seed(42)
 
@@ -90,8 +89,7 @@ class AutoencoderModel(AnomalyModel):
             return (
                 anomalies.cpu().numpy(),
                 test_reconstruction.cpu().numpy(),
-                test_error.cpu().numpy(),
-                threshold.item()
+                test_error.cpu().numpy()
             )        
 
     def get_results(self):
@@ -118,9 +116,10 @@ class AutoencoderModel(AnomalyModel):
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            anomalies, reconstructions, test_error, threshold = self.run_model(X_train, X_test, 100)
+            y_true = self._calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
+            anomalies, reconstructions, test_error = self.run_model(X_train, X_test, 100)
             y_pred = np.where(anomalies, -1, 1)  
+            y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 
             test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values

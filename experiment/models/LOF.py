@@ -36,6 +36,8 @@ class LOFModel(AnomalyModel):
             lof.fit(X_train)
 
             y_pred = lof.predict(X_test)
+            y_pred = self._post_predictions(y_pred)
+
             
             results[node] = {"y_true": y_true,"y_pred": y_pred }
             

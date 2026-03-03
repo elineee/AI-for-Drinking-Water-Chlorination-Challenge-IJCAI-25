@@ -13,6 +13,9 @@ from models.autoencoder import AutoencoderModel, Autoencoder
 class AutoencoderAlarmModel(AutoencoderModel):
     """ Class for Autoencoder with alarm model"""
     
+    def _calculate_labels(self, df, contaminant, window_size):
+        return calculate_labels_alarm(df, contaminant, window_size)
+
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
         Trains the autoencoder on the training data and returns the anomaly scores for the test data.
@@ -75,35 +78,3 @@ class AutoencoderAlarmModel(AutoencoderModel):
             plt.show()
         
             return (anomalies, test_reconstruction_np, test_error_np)        
-
-
-    def get_results(self):
-        results = {}
-        all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
-
-        for node, clean_dfs in all_clean_dfs.items():
-            clean_df = pd.concat(clean_dfs)
-            contaminated_dfs = all_contaminated_dfs[node]
-            contaminated_df = pd.concat(contaminated_dfs)
-
-            X_train = create_extended_features(clean_df, self.config.disinfectant.value, self.config.window_size)
-            X_test = create_extended_features(contaminated_df, self.config.disinfectant.value, self.config.window_size)
-
-            # Normalize the data 
-            mean = X_train.mean(axis=0)
-            std = X_train.std(axis=0)
-            std[std == 0] = 1  
-
-            X_train = (X_train - mean) / std
-            X_test = (X_test - mean) / std
-    
-            X_train = torch.tensor(X_train, dtype=torch.float32)
-            X_test = torch.tensor(X_test, dtype=torch.float32)
-
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = calculate_labels_alarm(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            anomalies, _, _ = self.run_model(X_train, X_test, 100)
-            results[node] = {"y_true": y_true, "y_pred": anomalies}
-
-        return results
-

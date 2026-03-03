@@ -33,7 +33,6 @@ class LSTMAutoEncoder(nn.Module):
         
         return decoded
         
-
 class Encoder(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, dropout):
         super().__init__()
@@ -206,7 +205,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             contaminated_dfs = all_contaminated_dfs[node]
 
-            
             _ , train = self._prepare_dataset(clean_dfs, feature_type="extended", stats = False)
             new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats = False)
             new_contaminated_df = pd.concat(new_contaminated_dfs)
@@ -220,15 +218,17 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, 0)
             
-            true_seq = self._to_float_sequence(mean_true_seq_per_timestep)
-            decoded_seq = self._to_float_sequence(mean_decoded_seq_per_timestep)
+            true_seq = self._convert_sequence_to_float(mean_true_seq_per_timestep)
+            decoded_seq = self._convert_sequence_to_float(mean_decoded_seq_per_timestep)
 
             self._plot_reconstruction(true_seq, decoded_seq)
                         
             y_true = np.array(y_true)
             print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
+
+            y_pred = self._post_predictions(anomalies)
             
-            results[node] = { "y_true": y_true, "y_pred": anomalies,}
+            results[node] = { "y_true": y_true, "y_pred": y_pred}
 
         return results
     
@@ -261,7 +261,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
         return torch.from_numpy(X_train), torch.from_numpy(X_test)
     
 
-    def _to_float_sequence(self, seq):
+    def _convert_sequence_to_float(self, seq):
         """
         Converts a sequence containing floats or numpy arrays into a list of floats.
         

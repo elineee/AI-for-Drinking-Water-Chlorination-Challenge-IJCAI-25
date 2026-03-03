@@ -14,10 +14,7 @@ class SVRModel(AnomalyModel):
     
     def _get_threshold_multiplier(self):
         return 60
-
-    def _calculate_labels(self, df, contaminant, window_size):
-        return calculate_labels(df, contaminant, window_size)
-
+    
     def predict(self, node, clean_dfs, contaminated_dfs): 
 
         new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
@@ -100,7 +97,8 @@ class SVRModel(AnomalyModel):
             contaminated_dfs = all_contaminated_dfs[node]
             
             y_true, y_pred, _, _ = self.predict(node, clean_dfs, contaminated_dfs)
-  
+            y_pred = self._post_predictions(y_pred)
+
             results[node] = {"y_true": y_true, "y_pred": y_pred}
                 
         return results

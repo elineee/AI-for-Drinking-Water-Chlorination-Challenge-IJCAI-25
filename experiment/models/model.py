@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from typing import List
 from experiment_config import ExperimentConfig
-from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_features, create_extended_features, remove_first_x_days
+from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_features, create_extended_features, remove_first_x_days, calculate_labels
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
@@ -159,7 +159,13 @@ class AnomalyModel(ABC):
             windows.extend(features)
 
         return datasets, np.array(windows)
-
+    
+    def _post_predictions(self, y_pred):
+        return y_pred
+    
+    def _calculate_labels(self, df, contaminant, window_size):
+        return calculate_labels(df, contaminant, window_size)
+    
     @abstractmethod
     def get_results(self):
         """ 
