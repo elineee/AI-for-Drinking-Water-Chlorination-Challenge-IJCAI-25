@@ -5,8 +5,9 @@ import pandas as pd
 
 from data_transformation import calculate_labels
 from models.model import AnomalyModel
+from utils import detect_change_point
 
-class cusumModel(AnomalyModel):
+class cusumAlarmModel(AnomalyModel):
     """ Class for CUSUM model"""
     
     def get_results(self):
@@ -34,7 +35,7 @@ class cusumModel(AnomalyModel):
             
             cusum = self.cusum(X_test, X_test.mean(), X_test.std())
             
-            threshold = cusum_train.mean() + 3*cusum_train.std()
+            threshold = cusum_train.mean() + 6*cusum_train.std()
             print(f"Threshold: {threshold}")
             
             y_pred = []
@@ -57,6 +58,8 @@ class cusumModel(AnomalyModel):
             plt.title('CUSUM Chart')
             plt.grid(lw=2,ls=':')
             plt.show()
+            
+            y_pred = detect_change_point(y_pred, 15)
             
             results[node] = {
                 "y_pred": y_pred,
