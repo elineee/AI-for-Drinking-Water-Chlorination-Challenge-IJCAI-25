@@ -40,7 +40,7 @@ class Evaluation:
         """
 
         evaluation_results = {}
-        results = pickle.load(open(results_file, "rb"))
+        results = pickle.load(open(results_file, 'rb'))
 
         for result in results:
             for config_name in result: 
@@ -88,9 +88,9 @@ class Evaluation:
 
         for node in nodes_dict:
             cm = nodes_dict[node][Metrics.CONFUSION_MATRIX.value]
-            display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Normal (1)", "Anomaly (-1)"])
+            display = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=['Normal (1)', 'Anomaly (-1)'])
             display.plot(cmap=plt.cm.Blues)
-            plt.title(f"Confusion Matrix for {config_name} - Node {node}")
+            plt.title(f'Confusion Matrix for {config_name} - Node {node}')
             plt.show()
 
 
@@ -111,9 +111,9 @@ class Evaluation:
             nodes = list(nodes_dict.keys())
 
             plt.bar(nodes, metric_values)
-            plt.xlabel("Nodes")
+            plt.xlabel('Nodes')
             plt.ylabel(metric_name.value)
-            plt.title(f"{metric_name.value} for each node in configuration {config_name}")
+            plt.title(f'{metric_name.value} for each node in configuration {config_name}')
             plt.tight_layout()
             plt.show()
 
@@ -140,9 +140,9 @@ class Evaluation:
             mean_metric_values.append(mean_metric_value)
 
         plt.bar(config_names, mean_metric_values)
-        plt.xlabel("Configurations")
-        plt.ylabel(f"Mean {metric_name.value}")
-        plt.title(f"Mean {metric_name.value} for each configuration")
+        plt.xlabel('Configurations')
+        plt.ylabel(f'Mean {metric_name.value}')
+        plt.title(f'Mean {metric_name.value} for each configuration')
         plt.tight_layout()
         plt.show()
 

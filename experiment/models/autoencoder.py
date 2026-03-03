@@ -72,7 +72,7 @@ class AutoencoderModel(AnomalyModel):
             loss.backward()
             optimizer.step()
 
-            print(f"Training: Epoch {epoch+1}, Loss: {loss}")
+            print(f'Training: Epoch {epoch+1}, Loss: {loss}')
         
         model.eval()
 

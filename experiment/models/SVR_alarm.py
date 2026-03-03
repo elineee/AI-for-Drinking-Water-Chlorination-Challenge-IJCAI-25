@@ -30,7 +30,7 @@ class SVRAlarmModel(SVRModel):
             x_train = np.array([row[:-1] for row in train])
             y_train = np.array([row[-1] for row in train]).reshape(-1,1)
 
-            # scale the data, two separate scalers are needed to be able to inverse transform the predictions later "cause different shapes
+            # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
             scaler_x = StandardScaler()
             x_train = scaler_x.fit_transform(x_train)
             scaler_y = StandardScaler()
@@ -96,7 +96,7 @@ class SVRAlarmModel(SVRModel):
             
             # _, cusum_train = cusum_detection(residual_train, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
             # threshold = cusum_train.max() * 1.2
-            # print(f"Threshold {threshold}")
+            # print(f'Threshold {threshold}')
             # y_pred, _ = cusum_detection(residual_test, train_mean, train_std, k=0.5, threshold=4)
 
             results[node] = {"y_true": y_true, "y_pred": y_pred}

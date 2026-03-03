@@ -38,7 +38,7 @@ class SVRModel(AnomalyModel):
         x_train = np.array([row[:-1] for row in train])
         y_train = np.array([row[-1] for row in train]).reshape(-1,1)
 
-        # scale the data, two separate scalers are needed to be able to inverse transform the predictions later "cause different shapes
+        # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
         scaler_x = StandardScaler()
         x_train = scaler_x.fit_transform(x_train)
         scaler_y = StandardScaler()
@@ -124,13 +124,13 @@ class SVRModel(AnomalyModel):
         """
         
         param_grid = {
-            "C": [0.1, 1, 10, 50, 100, 500, 1000],
-            "epsilon": [0.001, 0.01, 0.1, 0.5, 1],
-            "gamma": ["scale", 0.0001, 0.001, 0.01, 0.1, 1],
-            "kernel": ["rbf"]
+            'C': [0.1, 1, 10, 50, 100, 500, 1000],
+            'epsilon': [0.001, 0.01, 0.1, 0.5, 1],
+            'gamma': ['scale', 0.0001, 0.001, 0.01, 0.1, 1],
+            'kernel': ['rbf']
         }
 
-        grid = GridSearchCV(SVR(), param_grid, cv=5, scoring="neg_mean_squared_error")
+        grid = GridSearchCV(SVR(), param_grid, cv=5, scoring='neg_mean_squared_error')
         grid.fit(x_train, y_train.ravel())
         
         return grid.best_params

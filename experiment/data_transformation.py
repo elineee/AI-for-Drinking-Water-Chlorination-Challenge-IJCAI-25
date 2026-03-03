@@ -37,7 +37,7 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
         contaminant_id = CONTAMINANT_ID[contaminant]
         elements_to_keep.append(contaminant_id)
         contaminants_mappings[contaminant] = contaminant_id
-        column_name = f"{contaminant.value}_concentration"
+        column_name = f'{contaminant.value}_concentration'
         new_data[column_name] = []
 
     df_cleaned = df[[column for column in df.columns if any(element in column for element in elements_to_keep)]]
@@ -46,15 +46,15 @@ def change_data_format(file_name: str, contaminants: list[ContaminationType], to
     # For each row in the cleaned dataframe, extract the timestep, node number, chlorine concentration and contaminant concentrations and store them in the new_data dictionary
     for timestep, row in df_cleaned.iterrows():
         for node in nodes:
-            chlorine_column = f"bulk_species_node [MG] at Chlorine @ {node}"
+            chlorine_column = f'bulk_species_node [MG] at Chlorine @ {node}'
             new_data["chlorine_concentration"].append(row[chlorine_column] if chlorine_column in df_cleaned.columns else np.nan)
             new_data["timestep"].append(timestep)
             new_data["node"].append(node)
 
             for contaminant in contaminants_mappings:
                 contaminant_id = contaminants_mappings[contaminant]
-                contaminant_column = f"bulk_species_node [MG] at {contaminant_id} @ {node}"
-                column_name = f"{contaminant.value}_concentration"
+                contaminant_column = f'bulk_species_node [MG] at {contaminant_id} @ {node}'
+                column_name = f'{contaminant.value}_concentration'
                 new_data[column_name].append(row[contaminant_column] if contaminant_column in df_cleaned.columns else np.nan)
     
     new_df = pd.DataFrame(new_data)
@@ -137,14 +137,14 @@ def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: lis
     elif method == "sum":
         df_aggregated = df.groupby("timestep").sum()
     else:
-        raise ValueError("'method' must be either 'mean' or 'sum'")
+        raise ValueError("`method` must be either 'mean' or 'sum'")
 
     # replace node column values by the list of node numbers aggregated
     df_aggregated["node"] = str(node_numbers)
     
     
     if to_csv:
-        df_aggregated.to_csv(f"nodes_{"_".join(map(str, node_numbers))}_aggregated.csv", index=False)
+        df_aggregated.to_csv(f"nodes_{'_'.join(map(str, node_numbers))}_aggregated.csv", index=False)
     
     return df_aggregated
 
@@ -231,7 +231,7 @@ def create_extended_features(df: pd.DataFrame, feature_column: str, window_size:
     return np.array(features)
     
 
-# TODO Handles one contaminant at a time, see if it"s relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
+# TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
 def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 
     """ 
     Calculates labels for anomaly detection. For each time step, the label is -1 if the value of the contaminant column is an anomaly (> 0) and 1 otherwise.
