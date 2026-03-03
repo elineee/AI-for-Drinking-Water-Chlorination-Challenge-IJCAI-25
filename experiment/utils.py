@@ -52,7 +52,7 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
     - threshold: alarm threshold
     
     Returns:
-    - anomalies: array of 1 (normal) and -1 (anomaly)
+    - anomalies: numpy array of 1 (normal) and -1 (anomaly)
     - cusum : CUSUM scores over time
     """    
 

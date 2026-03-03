@@ -24,9 +24,8 @@ class AutoencoderAlarmModel(AutoencoderModel):
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
-        - test_reconstruction: the reconstructed test data from the autoencoder
-        - test_error: the reconstruction error for each test sample
-        - threshold: the threshold used to classify anomalies
+        - test_reconstruction_np: a numpy array of the reconstructed test data from the autoencoder
+        - test_error_np : a numpy array of the reconstruction error for each test sample
         """
         torch.manual_seed(42)
 

@@ -219,26 +219,11 @@ class LSTMAutoEncoderModel(AnomalyModel):
             
             y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, 0)
             
-            # convert mean_true_seq_per_timestep and mean_decoded_seq_per_timestep to float for plotting
-            float_mean_true_seq_per_timestep = [
-                float(val.mean()) if isinstance(val, np.ndarray) else float(val)
-                for val in mean_true_seq_per_timestep
-            ]
+            true_seq = self._to_float_sequence(mean_true_seq_per_timestep)
+            decoded_seq = self._to_float_sequence(mean_decoded_seq_per_timestep)
 
-            float_mean_decoded_seq_per_timestep = [
-                float(val.mean()) if isinstance(val, np.ndarray) else float(val)
-                for val in mean_decoded_seq_per_timestep
-            ]
-
-            # Visualize the prediction 
-            plt.figure(figsize=(18,6))
-            plt.plot(float_mean_true_seq_per_timestep, color = "red", linewidth=2.0, alpha = 0.6)
-            plt.plot(float_mean_decoded_seq_per_timestep, color = "blue", linewidth=0.8)
-            plt.legend(["Actual","Predicted"])
-            plt.xlabel("Timestamp")
-            plt.title("Test data reconstruction")
-            plt.show()
-            
+            self._plot_reconstruction(true_seq, decoded_seq)
+                        
             y_true = np.array(y_true)
             print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
             
@@ -274,3 +259,32 @@ class LSTMAutoEncoderModel(AnomalyModel):
 
         return torch.from_numpy(X_train), torch.from_numpy(X_test)
     
+
+    def _to_float_sequence(self, seq):
+        """
+        Converts a sequence containing floats or numpy arrays into a list of floats.
+        
+        Parameters: 
+        - seq: the sequence to convert 
+        """
+        return [
+            float(val.mean()) if isinstance(val, np.ndarray) else float(val)
+            for val in seq
+        ]
+
+
+    def _plot_reconstruction(self, true_seq, pred_seq):
+            """
+            Plots the reconstructed sequence vs the true sequence.
+            
+            Parameters: 
+            - true_seq: the true sequence of data (list of floats)
+            - pred_seq: the reconstructed sequence (list of floats)
+            """
+            plt.figure(figsize=(18,6))
+            plt.plot(true_seq, color="red", linewidth=2.0, alpha=0.6)
+            plt.plot(pred_seq, color="blue", linewidth=0.8)
+            plt.legend(["Actual", "Predicted"])
+            plt.xlabel("Timestamp")
+            plt.title("Test data reconstruction")
+            plt.show()
