@@ -22,6 +22,7 @@ class ModelName(Enum):
     LSTM_AUTOENCODER = "LSTM_autoencoder"
     LSTM_AUTOENCODER_ALARM = "LSTM_autoencoder_alarm"
     GAN = "GAN"
+    CUSUM = "CUSUM"
 
 @dataclass
 class ExperimentConfig:

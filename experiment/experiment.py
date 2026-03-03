@@ -1,4 +1,3 @@
-
 from experiment_config import ExperimentConfig, ModelName
 from models.LOF import LOFModel
 from models.LOF_alarm import LOFAlarmModel
@@ -13,6 +12,8 @@ from models.autoencoder_alarm import AutoencoderAlarmModel
 from models.LSTM_AE import LSTMAutoEncoderModel
 from models.LSTM_AE_alarm import LSTMAutoEncoderAlarmModel
 from models.GAN import GANModel
+from models.cusum import cusumModel
+
 
 AVAILABLE_MODELS = {
     ModelName.LOF: LOFModel,
@@ -27,7 +28,8 @@ AVAILABLE_MODELS = {
     ModelName.AUTOENCODER_ALARM : AutoencoderAlarmModel,
     ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel,
     ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoEncoderAlarmModel,
-    ModelName.GAN: GANModel
+    ModelName.GAN: GANModel,
+    ModelName.CUSUM: cusumModel
 }
 
 class ExperimentRunner:
