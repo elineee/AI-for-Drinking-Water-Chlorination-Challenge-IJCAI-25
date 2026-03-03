@@ -1,103 +1,26 @@
-import numpy as np
-import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.svm import SVR
 from data_transformation import calculate_labels_alarm
-from utils import cusum_detection, detect_change_point, plot_prediction, build_timestamps
+from utils import detect_change_point
 from models.SVR import SVRModel
-
-# based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
 
 class SVRAlarmModel(SVRModel):
     """ Class for SVR model that alarms when start of contamination is detected"""
     
+    def _get_threshold_multiplier(self):
+        return 25
+
+    def _calculate_labels(self, df, contaminant, window_size):
+        return calculate_labels_alarm(df, contaminant, window_size)
+
     def get_results(self):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
-        
         results = {}
-        
-        # iterate over the nodes
+
         for node, clean_dfs in all_clean_dfs.items():
+            contaminated_dfs = all_contaminated_dfs[node] 
 
-            # get contaminated dataset for the same node
-            contaminated_dfs = all_contaminated_dfs[node]
-
-            new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
-            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
-            new_contaminated_df = pd.concat(new_contaminated_dfs)
-
-            # get x and y to train on 
-            x_train = np.array([row[:-1] for row in train])
-            y_train = np.array([row[-1] for row in train]).reshape(-1,1)
-
-            # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
-            scaler_x = StandardScaler()
-            x_train = scaler_x.fit_transform(x_train)
-            scaler_y = StandardScaler()
-            y_train = scaler_y.fit_transform(y_train)
-            
-            # params = self.get_best_params(x_train, y_train)
-            # print(params)
-            
-            gamma = self.config.model_params.get("gamma", "scale")
-            kernel = self.config.model_params.get("kernel", "rbf")
-            C = self.config.model_params.get("C", 10)
-            epsilon = self.config.model_params.get("epsilon", 0.01)
-            
-            model = SVR(kernel=kernel,gamma=gamma, C=C, epsilon = epsilon)
-            
-            model.fit(x_train, y_train.ravel())
-            
-            # get x and y to test on
-            x_test = np.array([row[:-1] for row in test])
-            y_test = np.array([row[-1] for row in test]).reshape(-1,1)
-            
-            # scale the test data using the same scalers as for the training data
-            x_test = scaler_x.transform(x_test)
-            y_test = scaler_y.transform(y_test)
-            
-            # reshape y to be in the right format for evaluation
-            y_train_pred = model.predict(x_train).reshape(-1,1)
-            y_test_pred = model.predict(x_test).reshape(-1,1)
-            
-            # inverse transform the predictions to get them back in the original scale
-            y_train_pred = scaler_y.inverse_transform(y_train_pred)
-            y_test_pred = scaler_y.inverse_transform(y_test_pred)
-            
-            y_train = scaler_y.inverse_transform(y_train)
-            y_test = scaler_y.inverse_transform(y_test)
-            
-            # Plots
-            train_timestamps = build_timestamps(new_clean_dfs, self.config.window_size)
-            plot_prediction( train_timestamps, y_train, y_train_pred, title=f"Training prediction node {node} ")
-
-            test_timestamps = build_timestamps(new_contaminated_dfs, self.config.window_size)
-            plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
-                        
-            y_true = calculate_labels_alarm(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            
-            #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
-            residual_train = ((y_train - y_train_pred)**2).flatten()
-            residual_test = ((y_test - y_test_pred)**2).flatten() 
-            
-            
-            # ---- counter based change point detection ----
-             # 35 was the previous value 
-            threshold = residual_train.mean() + 25 * residual_train.std()
-            y_pred = np.where(residual_test > threshold, -1, 1)
-            
-            y_pred = detect_change_point(y_pred, 3)
-            print(f"Threshold: {threshold:.4f}")
-                
-            
-            # --- CUSUM detection ---
-            # train_mean = residual_train.mean()
-            # train_std = residual_train.std()
-            
-            # _, cusum_train = cusum_detection(residual_train, train_mean, train_std, k=0.6, threshold=99999) # Or k=0.5?
-            # threshold = cusum_train.max() * 1.2
-            # print(f'Threshold {threshold}')
-            # y_pred, _ = cusum_detection(residual_test, train_mean, train_std, k=0.5, threshold=4)
+            y_true, y_pred, _, _ = self.predict(node, clean_dfs, contaminated_dfs)
+            y_pred = detect_change_point(y_pred, 3) 
 
             results[node] = {"y_true": y_true, "y_pred": y_pred}
+
         return results

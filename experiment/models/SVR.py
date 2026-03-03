@@ -1,10 +1,9 @@
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from data_transformation import calculate_labels, create_extended_features, remove_first_x_days
+from data_transformation import calculate_labels
 from utils import plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
@@ -13,27 +12,18 @@ from models.model import AnomalyModel
 class SVRModel(AnomalyModel):
     """ Class for SVR model"""
     
+    def _get_threshold_multiplier(self):
+        return 60
+
+    def _calculate_labels(self, df, contaminant, window_size):
+        return calculate_labels(df, contaminant, window_size)
+
     def predict(self, node, clean_dfs, contaminated_dfs): 
-        train = []
-        test = []
-        
-        new_clean_dfs = []
-        # iterate over datasets for each node
-        for i in range(len(clean_dfs)): 
-            train_data = remove_first_x_days(clean_dfs[i], 3)
-            new_clean_dfs.append(train_data)
-            train_data = create_extended_features(train_data, self.config.disinfectant.value, self.config.window_size)
-            train.extend(train_data)
-        train = np.array(train)
-            
-        new_contaminated_dfs = []
-        for i in range(len(contaminated_dfs)): 
-            test_data = remove_first_x_days(contaminated_dfs[i], 3)
-            new_contaminated_dfs.append(test_data)
-            test_data = create_extended_features(test_data, self.config.disinfectant.value, self.config.window_size)
-            test.extend(test_data)
-        test = np.array(test)
-        
+
+        new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
+        new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+        new_contaminated_df = pd.concat(new_contaminated_dfs)
+    
         # get x and y to train on 
         x_train = np.array([row[:-1] for row in train])
         y_train = np.array([row[-1] for row in train]).reshape(-1,1)
@@ -82,16 +72,16 @@ class SVRModel(AnomalyModel):
         test_timestamps = build_timestamps(new_contaminated_dfs, self.config.window_size)
         plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
                     
-        y_true = calculate_labels(new_contaminated_dfs[i], self.config.contaminants[0].value, self.config.window_size)
+        y_true = self._calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
         
         y_true = np.array(y_true)
         print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
         
-        
+
         #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
         residual_train = np.abs(y_train - y_train_pred)
-        threshold = residual_train.mean() + 60 * residual_train.std()
-        
+        threshold = residual_train.mean() + self._get_threshold_multiplier() * residual_train.std()
+
         print(f"Threshold: {threshold:.4f}")
         print(len(y_test), len(y_test_pred))
 
@@ -105,10 +95,8 @@ class SVRModel(AnomalyModel):
         
         results = {}
         
-        # iterate over the nodes
         for node, clean_dfs in all_clean_dfs.items():
             
-            # get contaminated dataset for the same node
             contaminated_dfs = all_contaminated_dfs[node]
             
             y_true, y_pred, _, _ = self.predict(node, clean_dfs, contaminated_dfs)
