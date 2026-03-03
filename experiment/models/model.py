@@ -131,13 +131,14 @@ class AnomalyModel(ABC):
         return example_dfs, contaminated_dfs
     
 
-    def _prepare_dataset(self, dfs: list[pd.DataFrame], feature_type="stats"):
+    def _prepare_dataset(self, dfs: list[pd.DataFrame], feature_type="stats" , stats = True):
         """
         Cleans datasets and generates features (statistical or extended) using sliding windows.
 
         Parameters:
         - dfs: List of pandas DataFrames
         - feature_type: "stats" for create_features, "extended" for create_extended_features
+        - stats : True if stats are activated, False otherwise 
         
         Returns:
         - datasets: cleaned datasets
@@ -151,7 +152,7 @@ class AnomalyModel(ABC):
             datasets.append(df_clean)
 
             if feature_type == "extended":
-                features = create_extended_features(df_clean, self.config.disinfectant.value, self.config.window_size, stats=False)
+                features = create_extended_features(df_clean, self.config.disinfectant.value, self.config.window_size, stats=stats)
             else:
                 features = create_features(df_clean, self.config.disinfectant.value, self.config.window_size)
 
