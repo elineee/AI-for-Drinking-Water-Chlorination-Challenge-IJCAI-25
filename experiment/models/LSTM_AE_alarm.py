@@ -20,19 +20,19 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
         return detect_change_point(y_pred)
     
     def run_model(self, train_batches, test_batches, epochs):
-        """ 
-        Trains the autoencoder on the training data and returns the anomaly scores for the test data.
-        
-        Parameters:
-        - train_batches: data loader for the training data
-        - test_batches: data loader for the validation/test data
-        - epochs: the number of epochs to train the model 
+        """
+        Trains the LSTM autoencoder on the training data and returns the anomaly scores for the test data.
+        The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
+
+        Parameters: 
+        - train_batches : DataLoader containing the training data
+        - test_batches : DataLoader containing the test data 
+        - epochs : number of epochs used to train the autoencoder.
 
         Returns:
-        - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
-        - test_reconstruction: the reconstructed test data from the autoencoder
-        - test_error: the reconstruction error for each test sample
-        - threshold: the threshold used to classify anomalies
+        - mean_true_seq_per_timestep : list of mean true value per timestep. 
+        - mean_decoded_seq_per_timestep : list of mean reconstructed value per timestep.
+        - anomalies : list of predicted values per timestep based on the reconstruction error threshold. Values are -1 for anomalies and 1 for normal data.
         """
 
         # Get tensor shape: (batch_size, seq_len, num_features)
@@ -64,9 +64,8 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
                 train_loss += loss.item()
                 
             print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss/len(train_batches):.6f}")
-        
-        torch.save(model.state_dict(), "lstm_autoencoder.pth")
-        
+
+
         # evaluate the model
         model.eval()
         with torch.no_grad():
@@ -78,9 +77,9 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
                 error_per_window = torch.mean((decoded - batch) ** 2, dim=(1, 2))  # shape: (batch_size,)
                 training_errors_per_window.extend(error_per_window.cpu().numpy())
 
-            training_errors_per_window = np.array(training_errors_per_window)
-            train_mean = training_errors_per_window.mean()
-            train_std = training_errors_per_window.std()
+            training_errors_per_window_np = np.array(training_errors_per_window)
+            train_mean = training_errors_per_window_np.mean()
+            train_std = training_errors_per_window_np.std()
 
             
         seq_decoded = [[0, 0] for _ in range(len(test_batches.dataset) + self.config.window_size)] 
