@@ -2,7 +2,6 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
 class CusumModel(AnomalyModel):
@@ -11,6 +10,31 @@ class CusumModel(AnomalyModel):
     def _get_threshold_multiplier(self):
         return 3
     
+
+    def _prepare_data(self, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
+        """
+        Prepares train/test data for the CUSUM model.
+
+        Parameters:
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contaminated data)
+
+        Returns:
+        - X_train: flattened training features
+        - X_test: flattened test features
+        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
+        """
+
+        _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended", stats=False)
+        prepared_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats=False)
+
+        # Flatten the windows for CUSUM
+        X_train = np.array(X_train).flatten()
+        X_test = np.array(X_test).flatten()
+
+        return X_train, X_test, prepared_contaminated_dfs
+
+
     def get_results(self):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
@@ -19,32 +43,18 @@ class CusumModel(AnomalyModel):
         for node, clean_dfs in all_clean_dfs.items():
             
             contaminated_dfs = all_contaminated_dfs[node] 
-            
-            _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended", stats=False)
-            X_train = np.array(X_train)
-            X_train = X_train.flatten()
-            
-            new_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats=False)
-            X_test = np.array(X_test)
-            X_test = X_test.flatten()
-            
-            new_contaminated_df = pd.concat(new_contaminated_dfs)
-            
+            X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
+            prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
+
             cusum_train = self.cusum(X_train, X_train.mean(), X_train.std())
             cusum_scores = self.cusum(X_test, X_train.mean(), X_train.std())
             
             threshold = cusum_train.mean() + self._get_threshold_multiplier() *cusum_train.std()
             print(f"Threshold: {threshold}")
             
-            y_pred = []
-            for c in cusum_scores:
-                if c > threshold:
-                    y_pred.append(-1)
-                else:
-                    y_pred.append(1)
-            
+            y_pred = np.where(cusum_scores > threshold, -1, 1)
             y_pred = self._post_predictions(y_pred)
-            y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
+            y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
 
             # Plot
             plt.figure(figsize=(10, 6))
@@ -62,6 +72,7 @@ class CusumModel(AnomalyModel):
             
         return results
     
+
     def cusum(self, data, reference_mean, reference_std=None, k=0.5):
         """
         Computes the CUSUM for change point detection.

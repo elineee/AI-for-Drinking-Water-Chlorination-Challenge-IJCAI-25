@@ -1,6 +1,5 @@
 import pandas as pd
 from sklearn.ensemble import IsolationForest
-from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
 
@@ -30,7 +29,7 @@ class IsolationForestModel(AnomalyModel):
             y_pred = model.fit_predict(X)
             y_pred = self._post_predictions(y_pred)
 
-            y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, 0)
+            y_true = self._calculate_labels(contaminated_df, self.config.contaminants[0].value, 0)
 
             results[node] = {"y_true": y_true, "y_pred": y_pred}
 

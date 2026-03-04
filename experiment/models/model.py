@@ -113,6 +113,7 @@ class AnomalyModel(ABC):
 
         return datasets, np.array(windows)
     
+    
     def _post_predictions(self, y_pred):
         """
         Does post predictions on the predicted labels 
@@ -121,7 +122,8 @@ class AnomalyModel(ABC):
         - y_pred: predicted labels
         """
         return y_pred
-    
+
+
     def _calculate_labels(self, df, contaminant, window_size):
         """
         Gets the method to calculate labels. 

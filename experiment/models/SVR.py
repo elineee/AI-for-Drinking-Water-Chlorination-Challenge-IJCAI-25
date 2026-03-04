@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from data_transformation import calculate_labels
 from utils import plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
