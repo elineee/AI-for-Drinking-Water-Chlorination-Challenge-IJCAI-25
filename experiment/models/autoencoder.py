@@ -3,8 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import pandas as pd
-from data_transformation import create_extended_features
-from utils import plot_prediction
+from utils import plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
@@ -39,9 +38,12 @@ class Autoencoder(nn.Module):
 class AutoencoderModel(AnomalyModel):
     """ Class for Autoencoder model"""
     
+    def _get_threshold_multiplier(self):
+        return 1.5
+
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
-        Trains the autoencoder on the training data and returns the anomaly scores for the test data.
+        Trains the autoencoder on the training data and detects anomalies on the test data.
         
         Parameters:
         - X_train: the training data (clean data)
@@ -56,32 +58,30 @@ class AutoencoderModel(AnomalyModel):
         torch.manual_seed(42)
 
         model = Autoencoder(X_train.shape[1])
-        
         criterion = nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.003, weight_decay=1e-8)
+        optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
-        # Training
+        # Training 
         for epoch in range(epochs):
+
             optimizer.zero_grad()
-
             train_reconstruction = model(X_train)
-            loss = criterion(train_reconstruction, X_train)
-
-            loss.backward()
+            train_loss = criterion(train_reconstruction, X_train)
+            train_loss.backward()
             optimizer.step()
 
-            print(f'Training: Epoch {epoch+1}, Loss: {loss}')
+            print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
         
         model.eval()
 
         with torch.no_grad():
-            train_reconstruction = model(X_train)
-            train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
-            
-            threshold = train_error.mean() + 1.5 * train_error.std()
-            # Alternative: threshold = train_error.max()
 
-            # Testing
+            # Computes the threshold 
+            train_reconstruction = model(X_train)
+            train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)            
+            threshold = train_error.mean() + self._get_threshold_multiplier() * train_error.std()
+
+            # Anomaly detection with the threshold  
             test_reconstruction = model(X_test)
             test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
             anomalies = test_error > threshold
@@ -91,41 +91,60 @@ class AutoencoderModel(AnomalyModel):
                 test_reconstruction.cpu().numpy(),
                 test_error.cpu().numpy()
             )        
+        
+    def _prepare_data(self, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
+        """
+        Prepares train/test tensors from dataframes.
+        
+        Parameters: 
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contamined data)
+
+        Returns: 
+        - tensor with the normalized training data (clean data)
+        - tensor with the normalized testing data (contaminated data)
+        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
+        """
+
+        _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended")
+        prepared_contaminated_dfs , X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+
+        # Normalize data with train mean and train std 
+        X_train_mean = X_train.mean(axis=0)
+        X_train_std = X_train.std(axis=0)
+        X_train_std[X_train_std == 0] = 1
+
+        X_train = (X_train - X_train_mean) / X_train_std
+        X_test = (X_test - X_train_mean) / X_train_std
+
+        return (
+            torch.tensor(X_train, dtype=torch.float32),
+            torch.tensor(X_test, dtype=torch.float32),
+            prepared_contaminated_dfs
+        )
 
     def get_results(self):
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
 
         for node, clean_dfs in all_clean_dfs.items():
-            clean_df = pd.concat(clean_dfs)
             contaminated_dfs = all_contaminated_dfs[node]
-            contaminated_df = pd.concat(contaminated_dfs)
-
-            X_train = create_extended_features(clean_df, self.config.disinfectant.value, self.config.window_size)
-            X_test = create_extended_features(contaminated_df, self.config.disinfectant.value, self.config.window_size)
-
-            # Normalize the data 
-            mean = X_train.mean(axis=0)
-            std = X_train.std(axis=0)
-            std[std == 0] = 1  
-
-            X_train = (X_train - mean) / std
-            X_test = (X_test - mean) / std
-    
-            X_train = torch.tensor(X_train, dtype=torch.float32)
-            X_test = torch.tensor(X_test, dtype=torch.float32)
-
+            X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
+            prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
+            # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = self._calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size)
+            y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             anomalies, reconstructions, test_error = self.run_model(X_train, X_test, 100)
+            
             y_pred = np.where(anomalies, -1, 1)  
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
-
-            test_timestamps = contaminated_df.iloc[self.config.window_size:]["timestep"].values
-            signal = X_test[:, 0].cpu().numpy()
-
-            plot_prediction(test_timestamps, signal, reconstructions[:, 0], f"Test prediction node {node}")
+            
+            # Plot the reconstruction of the disinfectant value
+            test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)            
+            signal = X_test[:, -1].cpu().numpy()
+            disinfectant_reconstruction = reconstructions[:, -1]
+            plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
 
         return results
     

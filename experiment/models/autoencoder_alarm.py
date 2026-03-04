@@ -13,10 +13,6 @@ class AutoencoderAlarmModel(AutoencoderModel):
     
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
-    
-    # Detect change point (not used here, we use CUSUM detection)
-    # def _post_predictions(self, y_pred):
-    #     return detect_change_point(y_pred)
 
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
@@ -35,25 +31,24 @@ class AutoencoderAlarmModel(AutoencoderModel):
         torch.manual_seed(42)
 
         model = Autoencoder(X_train.shape[1])
-        
         criterion = nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.003, weight_decay=1e-8)
+        optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
-        # Training
+        # Training 
         for epoch in range(epochs):
+
             optimizer.zero_grad()
-
             train_reconstruction = model(X_train)
-            loss = criterion(train_reconstruction, X_train)
-
-            loss.backward()
+            train_loss = criterion(train_reconstruction, X_train)
+            train_loss.backward()
             optimizer.step()
 
-            print(f'Training: Epoch {epoch+1}, Loss: {loss}')
+            print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
         
         model.eval()
 
         with torch.no_grad():
+            # To compute the threshold 
             train_reconstruction = model(X_train)
             train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)
             train_error_np = train_error.cpu().numpy()
