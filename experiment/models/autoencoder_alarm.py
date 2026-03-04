@@ -3,7 +3,7 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 from data_transformation import calculate_labels_alarm
-from utils import cusum_detection, detect_change_point
+from utils import cusum_detection
 from models.autoencoder import AutoencoderModel, Autoencoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46

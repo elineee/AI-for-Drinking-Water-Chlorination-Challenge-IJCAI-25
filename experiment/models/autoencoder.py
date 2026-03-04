@@ -1,3 +1,4 @@
+from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -11,7 +12,7 @@ from models.model import AnomalyModel
 # Source: https://keras.io/examples/timeseries/timeseries_anomaly_detection/
 class Autoencoder(nn.Module):
     """ Class for the autoencoder module"""
-    def __init__(self, input_dim):
+    def __init__(self, input_dim, latent_dim):
         super().__init__()
 
         self.encoder = nn.Sequential(
@@ -19,11 +20,11 @@ class Autoencoder(nn.Module):
             nn.ReLU(),
             nn.Linear(16, 16),
             nn.ReLU(),
-            nn.Linear(16, 8),
+            nn.Linear(16, latent_dim),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
-            nn.Linear(8, 16),
+            nn.Linear(latent_dim, 16),
             nn.ReLU(),
             nn.Linear(16, 16),
             nn.ReLU(),
@@ -74,7 +75,7 @@ class AutoencoderModel(AnomalyModel):
         )
 
 
-    def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
+    def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int, latent_dim : int) :
         """ 
         Trains the autoencoder on the training data and detects anomalies on the test data.
         
@@ -82,6 +83,7 @@ class AutoencoderModel(AnomalyModel):
         - X_train: the training data (clean data)
         - X_test: the test data (contaminated data)
         - epochs: the number of epochs to train the model 
+        - latent_dim: the dimension of the latent space of the autoencoder 
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
@@ -90,9 +92,13 @@ class AutoencoderModel(AnomalyModel):
         """
         torch.manual_seed(42)
 
-        model = Autoencoder(X_train.shape[1])
+        model = Autoencoder(X_train.shape[1], latent_dim)
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
+
+        threshold_std = 1/ np.sqrt(latent_dim) # Heuristic
+        latent_stds = []
+
 
         # Training 
         for epoch in range(epochs):
@@ -104,7 +110,22 @@ class AutoencoderModel(AnomalyModel):
             optimizer.step()
 
             print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
-        
+
+            with torch.no_grad(): 
+                embeddings = model.encoder(X_train)
+                mean_std = embeddings.std(dim=0).mean().item()
+                latent_stds.append(mean_std)
+
+        # Plot latent stds 
+        plt.figure(figsize=(10, 4))
+        plt.plot(latent_stds, label="Mean std of embeddings")
+        plt.axhline(y=threshold_std, color='r', linestyle='--', label=f"Threshold std = {threshold_std:.3f}")
+        plt.xlabel("Epoch")
+        plt.ylabel("Mean std")
+        plt.title("Latent stds during training")
+        plt.legend()
+        plt.show()
+
         model.eval()
 
         with torch.no_grad():
@@ -131,13 +152,15 @@ class AutoencoderModel(AnomalyModel):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
 
         for node, clean_dfs in all_clean_dfs.items():
+
             contaminated_dfs = all_contaminated_dfs[node]
             X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
             prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
+
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            anomalies, reconstructions, test_error = self.run_model(X_train, X_test, 100)
+            anomalies, reconstructions, test_error = self.run_model(X_train, X_test, 500, 8)
             
             y_pred = np.where(anomalies, -1, 1)  
             y_pred = self._post_predictions(y_pred)
