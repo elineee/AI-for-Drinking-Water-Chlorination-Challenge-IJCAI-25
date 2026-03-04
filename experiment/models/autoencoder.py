@@ -41,6 +41,39 @@ class AutoencoderModel(AnomalyModel):
     def _get_threshold_multiplier(self):
         return 1.5
 
+
+    def _prepare_data(self, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
+        """
+        Prepares train/test tensors from dataframes for the Autoencoder.
+        
+        Parameters: 
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contamined data)
+
+        Returns: 
+        - tensor with the normalized training data (clean data)
+        - tensor with the normalized testing data (contaminated data)
+        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
+        """
+
+        _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended")
+        prepared_contaminated_dfs , X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+
+        # Normalize data with train mean and train std 
+        X_train_mean = X_train.mean(axis=0)
+        X_train_std = X_train.std(axis=0)
+        X_train_std[X_train_std == 0] = 1
+
+        X_train = (X_train - X_train_mean) / X_train_std
+        X_test = (X_test - X_train_mean) / X_train_std
+
+        return (
+            torch.tensor(X_train, dtype=torch.float32),
+            torch.tensor(X_test, dtype=torch.float32),
+            prepared_contaminated_dfs
+        )
+
+
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
         Trains the autoencoder on the training data and detects anomalies on the test data.
@@ -92,36 +125,6 @@ class AutoencoderModel(AnomalyModel):
                 test_error.cpu().numpy()
             )        
         
-    def _prepare_data(self, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
-        """
-        Prepares train/test tensors from dataframes.
-        
-        Parameters: 
-        - clean_dfs: dataframes with training data (clean data)
-        - contaminated_dfs: dataframes with testing data (contamined data)
-
-        Returns: 
-        - tensor with the normalized training data (clean data)
-        - tensor with the normalized testing data (contaminated data)
-        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
-        """
-
-        _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended")
-        prepared_contaminated_dfs , X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
-
-        # Normalize data with train mean and train std 
-        X_train_mean = X_train.mean(axis=0)
-        X_train_std = X_train.std(axis=0)
-        X_train_std[X_train_std == 0] = 1
-
-        X_train = (X_train - X_train_mean) / X_train_std
-        X_test = (X_test - X_train_mean) / X_train_std
-
-        return (
-            torch.tensor(X_train, dtype=torch.float32),
-            torch.tensor(X_test, dtype=torch.float32),
-            prepared_contaminated_dfs
-        )
 
     def get_results(self):
         results = {}

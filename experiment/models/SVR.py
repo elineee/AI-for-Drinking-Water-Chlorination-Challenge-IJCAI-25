@@ -15,22 +15,66 @@ class SVRModel(AnomalyModel):
     def _get_threshold_multiplier(self):
         return 60
     
-    def predict(self, node, clean_dfs, contaminated_dfs): 
 
-        new_clean_dfs, train = self._prepare_dataset(clean_dfs, feature_type="extended")
-        new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
-        new_contaminated_df = pd.concat(new_contaminated_dfs)
-    
-        # get x and y to train on 
-        x_train = np.array([row[:-1] for row in train])
-        y_train = np.array([row[-1] for row in train]).reshape(-1,1)
+    def _prepare_data(self, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
+        """
+        Prepares and scales train/test data for the SVR model.
 
-        # scale the data, two separate scalers are needed to be able to inverse transform the predictions later 'cause different shapes
+        Parameters:
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contaminated data)
+
+        Returns:
+        - x_train: scaled training features
+        - y_train: scaled training targets
+        - x_test: scaled test features
+        - y_test: scaled test targets
+        - scaler_y: fitted scaler for y
+        - prepared_clean_dfs: clean dataframes after preprocessing
+        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
+        """
+        prepared_clean_dfs, X_train = self._prepare_dataset(clean_dfs, feature_type="extended")
+        prepared_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
+
+        # Get x and y to train on and x and y to test on
+        x_train = np.array([row[:-1] for row in X_train])
+        y_train = np.array([row[-1] for row in X_train]).reshape(-1, 1)
+
+        x_test = np.array([row[:-1] for row in X_test])
+        y_test = np.array([row[-1] for row in X_test]).reshape(-1, 1)
+
+        # Scale the data 
+        # Two separate scalers are needed to inverse transform the predictions later because different shapes
         scaler_x = StandardScaler()
-        x_train = scaler_x.fit_transform(x_train)
         scaler_y = StandardScaler()
+
+        x_train = scaler_x.fit_transform(x_train)
         y_train = scaler_y.fit_transform(y_train)
-        
+
+        x_test = scaler_x.transform(x_test)
+        y_test = scaler_y.transform(y_test)
+
+        return x_train, y_train, x_test, y_test, scaler_y, prepared_clean_dfs, prepared_contaminated_dfs
+
+
+    def predict(self, node: str, clean_dfs: list[pd.DataFrame], contaminated_dfs: list[pd.DataFrame]):
+        """
+        Trains the SVR model on clean data and detects anomalies on contaminated data.
+
+        Parameters:
+        - node: the node id
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contaminated data)
+
+        Returns:
+        - y_true: true labels
+        - y_pred: predicted labels (-1 for anomaly, 1 for normal)
+        - y_test: actual test values
+        - y_test_pred: predicted test values
+        """
+        x_train, y_train, x_test, y_test, scaler_y, prepared_clean_dfs, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
+        prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)  
+
         # params = self.get_best_params(x_train, y_train)
         # print(params)
         
@@ -43,19 +87,11 @@ class SVRModel(AnomalyModel):
         
         model.fit(x_train, y_train.ravel())
         
-        # get x and y to test on
-        x_test = np.array([row[:-1] for row in test])
-        y_test = np.array([row[-1] for row in test]).reshape(-1,1)
-        
-        # scale the test data using the same scalers as for the training data
-        x_test = scaler_x.transform(x_test)
-        y_test = scaler_y.transform(y_test)
-        
-        # reshape y to be in the right format for evaluation
+        # Reshape y to be in the right format for evaluation
         y_train_pred = model.predict(x_train).reshape(-1,1)
         y_test_pred = model.predict(x_test).reshape(-1,1)
         
-        # inverse transform the predictions to get them back in the original scale
+        # Inverse transform the predictions to get them back in the original scale
         y_train_pred = scaler_y.inverse_transform(y_train_pred)
         y_test_pred = scaler_y.inverse_transform(y_test_pred)
         
@@ -63,30 +99,54 @@ class SVRModel(AnomalyModel):
         y_test = scaler_y.inverse_transform(y_test)
         
         # Plots
-        train_timestamps = build_timestamps(new_clean_dfs, self.config.window_size)
+        train_timestamps = build_timestamps(prepared_clean_dfs, self.config.window_size)
         plot_prediction( train_timestamps, y_train, y_train_pred, title=f"Training prediction node {node} ")
 
-        test_timestamps = build_timestamps(new_contaminated_dfs, self.config.window_size)
+        test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)
         plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
                     
-        y_true = self._calculate_labels(new_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
+        y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
         
         y_true = np.array(y_true)
         print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
         
-
         #calculate the threshold for anomaly detection based on the training data residuals (difference between predicted and true values)
         residual_train = np.abs(y_train - y_train_pred)
         threshold = residual_train.mean() + self._get_threshold_multiplier() * residual_train.std()
 
         print(f"Threshold: {threshold:.4f}")
-        print(len(y_test), len(y_test_pred))
 
         residual_test = np.abs(y_test - y_test_pred)
         y_pred = np.where(residual_test > threshold, -1, 1)
         
         return y_true, y_pred, y_test, y_test_pred      
-                
+
+
+    def get_best_params(self, x_train, y_train):
+        """
+        Uses grid search to find the best hyperparameters for the SVR model.
+        
+        Parameters:
+        - x_train: scaled training features
+        - y_train: scaled training targets
+
+        Returns:
+        - dictionary of best hyperparameters found
+        """
+        
+        param_grid = {
+            'C': [0.1, 1, 10, 50, 100, 500, 1000],
+            'epsilon': [0.001, 0.01, 0.1, 0.5, 1],
+            'gamma': ['scale', 0.0001, 0.001, 0.01, 0.1, 1],
+            'kernel': ['rbf']
+        }
+
+        grid = GridSearchCV(SVR(), param_grid, cv=5, scoring='neg_mean_squared_error')
+        grid.fit(x_train, y_train.ravel())
+        
+        return grid.best_params
+    
+
     def get_results(self):
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
@@ -103,21 +163,4 @@ class SVRModel(AnomalyModel):
                 
         return results
 
-    
-    def get_best_params(self, x_train, y_train):
-        """
-        Uses grid search to find the best hyperparameters for the SVR model.
-        """
-        
-        param_grid = {
-            'C': [0.1, 1, 10, 50, 100, 500, 1000],
-            'epsilon': [0.001, 0.01, 0.1, 0.5, 1],
-            'gamma': ['scale', 0.0001, 0.001, 0.01, 0.1, 1],
-            'kernel': ['rbf']
-        }
-
-        grid = GridSearchCV(SVR(), param_grid, cv=5, scoring='neg_mean_squared_error')
-        grid.fit(x_train, y_train.ravel())
-        
-        return grid.best_params
     

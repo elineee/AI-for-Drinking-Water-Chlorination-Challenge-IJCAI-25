@@ -73,6 +73,43 @@ class Decoder(nn.Module):
 class LSTMAutoEncoderModel(AnomalyModel):
     """ Class for LSTM Autoencoder model"""
     
+    def _prepare_data(self, clean_dfs, contaminated_dfs):
+        """
+        Prepares train/test tensors from dataframes for the LSTM Autoencoder.
+
+        Parameters:
+        - clean_dfs: dataframes with training data (clean data)
+        - contaminated_dfs: dataframes with testing data (contaminated data)
+
+        Returns:
+        - X_train: training tensor of shape (num_samples, seq_len, 1)
+        - X_test: test tensor of shape (num_samples, seq_len, 1)
+        - prepared_contaminated_dfs: contaminated dataframes after preprocessing
+        """
+
+        _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended", stats=False)
+        prepared_contaminated_dfs, X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats=False)
+
+        # Normalize the data 
+        scaler = StandardScaler()
+        X_train = scaler.fit_transform(X_train)
+        X_test = scaler.transform(X_test)
+
+        # Convert numpy arrays of type float64 to type float32 for PyTorch
+        X_train = X_train.astype(np.float32)
+        X_test = X_test.astype(np.float32)
+
+        # Reshape to 3D: (num_samples, seq_len, num_features=1 since only chlorine is used)
+        X_train = X_train[:, :, np.newaxis] 
+        X_test = X_test[:, :, np.newaxis] 
+
+        # Tensors 
+        X_train = torch.from_numpy(X_train)
+        X_test = torch.from_numpy(X_test)
+
+        return X_train, X_test, prepared_contaminated_dfs
+
+
     def run_model(self, train_batches, test_batches, epochs):
         """
         Trains the LSTM autoencoder on the training data and returns the anomaly scores for the test data.
@@ -194,7 +231,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
                 anomalies.append(1) # normal
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
-          
+
 
     def get_results(self):
         results = {}
@@ -204,19 +241,15 @@ class LSTMAutoEncoderModel(AnomalyModel):
             print(f"Calculating results for node {node}")
             
             contaminated_dfs = all_contaminated_dfs[node]
-
-            _ , train = self._prepare_dataset(clean_dfs, feature_type="extended", stats = False)
-            new_contaminated_dfs, test = self._prepare_dataset(contaminated_dfs, feature_type="extended", stats = False)
-            new_contaminated_df = pd.concat(new_contaminated_dfs)
-
-            X_train, X_test = self._prepare_tensors(train, test)
+            X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
+            prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
 
             train_batches = torch.utils.data.DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = torch.utils.data.DataLoader(X_test, batch_size=1, shuffle=False) 
             
             mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
-            y_true = calculate_labels(new_contaminated_df, self.config.contaminants[0].value, 0)
+            y_true = calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, 0)
             
             true_seq = self._convert_sequence_to_float(mean_true_seq_per_timestep)
             decoded_seq = self._convert_sequence_to_float(mean_decoded_seq_per_timestep)
@@ -231,34 +264,6 @@ class LSTMAutoEncoderModel(AnomalyModel):
             results[node] = { "y_true": y_true, "y_pred": y_pred}
 
         return results
-    
-
-    def _prepare_tensors(self, train, test):
-        """
-        Normalizes sliding window datasets and converts them into PyTorch tensors.
-
-        Parameters: 
-        - train : training sliding windows 
-        - test : test sliding windows
-
-        Returns:
-        - train and test tensors. 
-        """
-
-        # Normalize the data 
-        scaler = StandardScaler()
-        X_train = scaler.fit_transform(train)
-        X_test = scaler.transform(test)
-
-        # convert numpy arrays of type float64 to type float32 for PyTorch
-        X_train = X_train.astype(np.float32)
-        X_test = X_test.astype(np.float32)
-
-        # Reshape to 3D: (num_samples, seq_len, num_features)
-        X_train = X_train[:, :, np.newaxis] # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
-        X_test = X_test[:, :, np.newaxis] # (num_samples, window_size, 1) since only one feature (chlorine) is used for the model
-
-        return torch.from_numpy(X_train), torch.from_numpy(X_test)
     
 
     def _convert_sequence_to_float(self, seq):
