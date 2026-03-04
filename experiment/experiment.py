@@ -14,6 +14,7 @@ from models.LSTM_AE_alarm import LSTMAutoEncoderAlarmModel
 from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
+from models.cnn import CNNModel
 
 
 AVAILABLE_MODELS = {
@@ -31,7 +32,8 @@ AVAILABLE_MODELS = {
     ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoEncoderAlarmModel,
     ModelName.GAN: GANModel,
     ModelName.CUSUM: CusumModel,
-    ModelName.CUSUM_ALARM: CusumAlarmModel
+    ModelName.CUSUM_ALARM: CusumAlarmModel,
+    ModelName.CNN: CNNModel
 }
 
 class ExperimentRunner:

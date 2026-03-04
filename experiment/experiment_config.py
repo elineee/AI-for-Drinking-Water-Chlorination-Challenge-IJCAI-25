@@ -24,6 +24,7 @@ class ModelName(Enum):
     GAN = "GAN"
     CUSUM = "CUSUM"
     CUSUM_ALARM = "CUSUM_alarm"
+    CNN = "CNN"
 
 @dataclass
 class ExperimentConfig:
