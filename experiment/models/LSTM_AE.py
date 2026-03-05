@@ -71,7 +71,7 @@ class Decoder(nn.Module):
     
     
 class LSTMAutoEncoderModel(AnomalyModel):
-    """ Class for LSTM Autoencoder model"""
+    """ Class for LSTM AutoEncoder model"""
     
     def _prepare_data(self, clean_dfs, contaminated_dfs):
         """
@@ -112,13 +112,13 @@ class LSTMAutoEncoderModel(AnomalyModel):
 
     def run_model(self, train_batches, test_batches, epochs):
         """
-        Trains the LSTM autoencoder on the training data and returns the anomaly scores for the test data.
+        Trains the LSTM AutoEncoder on the training data and returns the anomaly scores for the test data.
         The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
 
         Parameters: 
         - train_batches : DataLoader containing the training data
         - test_batches : DataLoader containing the test data 
-        - epochs : number of epochs used to train the autoencoder.
+        - epochs : number of epochs used to train the AutoEncoder
 
         Returns:
         - mean_true_seq_per_timestep : list of mean true value per timestep. 

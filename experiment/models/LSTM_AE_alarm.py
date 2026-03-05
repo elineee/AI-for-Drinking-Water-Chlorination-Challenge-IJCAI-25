@@ -8,7 +8,7 @@ from data_transformation import calculate_labels_alarm
 
 
 class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
-    """ Class for LSTM Autoencoder with alarm model"""
+    """ Class for LSTM AutoEncoder with alarm model"""
 
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
@@ -21,13 +21,13 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
     
     def run_model(self, train_batches, test_batches, epochs):
         """
-        Trains the LSTM autoencoder on the training data and returns the anomaly scores for the test data.
+        Trains the LSTM AutoEncoder on the training data and returns the anomaly scores for the test data.
         The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
 
         Parameters: 
         - train_batches : DataLoader containing the training data
         - test_batches : DataLoader containing the test data 
-        - epochs : number of epochs used to train the autoencoder.
+        - epochs : number of epochs used to train the AutoEncoder
 
         Returns:
         - mean_true_seq_per_timestep : list of mean true value per timestep. 

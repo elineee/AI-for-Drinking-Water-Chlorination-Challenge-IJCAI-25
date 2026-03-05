@@ -10,7 +10,7 @@ from models.model import AnomalyModel
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
 # Source: https://www.datacamp.com/tutorial/introduction-to-autoencoders
 # Source: https://keras.io/examples/timeseries/timeseries_anomaly_detection/
-class Autoencoder(nn.Module):
+class AutoEncoder(nn.Module):
     """ Class for the autoencoder module"""
     def __init__(self, input_dim, latent_dim):
         super().__init__()
@@ -36,8 +36,8 @@ class Autoencoder(nn.Module):
         return decoded
     
     
-class AutoencoderModel(AnomalyModel):
-    """ Class for Autoencoder model"""
+class AutoEncoderModel(AnomalyModel):
+    """ Class for AutoEncoder model"""
     
     def _get_threshold_multiplier(self):
         return 1.5
@@ -77,26 +77,26 @@ class AutoencoderModel(AnomalyModel):
 
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int, latent_dim : int) :
         """ 
-        Trains the autoencoder on the training data and detects anomalies on the test data.
+        Trains the AutoEncoder on the training data and detects anomalies on the test data.
         
         Parameters:
         - X_train: the training data (clean data)
         - X_test: the test data (contaminated data)
         - epochs: the number of epochs to train the model 
-        - latent_dim: the dimension of the latent space of the autoencoder 
+        - latent_dim: the dimension of the latent space of the AutoEncoder 
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
-        - test_reconstruction: the reconstructed test data from the autoencoder
+        - test_reconstruction: the reconstructed test data from the AutoEncoder
         - test_error: the reconstruction error for each test sample
         """
         torch.manual_seed(42)
 
-        model = Autoencoder(X_train.shape[1], latent_dim)
+        model = AutoEncoder(X_train.shape[1], latent_dim)
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
-        threshold_std = 1/ np.sqrt(latent_dim) # Heuristic
+        threshold_std = 1/ np.sqrt(latent_dim) # heuristic
         latent_stds = []
 
 
@@ -111,6 +111,7 @@ class AutoencoderModel(AnomalyModel):
 
             print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
 
+            # Compute latent stds
             with torch.no_grad(): 
                 embeddings = model.encoder(X_train)
                 mean_std = embeddings.std(dim=0).mean().item()

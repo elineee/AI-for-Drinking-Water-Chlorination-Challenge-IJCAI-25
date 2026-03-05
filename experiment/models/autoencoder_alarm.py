@@ -4,19 +4,19 @@ import torch.nn as nn
 import torch.optim as optim
 from data_transformation import calculate_labels_alarm
 from utils import cusum_detection
-from models.autoencoder import AutoencoderModel, Autoencoder
+from models.autoencoder import AutoEncoderModel, AutoEncoder
 
 # https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
 # https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
-class AutoencoderAlarmModel(AutoencoderModel):
-    """ Class for Autoencoder with alarm model"""
+class AutoEncoderAlarmModel(AutoEncoderModel):
+    """ Class for AutoEncoder with alarm model"""
     
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
 
     def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int) :
         """ 
-        Trains the autoencoder on the training data and returns the anomaly scores for the test data.
+        Trains the AutoEncoder on the training data and returns the anomaly scores for the test data.
         
         Parameters:
         - X_train: the training data (clean data)
@@ -25,12 +25,12 @@ class AutoencoderAlarmModel(AutoencoderModel):
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
-        - test_reconstruction_np: a numpy array of the reconstructed test data from the autoencoder
+        - test_reconstruction_np: a numpy array of the reconstructed test data from the AutoEncoder
         - test_error_np : a numpy array of the reconstruction error for each test sample
         """
         torch.manual_seed(42)
 
-        model = Autoencoder(X_train.shape[1])
+        model = AutoEncoder(X_train.shape[1])
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
