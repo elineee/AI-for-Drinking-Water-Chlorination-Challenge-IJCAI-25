@@ -19,6 +19,7 @@ class ModelName(Enum):
     SVR_ALARM = "SVR_alarm"
     AUTOENCODER = "Autoencoder"
     AUTOENCODER_ALARM = "Autoencoder_alarm"
+    VAE = "VAE"
     LSTM_AUTOENCODER = "LSTM_Autoencoder"
     LSTM_AUTOENCODER_ALARM = "LSTM_Autoencoder_alarm"
     GAN = "GAN"
