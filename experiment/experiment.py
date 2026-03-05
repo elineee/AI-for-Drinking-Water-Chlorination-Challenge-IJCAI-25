@@ -7,10 +7,10 @@ from models.one_class_SVM import OneClassSVMModel
 from models.one_class_SVM_alarm import OneClassSVMAlarmModel
 from models.SVR import SVRModel
 from models.SVR_alarm import SVRAlarmModel
-from models.autoencoder import AutoEncoderModel
-from models.autoencoder_alarm import AutoEncoderAlarmModel 
-from models.LSTM_AE import LSTMAutoEncoderModel
-from models.LSTM_AE_alarm import LSTMAutoEncoderAlarmModel
+from models.autoencoder import AutoencoderModel
+from models.autoencoder_alarm import AutoencoderAlarmModel 
+from models.LSTM_AE import LSTMAutoencoderModel
+from models.LSTM_AE_alarm import LSTMAutoencoderAlarmModel
 from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
@@ -26,10 +26,10 @@ AVAILABLE_MODELS = {
     ModelName.ONE_CLASS_SVM_ALARM: OneClassSVMAlarmModel,
     ModelName.SVR: SVRModel,
     ModelName.SVR_ALARM: SVRAlarmModel,
-    ModelName.AUTOENCODER: AutoEncoderModel,
-    ModelName.AUTOENCODER_ALARM : AutoEncoderAlarmModel,
-    ModelName.LSTM_AUTOENCODER: LSTMAutoEncoderModel,
-    ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoEncoderAlarmModel,
+    ModelName.AUTOENCODER: AutoencoderModel,
+    ModelName.AUTOENCODER_ALARM : AutoencoderAlarmModel,
+    ModelName.LSTM_AUTOENCODER: LSTMAutoencoderModel,
+    ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoencoderAlarmModel,
     ModelName.GAN: GANModel,
     ModelName.CUSUM: CusumModel,
     ModelName.CUSUM_ALARM: CusumAlarmModel,

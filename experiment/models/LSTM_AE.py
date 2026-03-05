@@ -9,11 +9,11 @@ import pandas as pd
 from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
-# from https://github.com/vincrichard/LSTM-AutoEncoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
-# and from https://github.com/matanle51/LSTM_AutoEncoder/blob/master/models/LSTMAE.py
+# from https://github.com/vincrichard/LSTM-autoencoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
+# and from https://github.com/matanle51/LSTM_autoencoder/blob/master/models/LSTMAE.py
 
-class LSTMAutoEncoder(nn.Module):
-    """ Class for the LSTM autoencoder module"""
+class LSTMAutoencoder(nn.Module):
+    """ Class for the LSTM Autoencoder module"""
     def __init__(self, input_size, hidden_size, num_layers, dropout, seq_len):
 
         super().__init__()
@@ -70,8 +70,8 @@ class Decoder(nn.Module):
         return output
     
     
-class LSTMAutoEncoderModel(AnomalyModel):
-    """ Class for LSTM AutoEncoder model"""
+class LSTMAutoencoderModel(AnomalyModel):
+    """ Class for LSTM Autoencoder model"""
     
     def _prepare_data(self, clean_dfs, contaminated_dfs):
         """
@@ -112,13 +112,13 @@ class LSTMAutoEncoderModel(AnomalyModel):
 
     def run_model(self, train_batches, test_batches, epochs):
         """
-        Trains the LSTM AutoEncoder on the training data and returns the anomaly scores for the test data.
+        Trains the LSTM Autoencoder on the training data and returns the anomaly scores for the test data.
         The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
 
         Parameters: 
         - train_batches : DataLoader containing the training data
         - test_batches : DataLoader containing the test data 
-        - epochs : number of epochs used to train the AutoEncoder
+        - epochs : number of epochs used to train the Autoencoder
 
         Returns:
         - mean_true_seq_per_timestep : list of mean true value per timestep. 
@@ -131,7 +131,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
         seq_len = sample_batch.shape[1]
         num_features = sample_batch.shape[2]
         
-        model = LSTMAutoEncoder(num_features, 16, 2, 0.2, seq_len)
+        model = LSTMAutoencoder(num_features, 16, 2, 0.2, seq_len)
         
         device = "cuda" if torch.cuda.is_available() else "cpu"
         
@@ -140,9 +140,9 @@ class LSTMAutoEncoderModel(AnomalyModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001)
         
-        # if os.path.exists("lstm_autoencoder.pth"):
+        # if os.path.exists("lstm_Autoencoder.pth"):
         if False:
-            model.load_state_dict(torch.load("lstm_autoencoder.pth", weights_only=True))
+            model.load_state_dict(torch.load("lstm_Autoencoder.pth", weights_only=True))
             
         else: 
             # train the model
@@ -163,7 +163,7 @@ class LSTMAutoEncoderModel(AnomalyModel):
                     
                 print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss/len(train_batches):.6f}")
             
-            # torch.save(model.state_dict(), "lstm_autoencoder.pth")
+            # torch.save(model.state_dict(), "lstm_Autoencoder.pth")
         
         # evaluate the model
         model.eval()

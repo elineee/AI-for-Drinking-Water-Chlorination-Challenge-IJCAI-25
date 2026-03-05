@@ -2,13 +2,13 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
-from models.LSTM_AE import LSTMAutoEncoder, LSTMAutoEncoderModel
+from models.LSTM_AE import LSTMAutoencoder, LSTMAutoencoderModel
 from utils import detect_change_point, cusum_detection
 from data_transformation import calculate_labels_alarm
 
 
-class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
-    """ Class for LSTM AutoEncoder with alarm model"""
+class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
+    """ Class for LSTM Autoencoder with alarm model"""
 
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
@@ -21,13 +21,13 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
     
     def run_model(self, train_batches, test_batches, epochs):
         """
-        Trains the LSTM AutoEncoder on the training data and returns the anomaly scores for the test data.
+        Trains the LSTM Autoencoder on the training data and returns the anomaly scores for the test data.
         The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
 
         Parameters: 
         - train_batches : DataLoader containing the training data
         - test_batches : DataLoader containing the test data 
-        - epochs : number of epochs used to train the AutoEncoder
+        - epochs : number of epochs used to train the Autoencoder
 
         Returns:
         - mean_true_seq_per_timestep : list of mean true value per timestep. 
@@ -40,7 +40,7 @@ class LSTMAutoEncoderAlarmModel(LSTMAutoEncoderModel):
         seq_len = sample_batch.shape[1]
         num_features = sample_batch.shape[2]
         
-        model = LSTMAutoEncoder(num_features, 16, 2, 0.2, seq_len)
+        model = LSTMAutoencoder(num_features, 16, 2, 0.2, seq_len)
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model = model.to(device)
         
