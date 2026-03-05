@@ -2,6 +2,7 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.metrics import f1_score, recall_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
@@ -24,7 +25,7 @@ class CNN(nn.Module):
         self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, padding=2)
         self.bn2 = nn.BatchNorm1d(128)
         self.relu2 = nn.ReLU()
-        
+            
         self.conv3 = nn.Conv1d(in_channels=128, out_channels=128, kernel_size=7, padding=3)
         self.bn3 = nn.BatchNorm1d(128)
         self.relu3 = nn.ReLU()
@@ -85,6 +86,14 @@ class CNNModel(AnomalyModel):
     
 
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
+        """ Trains the CNN model and evaluates it on the test set.
+        Parameters:
+        - train_dataloader: DataLoader for the training set
+        - val_dataloader: DataLoader for the validation set
+        - test_dataloader: DataLoader for the test set
+        
+        Returns:
+        """
         model = CNN(input_size=2, num_classes=2, sequence_length=48)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
@@ -152,6 +161,8 @@ class CNNModel(AnomalyModel):
         model.eval()
         n_corrects = 0
         n_total = 0
+        f1_scores = []
+        recall_scores = []
         with torch.no_grad():
             for _, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
@@ -163,11 +174,20 @@ class CNNModel(AnomalyModel):
 
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
-                n_total += labels.numel()
+                # n_total += labels.numel()
+                labels = labels.flatten()
+                n_total += len(labels)
+                preds = preds.flatten()
                 n_corrects += (preds == labels).sum().item()
                 print("preds:", preds)
                 print("labels:", labels)
+                f1 = f1_score(labels, preds, average='binary', zero_division=1)
+                f1_scores.append(f1)
+                recall = recall_score(labels, preds, average='binary', zero_division=1)
+                recall_scores.append(recall)
             print(f"Final Accuracy: {n_corrects/n_total:.4f}")
+            print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
+            print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
     
     def get_results(self):
         results = {}
@@ -221,31 +241,29 @@ class CNNModel(AnomalyModel):
             
             # TODO : get multivariate time series. If two features, then shape of data should be (4706, 48, 2)
             # turn data and y into tensors
+            data = np.array(data) # shape of (4706, 48)
             data = torch.tensor(data, dtype=torch.float32) # shape of (4706, 48)
             data_svr = torch.tensor(data_svr, dtype=torch.float32) # shape of (4706, 48)
             # turn into multivarite 
             data = torch.stack((data, data_svr), dim=2) # shape of (4706, 48, 2)
-            
-
-  
             y = torch.tensor(y, dtype=torch.float32) # shape of (4706, 48)
             
+            # split into train, val and test sets
             X_train, X_test, y_train, y_test = train_test_split(data, y, test_size=0.15, random_state=42)
             X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1125, random_state=42) # 0.15 * 0.75 = 0.1125
 
             weights = self.compute_weight(y_train)
-            weights_2 = self.compute_weight(y_test)
+            weights_2 = self.compute_weight(y_test) # remove this later
             
-            # TODO : split into train and test set 
             # TODO : standardize data 
             
-            # create DataLoader 
+            # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
             test_dataset = TensorDataset(X_test, y_test)
             train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-            test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False)
+            test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
             
             self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)
             
@@ -312,6 +330,18 @@ class CNNModel(AnomalyModel):
         return np.array(features)
     
     def get_labels(self, label, window=3):
+        """ Converts a label array into a new label array where each change point is labeled as 1 and normal points are labeled as 0.
+        A window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
+        The change points are defined as the points where the original label changes from 0 to >0 
+        Parameters:
+        - label: a numpy array containing the original labels 
+        - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
+        
+        Returns:
+        - a numpy array containing the new labels, where each change point is labeled as 1 and normal points are labeled as 0
+        """
+        
+        
         # change point = 1 
         # normal point = 0
         
@@ -321,13 +351,13 @@ class CNNModel(AnomalyModel):
             
             if i == 0 and label[i] > 0:
                 start = 0
-                end = min(len(label), i + window + 1)  
+                end = min(len(label), i + 2* window + 1)  
                 y[start:end] = 1
 
             if i > 0 and label[i-1] == 0 and label[i] > 0:
 
                 start = max(0, i - window)  
-                end = min(len(label), i + window + 1)  
+                end = min(len(label), i + 2 * window + 1)  
                 y[start:end] = 1
         
         return y.tolist()
