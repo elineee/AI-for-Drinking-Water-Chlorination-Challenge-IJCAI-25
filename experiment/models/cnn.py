@@ -1,6 +1,8 @@
 
+from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
+from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, TensorDataset, DataLoader
@@ -32,6 +34,7 @@ class CNN(nn.Module):
         self.relu4 = nn.ReLU()
         
         self.conv_out = nn.Conv1d(in_channels=64, out_channels=1, kernel_size=1)
+        
     def forward(self, x):
 
         x = x.transpose(1, 2)  # -> (batch, 2, 48)
@@ -60,17 +63,43 @@ class CNN(nn.Module):
 
 class CNNModel(AnomalyModel):
     
-    def train_model(self, dataloader, epochs=10):
+    def compute_weight(self, labels):
+        # Compute the number of normal and anomalous samples
+        n_normal = 0 
+        n_anomalous = 0
+        for window in labels:
+            for label in window:
+                if int(label) == 0:
+                    n_normal += 1
+                else:
+                    n_anomalous += 1
+        
+        print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
+        
+        weight = n_normal / n_anomalous
+        
+        weights = torch.tensor([weight], dtype=torch.float32)
+        print(f"Weight for anomalous samples: {weight}")
+
+        return weights
+    
+
+    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
         model = CNN(input_size=2, num_classes=2, sequence_length=48)
-        criterion = nn.BCEWithLogitsLoss() # loss for binary classification
+
+        criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        n_corrects = 0
-        n_total = 0
+        n_corrects_train = 0
+        n_corrects_val = 0
+        n_total_train = 0
+        n_total_val = 0
         losses = []
+        train_loss = []
+        val_loss = []
         model.train()
         for epoch in range(epochs):
-            for _, data in enumerate(dataloader):
+            for _, data in enumerate(train_dataloader):
                 windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
  
                 outputs = model(windows) # outputs shape (batch, 1, 48)
@@ -86,14 +115,59 @@ class CNNModel(AnomalyModel):
                 loss.backward()
                 optimizer.step()
                 
+                n_total_train += labels.numel()
+                n_corrects_train += (preds == labels).sum().item()
+            train_loss.append(np.mean(losses))
+            losses = []
+            
+            for _, data in enumerate(val_dataloader):
+                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+ 
+                outputs = model(windows) # outputs shape (batch, 1, 48)
+                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                
+                probs = torch.sigmoid(outputs) # Convert logits to probabilities
+
+                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                
+                loss = criterion(outputs, labels)
+                losses.append(loss.item())
+                n_total_val += labels.numel()
+                n_corrects_val += (preds == labels).sum().item()
+            val_loss.append(np.mean(losses))
+            losses = []
+                
+            
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+            
+        plt.figure()
+        plt.plot(train_loss, label='train')
+        plt.plot(val_loss, label='validation')
+        plt.title("Évolution de la loss en fonction des epochs")
+        plt.xlabel('epoch')
+        plt.ylabel('loss')
+        plt.legend()
+        plt.show()
+        
+        model.eval()
+        n_corrects = 0
+        n_total = 0
+        with torch.no_grad():
+            for _, data in enumerate(test_dataloader):
+                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+ 
+                outputs = model(windows) # outputs shape (batch, 1, 48)
+                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                
+                probs = torch.sigmoid(outputs) # Convert logits to probabilities
+
+                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                
                 n_total += labels.numel()
                 n_corrects += (preds == labels).sum().item()
-            
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Accuracy: {n_corrects/n_total:.4f}")
-                
-    
-    def eval_model(self):
-        pass
+                print("preds:", preds)
+                print("labels:", labels)
+            print(f"Final Accuracy: {n_corrects/n_total:.4f}")
     
     def get_results(self):
         results = {}
@@ -125,7 +199,6 @@ class CNNModel(AnomalyModel):
                 print("df shape", df.shape) 
                 _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
                 y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
-                # y_svr = np.random.rand(len(df)) # TODO : replace with real predictions of SVR model (temp random values for now)
                 print("y svr shape", y_svr.shape)
                 
                 df_clean = remove_first_x_days(df, 3)
@@ -152,17 +225,29 @@ class CNNModel(AnomalyModel):
             data_svr = torch.tensor(data_svr, dtype=torch.float32) # shape of (4706, 48)
             # turn into multivarite 
             data = torch.stack((data, data_svr), dim=2) # shape of (4706, 48, 2)
-            print("data shape", data.shape)
+            
+
+  
             y = torch.tensor(y, dtype=torch.float32) # shape of (4706, 48)
+            
+            X_train, X_test, y_train, y_test = train_test_split(data, y, test_size=0.15, random_state=42)
+            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1125, random_state=42) # 0.15 * 0.75 = 0.1125
+
+            weights = self.compute_weight(y_train)
+            weights_2 = self.compute_weight(y_test)
             
             # TODO : split into train and test set 
             # TODO : standardize data 
             
             # create DataLoader 
-            dataset = TensorDataset(data, y)
-            dataloader = DataLoader(dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
+            train_dataset = TensorDataset(X_train, y_train)
+            val_dataset = TensorDataset(X_val, y_val)
+            test_dataset = TensorDataset(X_test, y_test)
+            train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
+            val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+            test_dataloader = DataLoader(test_dataset, batch_size=32, shuffle=False)
             
-            self.train_model(dataloader, epochs=10)
+            self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)
             
 
         
@@ -230,7 +315,7 @@ class CNNModel(AnomalyModel):
         # change point = 1 
         # normal point = 0
         
-        y = np.ones(len(label), dtype=int) 
+        y = np.zeros(len(label), dtype=int) 
         
         for i in range(len(label)):
             
