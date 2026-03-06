@@ -95,6 +95,7 @@ def detect_change_point(predictions: np.array, count_required=20):
             if element == -1:
                 counter += 1
                 if counter >= count_required:
+                    y_pred.append(-1)
                     y_pred.extend([-1] * (len(predictions) - i - 1))
                     return np.array(y_pred)
                 else:
