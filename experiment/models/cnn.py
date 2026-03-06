@@ -8,7 +8,8 @@ import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, TensorDataset, DataLoader
 
-from data_transformation import remove_first_x_days
+from data_transformation import remove_first_x_days, calculate_labels_alarm
+from utils import detect_change_point
 from experiment_config import ContaminationType, ExperimentConfig
 from models.SVR import SVRModel
 from models.model import AnomalyModel
@@ -163,7 +164,10 @@ class CNNModel(AnomalyModel):
         n_total = 0
         f1_scores = []
         recall_scores = []
+        
+        results_per_time_step = [[0, 0] for _ in range(len(test_dataloader.dataset) + self.config.window_size)]
         with torch.no_grad():
+            i = 0
             for _, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
  
@@ -174,13 +178,20 @@ class CNNModel(AnomalyModel):
 
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
-                # n_total += labels.numel()
+
                 labels = labels.flatten()
                 n_total += len(labels)
                 preds = preds.flatten()
+                
+                j = 0
+                for element in preds:
+                    results_per_time_step[i+j][0] += int(element) # add the predicted label (0 or 1) to the first element of the list corresponding to the time step i+j
+                    results_per_time_step[i+j][1] += 1
+                    j += 1
+                    
+                i += 1
+                
                 n_corrects += (preds == labels).sum().item()
-                print("preds:", preds)
-                print("labels:", labels)
                 f1 = f1_score(labels, preds, average='binary', zero_division=1)
                 f1_scores.append(f1)
                 recall = recall_score(labels, preds, average='binary', zero_division=1)
@@ -188,6 +199,17 @@ class CNNModel(AnomalyModel):
             print(f"Final Accuracy: {n_corrects/n_total:.4f}")
             print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
             print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
+            
+            mean_results_per_time_step = []
+            for element, count in results_per_time_step:
+                new_element = element / count if count > 0 else 0
+                if new_element > 0.5:
+                    mean_results_per_time_step.append(-1)
+                else:
+                    mean_results_per_time_step.append(1)
+            print(mean_results_per_time_step)
+            return mean_results_per_time_step
+                    
     
     def get_results(self):
         results = {}
@@ -211,11 +233,14 @@ class CNNModel(AnomalyModel):
             svr_model = SVRModel(config_svr)
             
             new_contaminated_dfs = []
-            data = []
-            data_svr = []
-            y = []
+            data_train = []
+            data_svr_train = []
+            y_train = []
 
-            for df in contaminated_dfs:
+            # last dataset for testing 
+            # train data 
+            # TODO : créer une fonction pour optimiser le code car cv pas là
+            for df in contaminated_dfs[:-1]:
                 print("df shape", df.shape) 
                 _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
                 y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
@@ -235,22 +260,42 @@ class CNNModel(AnomalyModel):
                 
                 print(f"features shape: {np.array(features).shape}, y_svr shape: {np.array(y_svr).shape}")
                 
-                data.extend(features)
-                data_svr.extend(y_svr)
-                y.extend(labels)
+                data_train.extend(features)
+                data_svr_train.extend(y_svr)
+                y_train.extend(labels)
             
-            # TODO : get multivariate time series. If two features, then shape of data should be (4706, 48, 2)
+            # test data (last dataset)
+            _, _, _, y_svr_test = svr_model.predict(node, clean_dfs, [contaminated_dfs[-1]])
+            y_svr_test = y_svr_test.squeeze()  # Convert (N, 1) to (N,)
+            df_clean_test = remove_first_x_days(contaminated_dfs[-1], 3)
+            if len(y_svr_test) < len(df_clean_test):
+                pad_size = len(df_clean_test) - len(y_svr_test)
+                y_svr_test = np.concatenate([np.zeros(pad_size), y_svr_test])
+            y_svr_test = self.create_direct_features(y_svr_test, window_size=self.config.window_size)
+            features_test, labels_test = self.create_labeled_features(df_clean_test, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
+            y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
+
             # turn data and y into tensors
-            data = np.array(data) # shape of (4706, 48)
-            data = torch.tensor(data, dtype=torch.float32) # shape of (4706, 48)
-            data_svr = torch.tensor(data_svr, dtype=torch.float32) # shape of (4706, 48)
+            data_train = np.array(data_train) # shape of (4706, 48)
+            data_train = torch.tensor(data_train, dtype=torch.float32) # shape of (4706, 48)
+            data_test = np.array(features_test) # shape of (2401, 48)
+            data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (2401, 48)
+            
+            data_svr_train = np.array(data_svr_train) # shape of (4706, 48)
+            data_svr_train = torch.tensor(data_svr_train, dtype=torch.float32) # shape of (4706, 48)
+            data_svr_test = np.array(y_svr_test) # shape of (2401, 48)
+            data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) # shape of (2401, 48)
+            
             # turn into multivarite 
-            data = torch.stack((data, data_svr), dim=2) # shape of (4706, 48, 2)
-            y = torch.tensor(y, dtype=torch.float32) # shape of (4706, 48)
+            data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
+            y_train = np.array(y_train) # shape of (4706, 48)
+            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 48)
+            data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (2401, 48, 2)
+            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 48)
             
             # split into train, val and test sets
-            X_train, X_test, y_train, y_test = train_test_split(data, y, test_size=0.15, random_state=42)
-            X_train, X_val, y_train, y_val = train_test_split(X_train, y_train, test_size=0.1125, random_state=42) # 0.15 * 0.75 = 0.1125
+            X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
+
 
             weights = self.compute_weight(y_train)
             weights_2 = self.compute_weight(y_test) # remove this later
@@ -260,12 +305,18 @@ class CNNModel(AnomalyModel):
             # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
-            test_dataset = TensorDataset(X_test, y_test)
+            test_dataset = TensorDataset(data_test, y_test)
             train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
             
-            self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
+            
+            y_pred = detect_change_point(y_pred, count_required=15)
+            
+            results[node] = {"y_pred": y_pred, "y_true": y_true}
+        
+        return results
             
 
         
@@ -349,15 +400,20 @@ class CNNModel(AnomalyModel):
         
         for i in range(len(label)):
             
-            if i == 0 and label[i] > 0:
-                start = 0
-                end = min(len(label), i + 2* window + 1)  
-                y[start:end] = 1
+            if label[i] > 0 :
+                y[i] = 1
+            else:
+                y[i] = 0
+            
+            # if i == 0 and label[i] > 0:
+            #     start = 0
+            #     end = min(len(label), i + 2* window + 1)  
+            #     y[start:end] = 1
 
-            if i > 0 and label[i-1] == 0 and label[i] > 0:
+            # if i > 0 and label[i-1] == 0 and label[i] > 0:
 
-                start = max(0, i - window)  
-                end = min(len(label), i + 2 * window + 1)  
-                y[start:end] = 1
+            #     start = max(0, i - window)  
+            #     end = min(len(label), i + 2 * window + 1)  
+            #     y[start:end] = 1
         
         return y.tolist()
