@@ -61,12 +61,12 @@ class AutoencoderModel(AnomalyModel):
         prepared_contaminated_dfs , X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
 
         # Normalize data with train mean and train std 
-        X_train_mean = X_train.mean(axis=0)
-        X_train_std = X_train.std(axis=0)
-        X_train_std[X_train_std == 0] = 1
+        train_mean = X_train.mean(axis=0)
+        train_std = X_train.std(axis=0)
+        train_std[train_std == 0] = 1
 
-        X_train = (X_train - X_train_mean) / X_train_std
-        X_test = (X_test - X_train_mean) / X_train_std
+        X_train = (X_train - train_mean) / train_std
+        X_test = (X_test - train_mean) / train_std
 
         return (
             torch.tensor(X_train, dtype=torch.float32),

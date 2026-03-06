@@ -139,7 +139,7 @@ class LSTMAutoencoderModel(AnomalyModel):
         model = model.to(device)
         
         criterion = nn.MSELoss()
-        optimizer = optim.Adam(model.parameters(), lr=0.001)
+        optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay= 1e-8)
         
         # if os.path.exists("lstm_Autoencoder.pth"):
         if False:

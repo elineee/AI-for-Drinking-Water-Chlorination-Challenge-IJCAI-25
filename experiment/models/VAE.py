@@ -69,7 +69,7 @@ class VAEModel(AutoencoderModel):
     """ Class for Variational Autoencoder model"""
 
     def _get_KLD_multiplier(self): 
-        return 0.1
+        return 0.5
 
     def run_model(self, train_batches : torch.Tensor, test_batches: torch.Tensor, epochs: int, hidden_dim : int, latent_dim : int) :
         """ 
@@ -198,7 +198,7 @@ class VAEModel(AutoencoderModel):
 
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=100, hidden_dim=32, latent_dim=8 )
+            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=32, latent_dim=8 )
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             y_pred = np.where(anomalies, -1, 1)  
