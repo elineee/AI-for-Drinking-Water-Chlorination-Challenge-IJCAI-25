@@ -4,6 +4,7 @@ from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 from data_transformation import calculate_labels
@@ -244,8 +245,8 @@ class LSTMAutoencoderModel(AnomalyModel):
             X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
             prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
 
-            train_batches = torch.utils.data.DataLoader(X_train, batch_size=32, shuffle=True)
-            test_batches = torch.utils.data.DataLoader(X_test, batch_size=1, shuffle=False) 
+            train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
+            test_batches = DataLoader(X_test, batch_size=1, shuffle=False) 
             
             mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
