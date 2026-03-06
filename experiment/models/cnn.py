@@ -22,18 +22,22 @@ class CNN(nn.Module):
         self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm1d(64)
         self.relu1 = nn.ReLU()
+        self.dropout1 = nn.Dropout(0.2)
         
         self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, padding=2)
         self.bn2 = nn.BatchNorm1d(128)
         self.relu2 = nn.ReLU()
-            
+        self.dropout2 = nn.Dropout(0.2)
+
         self.conv3 = nn.Conv1d(in_channels=128, out_channels=128, kernel_size=7, padding=3)
         self.bn3 = nn.BatchNorm1d(128)
         self.relu3 = nn.ReLU()
+        self.dropout3 = nn.Dropout(0.2)
         
         self.conv4 = nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
         self.bn4 = nn.BatchNorm1d(64)
         self.relu4 = nn.ReLU()
+        self.dropout4 = nn.Dropout(0.2)
         
         self.conv_out = nn.Conv1d(in_channels=64, out_channels=1, kernel_size=1)
         
@@ -44,18 +48,22 @@ class CNN(nn.Module):
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
+        x = self.dropout1(x)
         
         x = self.conv2(x)
         x = self.bn2(x)
         x = self.relu2(x)  
+        x = self.dropout2(x)
 
         x = self.conv3(x)
         x = self.bn3(x)
         x = self.relu3(x)
+        x = self.dropout3(x)
 
         x = self.conv4(x)
         x = self.bn4(x)
         x = self.relu4(x)
+        x = self.dropout4(x)
 
         x = self.conv_out(x)
 
@@ -100,15 +108,20 @@ class CNNModel(AnomalyModel):
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        n_corrects_train = 0
-        n_corrects_val = 0
-        n_total_train = 0
-        n_total_val = 0
-        losses = []
+        # n_corrects_train = 0
+        # n_corrects_val = 0
+        # n_total_train = 0
+        # n_total_val = 0
+        # losses = []
         train_loss = []
         val_loss = []
-        model.train()
         for epoch in range(epochs):
+            n_corrects_train = 0
+            n_corrects_val = 0
+            n_total_train = 0
+            n_total_val = 0
+            losses = []
+            model.train()
             for _, data in enumerate(train_dataloader):
                 windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
  
@@ -130,25 +143,28 @@ class CNNModel(AnomalyModel):
             train_loss.append(np.mean(losses))
             losses = []
             
-            for _, data in enumerate(val_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
- 
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
-                
-                probs = torch.sigmoid(outputs) # Convert logits to probabilities
+            model.eval()
+            with torch.no_grad():
+                for _, data in enumerate(val_dataloader):
+                    windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+    
+                    outputs = model(windows) # outputs shape (batch, 1, 48)
+                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                    
+                    probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-                
-                loss = criterion(outputs, labels)
-                losses.append(loss.item())
-                n_total_val += labels.numel()
-                n_corrects_val += (preds == labels).sum().item()
+                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                    
+                    loss = criterion(outputs, labels)
+                    losses.append(loss.item())
+                    n_total_val += labels.numel()
+                    n_corrects_val += (preds == labels).sum().item()
             val_loss.append(np.mean(losses))
             losses = []
                 
             
             print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+            
             
         plt.figure()
         plt.plot(train_loss, label='train')
@@ -207,7 +223,7 @@ class CNNModel(AnomalyModel):
                     mean_results_per_time_step.append(-1)
                 else:
                     mean_results_per_time_step.append(1)
-            print(mean_results_per_time_step)
+
             return mean_results_per_time_step
                     
     
@@ -312,7 +328,10 @@ class CNNModel(AnomalyModel):
             
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
             
-            y_pred = detect_change_point(y_pred, count_required=15)
+            y_pred = detect_change_point(y_pred, count_required=5)
+            
+            print(y_true)
+            print(y_pred)
             
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
@@ -400,7 +419,7 @@ class CNNModel(AnomalyModel):
         
         for i in range(len(label)):
             
-            if label[i] > 0 :
+            if label[i] > 0.01 :
                 y[i] = 1
             else:
                 y[i] = 0
