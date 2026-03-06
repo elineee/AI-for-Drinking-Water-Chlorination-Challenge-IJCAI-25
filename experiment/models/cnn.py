@@ -74,7 +74,15 @@ class CNN(nn.Module):
 class CNNModel(AnomalyModel):
     
     def compute_weight(self, labels):
-        # Compute the number of normal and anomalous samples
+        """ Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
+        
+        Parameters:
+        - labels: a tensor containing the labels for the training set, where 1 corresponds to an anomaly and 0 to a normal point
+        
+        Returns :
+        - a tensor containing the weight for the positive class, which can be used in the loss function to give more importance to the anomalies during training
+        
+        """
         n_normal = 0 
         n_anomalous = 0
         for window in labels:
@@ -89,30 +97,27 @@ class CNNModel(AnomalyModel):
         weight = n_normal / n_anomalous
         
         weights = torch.tensor([weight], dtype=torch.float32)
-        print(f"Weight for anomalous samples: {weight}")
 
         return weights
     
 
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
         """ Trains the CNN model and evaluates it on the test set.
+        
         Parameters:
         - train_dataloader: DataLoader for the training set
         - val_dataloader: DataLoader for the validation set
         - test_dataloader: DataLoader for the test set
         
         Returns:
+        - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
         model = CNN(input_size=2, num_classes=2, sequence_length=48)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        # n_corrects_train = 0
-        # n_corrects_val = 0
-        # n_total_train = 0
-        # n_total_val = 0
-        # losses = []
+
         train_loss = []
         val_loss = []
         for epoch in range(epochs):
@@ -212,10 +217,12 @@ class CNNModel(AnomalyModel):
                 f1_scores.append(f1)
                 recall = recall_score(labels, preds, average='binary', zero_division=1)
                 recall_scores.append(recall)
+            
             print(f"Final Accuracy: {n_corrects/n_total:.4f}")
             print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
             print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
             
+            # get the mean predicted label for each time step across all windows, and label as anomaly (-1) if the mean is greater than 0.5 and normal (1) otherwise
             mean_results_per_time_step = []
             for element, count in results_per_time_step:
                 new_element = element / count if count > 0 else 0
@@ -255,40 +262,16 @@ class CNNModel(AnomalyModel):
 
             # last dataset for testing 
             # train data 
-            # TODO : créer une fonction pour optimiser le code car cv pas là
             for df in contaminated_dfs[:-1]:
-                print("df shape", df.shape) 
-                _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
-                y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
-                print("y svr shape", y_svr.shape)
-                
-                df_clean = remove_first_x_days(df, 3)
-                print("df clean shape", df_clean.shape) # shape of (2401,) x2 = 4802
+                df_clean, features, labels, y_svr = self.get_data(svr_model, df, clean_dfs, node)
                 new_contaminated_dfs.append(df_clean)
-                
-                # add padding because different shape
-                if len(y_svr) < len(df_clean):
-                    pad_size = len(df_clean) - len(y_svr)
-                    y_svr = np.concatenate([np.zeros(pad_size), y_svr])
-                
-                features, labels = self.create_labeled_features(df_clean, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
-                y_svr = self.create_direct_features(y_svr, window_size=self.config.window_size)
-                
-                print(f"features shape: {np.array(features).shape}, y_svr shape: {np.array(y_svr).shape}")
-                
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            _, _, _, y_svr_test = svr_model.predict(node, clean_dfs, [contaminated_dfs[-1]])
-            y_svr_test = y_svr_test.squeeze()  # Convert (N, 1) to (N,)
-            df_clean_test = remove_first_x_days(contaminated_dfs[-1], 3)
-            if len(y_svr_test) < len(df_clean_test):
-                pad_size = len(df_clean_test) - len(y_svr_test)
-                y_svr_test = np.concatenate([np.zeros(pad_size), y_svr_test])
-            y_svr_test = self.create_direct_features(y_svr_test, window_size=self.config.window_size)
-            features_test, labels_test = self.create_labeled_features(df_clean_test, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
+            df_clean_test, features_test, labels_test, y_svr_test = self.get_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
+            
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
 
             # turn data and y into tensors
@@ -314,9 +297,6 @@ class CNNModel(AnomalyModel):
 
 
             weights = self.compute_weight(y_train)
-            weights_2 = self.compute_weight(y_test) # remove this later
-            
-            # TODO : standardize data 
             
             # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)
@@ -399,40 +379,73 @@ class CNNModel(AnomalyModel):
         
         return np.array(features)
     
-    def get_labels(self, label, window=3):
-        """ Converts a label array into a new label array where each change point is labeled as 1 and normal points are labeled as 0.
-        A window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
+    def get_labels(self, label, window=3, anomaly=True):
+        """ Converts a label array into a new label array where each change point or anomaly is labeled as 1 and normal points are labeled as 0.
+        If change point, a window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
         The change points are defined as the points where the original label changes from 0 to >0 
         Parameters:
         - label: a numpy array containing the original labels 
         - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
+        - anomaly : wheter the labels are all the anomalies or change points 
         
         Returns:
         - a numpy array containing the new labels, where each change point is labeled as 1 and normal points are labeled as 0
         """
         
         
-        # change point = 1 
+        # change point/anomaly = 1 
         # normal point = 0
         
         y = np.zeros(len(label), dtype=int) 
         
         for i in range(len(label)):
-            
-            if label[i] > 0.01 :
-                y[i] = 1
-            else:
-                y[i] = 0
-            
-            # if i == 0 and label[i] > 0:
-            #     start = 0
-            #     end = min(len(label), i + 2* window + 1)  
-            #     y[start:end] = 1
+            if anomaly : 
+                if label[i] > 0.01 :
+                    y[i] = 1
+                else:
+                    y[i] = 0
+            else :
+                if i == 0 and label[i] > 0:
+                    start = 0
+                    end = min(len(label), i + 2* window + 1)  
+                    y[start:end] = 1
 
-            # if i > 0 and label[i-1] == 0 and label[i] > 0:
+                if i > 0 and label[i-1] == 0 and label[i] > 0:
 
-            #     start = max(0, i - window)  
-            #     end = min(len(label), i + 2 * window + 1)  
-            #     y[start:end] = 1
+                    start = max(0, i - window)  
+                    end = min(len(label), i + 2 * window + 1)  
+                    y[start:end] = 1
         
         return y.tolist()
+    
+    def get_data(self, svr_model, df, clean_dfs, node):
+        """ Prepares the data for training and testing the CNN model.
+        
+        Parameters:
+        - svr_model: the SVR model to use for generating features
+        - df: the contaminated dataframe to use for training and testing
+        - clean_dfs: a list of clean dataframes to use for training the SVR model
+        - node: the node id to use for generating features with the SVR model
+        
+        Returns:
+        - df_clean: the cleaned dataframe after removing the first 3 days
+        - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data
+        - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels
+        - y_svr: the features generated by the SVR model, where each feature is a sliding window of the predicted values of the SVR model
+        
+        """
+        _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
+        y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
+        
+        df_clean = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
+        
+        # add padding because different shape
+        if len(y_svr) < len(df_clean):
+            pad_size = len(df_clean) - len(y_svr)
+            y_svr = np.concatenate([np.zeros(pad_size), y_svr])
+        
+        features, labels = self.create_labeled_features(df_clean, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
+        y_svr = self.create_direct_features(y_svr, window_size=self.config.window_size)
+        
+        return df_clean, features, labels, y_svr
+        
