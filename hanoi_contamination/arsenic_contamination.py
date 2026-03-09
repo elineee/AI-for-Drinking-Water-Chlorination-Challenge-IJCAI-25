@@ -1,19 +1,22 @@
 """
 Example of adding a simple arsenic contamination event to a scenario.
 """
+import os
 import numpy as np
 from epyt_flow.data.benchmarks import load_leakdb_scenarios
 from epyt_flow.simulation import ScenarioSimulator, EpanetConstants, ScenarioConfig
 from epyt_flow.simulation.events import SpeciesInjectionEvent
 from epyt_flow.utils import to_seconds
 
+_SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 if __name__ == "__main__":
     # Create a new scenario based on the first Hanoi LeakDB scenario --
     # we add an additional EPANET-MSX configuration file
-    config, = load_leakdb_scenarios(scenarios_id=["0"], use_net1=False)  #scenarios_id can vary between 0 and 999 
+    config, = load_leakdb_scenarios(scenarios_id=["0"], use_net1=False, verbose=False, download_dir="")  #scenarios_id can vary between 0 and 999 
     config = ScenarioConfig(scenario_config=config,
-                            f_msx_in="arsenic_contamination.msx")
+                            f_msx_in=os.path.join(_SCRIPT_DIR, "arsenic_contamination.msx"))
 
     with ScenarioSimulator(scenario_config=config) as sim:
         # Set simulation duration to 21 days
