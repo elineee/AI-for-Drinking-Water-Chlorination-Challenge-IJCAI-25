@@ -12,27 +12,6 @@ from models.model import AnomalyModel
 
 # from https://github.com/vincrichard/LSTM-autoencoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
 # and from https://github.com/matanle51/LSTM_autoencoder/blob/master/models/LSTMAE.py
-
-class LSTMAutoencoder(nn.Module):
-    """ Class for the LSTM Autoencoder module"""
-    def __init__(self, input_size, hidden_size, num_layers, dropout, seq_len):
-
-        super().__init__()
-
-        self.input_size = input_size # number of features per timestep (if only chlorine, then 1)
-        self.hidden_size = hidden_size # dimension of the hidden state (latent space dimension)
-        self.num_layers = num_layers # number of LSTM layers in the encoder and decoder
-        self.dropout = dropout
-        self.seq_len = seq_len # sequence length (window_size)
-
-        self.encoder = Encoder(input_size, hidden_size, num_layers, dropout)
-        self.decoder = Decoder(input_size, hidden_size, num_layers, dropout, seq_len)
-    
-    def forward(self, x):
-        encoded = self.encoder(x)
-        decoded = self.decoder(encoded)
-        
-        return decoded
         
 class Encoder(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, dropout):
@@ -70,6 +49,26 @@ class Decoder(nn.Module):
         output = self.linear(output)  # (batch, seq_len, input_size)
         return output
     
+class LSTMAutoencoder(nn.Module):
+    """ Class for the LSTM Autoencoder module"""
+    def __init__(self, input_size, hidden_size, num_layers, dropout, seq_len):
+
+        super().__init__()
+
+        self.input_size = input_size # number of features per timestep (if only chlorine, then 1)
+        self.hidden_size = hidden_size # dimension of the hidden state (latent space dimension)
+        self.num_layers = num_layers # number of LSTM layers in the encoder and decoder
+        self.dropout = dropout
+        self.seq_len = seq_len # sequence length (window_size)
+
+        self.encoder = Encoder(input_size, hidden_size, num_layers, dropout)
+        self.decoder = Decoder(input_size, hidden_size, num_layers, dropout, seq_len)
+    
+    def forward(self, x):
+        encoded = self.encoder(x)
+        decoded = self.decoder(encoded)
+        
+        return decoded
     
 class LSTMAutoencoderModel(AnomalyModel):
     """ Class for LSTM Autoencoder model"""
@@ -111,7 +110,7 @@ class LSTMAutoencoderModel(AnomalyModel):
         return X_train, X_test, prepared_contaminated_dfs
 
 
-    def run_model(self, train_batches, test_batches, epochs):
+    def run_model(self, train_batches: torch.Tensor, test_batches: torch.Tensor, epochs:int):
         """
         Trains the LSTM Autoencoder on the training data and returns the anomaly scores for the test data.
         The anomaly threshold is computed from the training reconstruction errors as: mean(training_error) + 3 * std(training_error).
@@ -132,10 +131,8 @@ class LSTMAutoencoderModel(AnomalyModel):
         seq_len = sample_batch.shape[1]
         num_features = sample_batch.shape[2]
         
-        model = LSTMAutoencoder(num_features, 16, 2, 0.2, seq_len)
-        
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        
+        model = LSTMAutoencoder(num_features, 16, 2, 0.2, seq_len)
         model = model.to(device)
         
         criterion = nn.MSELoss()
@@ -156,7 +153,7 @@ class LSTMAutoencoderModel(AnomalyModel):
                     optimizer.zero_grad()
                     
                     decoded = model(batch)
-                    loss = criterion(batch, decoded)
+                    loss = criterion(decoded, batch)
                     
                     loss.backward()
                     optimizer.step()
