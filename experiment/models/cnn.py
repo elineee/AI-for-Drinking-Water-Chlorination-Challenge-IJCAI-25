@@ -6,11 +6,11 @@ from sklearn.metrics import f1_score, recall_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, TensorDataset, DataLoader
+from torch.utils.data import TensorDataset, DataLoader
 
 from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
-from experiment_config import ContaminationType, ExperimentConfig
+from experiment_config import ExperimentConfig
 from models.SVR import SVRModel
 from models.model import AnomalyModel
 
