@@ -1,4 +1,3 @@
-from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -137,7 +136,7 @@ class VAEModel(AutoencoderModel):
             for batch in train_batches: 
                 batch = batch.to(device) 
                 train_reconstruction, _, _ = model(batch)
-                train_error = torch.sum((train_reconstruction - batch) ** 2, dim=1)            
+                train_error = torch.mean((train_reconstruction - batch) ** 2, dim=1)            
                 train_errors.append(train_error)
 
             train_error = torch.cat(train_errors)
@@ -151,7 +150,7 @@ class VAEModel(AutoencoderModel):
             for batch in test_batches:
                 batch = batch.to(device) 
                 test_reconstruction, _, _  = model(batch)
-                test_error = torch.sum((test_reconstruction - batch) ** 2, dim=1)
+                test_error = torch.mean((test_reconstruction - batch) ** 2, dim=1)
                 test_errors.append(test_error) 
                 test_reconstructions.append(test_reconstruction)
 
@@ -185,7 +184,7 @@ class VAEModel(AutoencoderModel):
 
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=8 )
+            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4 )
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             y_pred = np.where(anomalies, -1, 1)  
@@ -196,6 +195,6 @@ class VAEModel(AutoencoderModel):
             test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)            
             signal = X_test[:, -1].cpu().numpy()
             disinfectant_reconstruction = reconstructions[:, -1]
-            plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
+            # plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
 
         return results
