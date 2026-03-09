@@ -195,6 +195,6 @@ class VAEModel(AutoencoderModel):
             test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)            
             signal = X_test[:, -1].cpu().numpy()
             disinfectant_reconstruction = reconstructions[:, -1]
-            # plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
+            plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
 
         return results

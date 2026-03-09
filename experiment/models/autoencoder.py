@@ -17,19 +17,20 @@ class Autoencoder(nn.Module):
         super().__init__()
 
         self.encoder = nn.Sequential(
-            nn.Linear(input_dim, 16),
+            nn.Linear(input_dim, 32),
             nn.ReLU(),
-            nn.Linear(16, 16),
+            nn.Dropout(0.1),
+            nn.Linear(32, 32),
             nn.ReLU(),
-            nn.Linear(16, latent_dim),
+            nn.Linear(32, latent_dim),
             nn.ReLU()
         )
         self.decoder = nn.Sequential(
-            nn.Linear(latent_dim, 16),
+            nn.Linear(latent_dim, 32),
             nn.ReLU(),
-            nn.Linear(16, 16),
+            nn.Linear(32, 32),
             nn.ReLU(),
-            nn.Linear(16, input_dim)
+            nn.Linear(32, input_dim)
         )
     def forward(self, x):
         encoded = self.encoder(x)
@@ -204,7 +205,7 @@ class AutoencoderModel(AnomalyModel):
             train_batches = DataLoader(X_train, batch_size=128, shuffle=True)
             test_batches = DataLoader(X_test, batch_size=128, shuffle=False)
 
-            anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=300, latent_dim=8)
+            anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=300, latent_dim=4)
 
             y_pred = np.where(anomalies, -1, 1)  
             y_pred = self._post_predictions(y_pred)
