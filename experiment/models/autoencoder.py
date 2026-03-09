@@ -2,6 +2,7 @@ from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 from utils import plot_prediction, build_timestamps
@@ -20,8 +21,7 @@ class Autoencoder(nn.Module):
             nn.ReLU(),
             nn.Linear(16, 16),
             nn.ReLU(),
-            nn.Linear(16, latent_dim),
-            nn.ReLU()
+            nn.Linear(16, latent_dim)
         )
         self.decoder = nn.Sequential(
             nn.Linear(latent_dim, 16),
@@ -74,14 +74,13 @@ class AutoencoderModel(AnomalyModel):
             prepared_contaminated_dfs
         )
 
-
-    def run_model(self, X_train : torch.Tensor, X_test : torch.Tensor, epochs: int, latent_dim : int) :
+    def run_model(self, train_batches : torch.Tensor, test_batches : torch.Tensor, epochs : int , latent_dim : int):
         """ 
         Trains the Autoencoder on the training data and detects anomalies on the test data.
         
         Parameters:
-        - X_train: the training data (clean data)
-        - X_test: the test data (contaminated data)
+        - train_batches: the training data in batches (clean data)
+        - test_batches: the test data in batches (contaminated data)
         - epochs: the number of epochs to train the model 
         - latent_dim: the dimension of the latent space of the Autoencoder 
 
@@ -90,30 +89,48 @@ class AutoencoderModel(AnomalyModel):
         - test_reconstruction: the reconstructed test data from the Autoencoder
         - test_error: the reconstruction error for each test sample
         """
-        torch.manual_seed(42)
+        torch.manual_seed(42)   
+        sample_batch = next(iter(train_batches))
+        input_dim = sample_batch.shape[1]
+        device = "cuda" if torch.cuda.is_available() else "cpu"
 
-        model = Autoencoder(X_train.shape[1], latent_dim)
+        model = Autoencoder(input_dim, latent_dim)
+        model = model.to(device)
+
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
         threshold_std = 1/ np.sqrt(latent_dim) # heuristic
         latent_stds = []
 
-
         # Training 
+        model.train()
+        
         for epoch in range(epochs):
 
-            optimizer.zero_grad()
-            train_reconstruction = model(X_train)
-            train_loss = criterion(train_reconstruction, X_train)
-            train_loss.backward()
-            optimizer.step()
+            epoch_losses = []
 
-            print(f'Training: Epoch {epoch+1}, Loss: {train_loss}')
+            for batch in train_batches:
+                batch = batch.to(device)
+                optimizer.zero_grad()
+                train_reconstruction = model(batch)
+                train_loss = criterion(train_reconstruction, batch)
+                train_loss.backward()
+                optimizer.step()
+                epoch_losses.append(train_loss.item())
 
+            print(f"Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}")
+                
             # Compute latent stds
             with torch.no_grad(): 
-                embeddings = model.encoder(X_train)
+                latent_values = []
+
+                for batch in train_batches:
+                    batch = batch.to(device)
+                    embeddings = model.encoder(batch)
+                    latent_values.append(embeddings)
+
+                embeddings = torch.cat(latent_values)
                 mean_std = embeddings.std(dim=0).mean().item()
                 latent_stds.append(mean_std)
 
@@ -132,13 +149,33 @@ class AutoencoderModel(AnomalyModel):
         with torch.no_grad():
 
             # Computes the threshold 
-            train_reconstruction = model(X_train)
-            train_error = torch.mean((train_reconstruction - X_train) ** 2, dim=1)            
+            
+            train_errors = []
+
+            for batch in train_batches:
+
+                batch = batch.to(device)
+                train_reconstruction = model(batch)
+                error = torch.mean((train_reconstruction - batch) ** 2, dim=1)
+                train_errors.append(error)
+
+            train_error = torch.cat(train_errors)
             threshold = train_error.mean() + self._get_threshold_multiplier() * train_error.std()
 
             # Anomaly detection with the threshold  
-            test_reconstruction = model(X_test)
-            test_error = torch.mean((test_reconstruction - X_test) ** 2, dim=1)
+            test_errors = []
+            test_reconstructions = []
+
+            for batch in test_batches:
+
+                batch = batch.to(device)
+                test_reconstruction = model(batch)
+                error = torch.mean((test_reconstruction - batch) ** 2, dim=1)
+                test_errors.append(error)
+                test_reconstructions.append(test_reconstruction)
+
+            test_error = torch.cat(test_errors)
+            test_reconstruction = torch.cat(test_reconstructions)
             anomalies = test_error > threshold
             
             return (
@@ -160,9 +197,13 @@ class AutoencoderModel(AnomalyModel):
 
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
-            anomalies, reconstructions, test_error = self.run_model(X_train, X_test, 500, 8)
-            
+            y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)            
+
+            train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
+            test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
+
+            anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=500, latent_dim=8)
+
             y_pred = np.where(anomalies, -1, 1)  
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
