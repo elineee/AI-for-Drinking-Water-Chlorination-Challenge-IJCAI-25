@@ -16,6 +16,7 @@ from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
 from models.cnn import CNNModel
+from models.cnn_windows import CNNWindowsModel
 
 
 AVAILABLE_MODELS = {
@@ -35,7 +36,8 @@ AVAILABLE_MODELS = {
     ModelName.GAN: GANModel,
     ModelName.CUSUM: CusumModel,
     ModelName.CUSUM_ALARM: CusumAlarmModel,
-    ModelName.CNN: CNNModel
+    ModelName.CNN: CNNModel,
+    ModelName.CNN_windows: CNNWindowsModel
 }
 
 class ExperimentRunner:
