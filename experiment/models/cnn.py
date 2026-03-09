@@ -16,7 +16,7 @@ from models.model import AnomalyModel
 
 
 class CNN(nn.Module):
-    def __init__(self, input_size, num_classes, sequence_length=48):
+    def __init__(self, input_size):
         super(CNN, self).__init__()
         
         self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
@@ -112,7 +112,7 @@ class CNNModel(AnomalyModel):
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = CNN(input_size=2, num_classes=2, sequence_length=48)
+        model = CNN(input_size=2)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
