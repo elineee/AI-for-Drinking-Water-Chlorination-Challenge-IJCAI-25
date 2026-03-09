@@ -69,7 +69,7 @@ class VAEModel(AutoencoderModel):
     """ Class for Variational Autoencoder model"""
 
     def _get_KLD_multiplier(self): 
-        return 0.5
+        return 0.01
 
     def run_model(self, train_batches : torch.Tensor, test_batches: torch.Tensor, epochs: int, hidden_dim : int, latent_dim : int) :
         """ 
@@ -100,15 +100,17 @@ class VAEModel(AutoencoderModel):
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
         threshold_std = 1/ np.sqrt(latent_dim) # heuristic
-        latent_stds = []
 
         # Training 
         model.train()
         for epoch in range(epochs):
  
-            KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 100) * self._get_KLD_multiplier())
+            KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 200) * self._get_KLD_multiplier())
+            epoch_losses = []
+            epoch_mse = []
+            epoch_kld = []
 
-            for batch in train_batches: 
+            for batch in train_batches:
                 batch = batch.to(device) 
                 optimizer.zero_grad()
                 train_reconstruction, mu, log_var = model(batch)
@@ -118,53 +120,38 @@ class VAEModel(AutoencoderModel):
                 train_loss.backward()
                 optimizer.step()
 
+                epoch_losses.append(train_loss.item())
+                epoch_mse.append(reconstruction_loss.item())
+                epoch_kld.append(KLD.item())
+
             if (epoch + 1) % 50 == 0:
-                print(f'Epoch {epoch+1}, Loss: {train_loss:.4f}, MSE: {reconstruction_loss:.4f}, KLD: {KLD:.4f}, KLD multiplier: {KLD_multiplier:.4f}')
+                print(f" Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}, MSE: {np.mean(epoch_mse):.4f}, KLD: {np.mean(epoch_kld):.4f}")
 
-            # Compute latent stds on the last batch (not all batches)
-            with torch.no_grad(): 
-                encoded = model.encoder(batch)
-                embeddings = model.mu(encoded)
-                mean_std = embeddings.std(dim=0).mean().item()
-                latent_stds.append(mean_std)
-
-        # Plot latent stds 
-        plt.figure(figsize=(10, 4))
-        plt.plot(latent_stds, label="Mean std of embeddings")
-        plt.axhline(y=threshold_std, color='r', linestyle='--', label=f"Threshold std = {threshold_std:.3f}")
-        plt.xlabel("Epoch")
-        plt.ylabel("Mean std")
-        plt.title("Latent stds during training")
-        plt.legend()
-        plt.show()
-
+        # Evaluation 
         model.eval()
-
         with torch.no_grad():
 
+            # Computes the threshold 
             train_errors = []
 
             for batch in train_batches: 
                 batch = batch.to(device) 
-
-                # Computes the threshold 
                 train_reconstruction, _, _ = model(batch)
-                train_error = torch.mean((train_reconstruction - batch) ** 2, dim=1)            
+                train_error = torch.sum((train_reconstruction - batch) ** 2, dim=1)            
                 train_errors.append(train_error)
 
             train_error = torch.cat(train_errors)
             threshold = (train_error.mean() + self._get_threshold_multiplier() * train_error.std()).item()
+
+            # Anomaly detection with the threshold  
 
             test_errors =[]
             test_reconstructions = []
 
             for batch in test_batches:
                 batch = batch.to(device) 
-   
-                # Anomaly detection with the threshold  
                 test_reconstruction, _, _  = model(batch)
-                test_error = torch.mean((test_reconstruction - batch) ** 2, dim=1)
-                
+                test_error = torch.sum((test_reconstruction - batch) ** 2, dim=1)
                 test_errors.append(test_error) 
                 test_reconstructions.append(test_reconstruction)
 
@@ -193,12 +180,12 @@ class VAEModel(AutoencoderModel):
             X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
             prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
 
-            train_batches = DataLoader(X_train, batch_size=64, shuffle=True)
-            test_batches = DataLoader(X_test, batch_size=64, shuffle=False)
+            train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
+            test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
 
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=32, latent_dim=8 )
+            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=8 )
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             y_pred = np.where(anomalies, -1, 1)  
