@@ -1,13 +1,13 @@
-from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 import pandas as pd
-from data_transformation import calculate_labels, create_extended_features
+from data_transformation import create_extended_features
 from models.model import AnomalyModel
 
 # https://realpython.com/generative-adversarial-networks/#what-are-generative-adversarial-networks
+# Doesn't work for the anomaly detection, just trying to train a GAN
 
 class Discriminator(nn.Module):
     def __init__(self, input_dim):
