@@ -12,7 +12,9 @@ from models.autoencoder_alarm import AutoencoderAlarmModel
 from models.LSTM_AE import LSTMAutoencoderModel
 from models.LSTM_AE_alarm import LSTMAutoencoderAlarmModel
 from models.VAE import VAEModel
+from models.VAE_alarm import VAEAlarmModel
 from models.LSTM_VAE import LSTMVAEModel
+from models.LSTM_VAE_alarm import LSTMVAEAlarmModel
 from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
@@ -34,7 +36,9 @@ AVAILABLE_MODELS = {
     ModelName.LSTM_AUTOENCODER: LSTMAutoencoderModel,
     ModelName.LSTM_AUTOENCODER_ALARM: LSTMAutoencoderAlarmModel,
     ModelName.VAE : VAEModel, 
+    ModelName.VAE_ALARM : VAEAlarmModel, 
     ModelName.LSTM_VAE : LSTMVAEModel, 
+    ModelName.LSTM_VAE_ALARM : LSTMVAEAlarmModel,
     ModelName.GAN: GANModel,
     ModelName.CUSUM: CusumModel,
     ModelName.CUSUM_ALARM: CusumAlarmModel,
