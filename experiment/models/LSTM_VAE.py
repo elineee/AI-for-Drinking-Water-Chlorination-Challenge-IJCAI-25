@@ -1,5 +1,3 @@
-from matplotlib import pyplot as plt
-from sklearn.preprocessing import StandardScaler
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -74,7 +72,6 @@ class LSTMVAE(nn.Module):
         decoded = self.decoder(z)
         return decoded, mu, log_var
     
-
 class LSTMVAEModel(LSTMAutoencoderModel):
     """ Class for LSTM VAE model"""
 
@@ -104,7 +101,7 @@ class LSTMVAEModel(LSTMAutoencoderModel):
         num_features = sample_batch.shape[2]
         
         device = "cuda" if torch.cuda.is_available() else "cpu"
-        model = LSTMVAE(num_features, 16, 2, 0.2, seq_len, latent_dim)
+        model = LSTMVAE(num_features,64, 2, 0.2, seq_len, latent_dim)
         model = model.to(device)
         
         criterion = nn.MSELoss()
@@ -114,7 +111,7 @@ class LSTMVAEModel(LSTMAutoencoderModel):
         model.train()
         for epoch in range(epochs):
             train_loss = 0
-            KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 200) * self._get_KLD_multiplier())
+            KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 30) * self._get_KLD_multiplier())
 
 
             for batch in train_batches:
@@ -142,7 +139,7 @@ class LSTMVAEModel(LSTMAutoencoderModel):
                 training_errors_per_window.extend(error_per_window.cpu().numpy())
 
             training_errors_per_window_np = np.array(training_errors_per_window)
-            threshold = training_errors_per_window_np.mean() + 3 * training_errors_per_window_np.std()
+            threshold = training_errors_per_window_np.mean() + 1.5 * training_errors_per_window_np.std()
         
             print(f"Threshold for anomaly detection: {threshold}")
             
@@ -197,7 +194,6 @@ class LSTMVAEModel(LSTMAutoencoderModel):
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
 
-
     def get_results(self):
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
@@ -212,7 +208,7 @@ class LSTMVAEModel(LSTMAutoencoderModel):
             train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = DataLoader(X_test, batch_size=1, shuffle=False) 
             
-            mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20, latent_dim = 4)
+            mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=50, latent_dim = 4)
             
             y_true = calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, 0)
             
