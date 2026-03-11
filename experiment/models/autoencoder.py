@@ -14,6 +14,7 @@ from models.model import AnomalyModel
 class Autoencoder(nn.Module):
     """ Class for the Autoencoder module"""
     def __init__(self, input_dim, latent_dim):
+
         super().__init__()
 
         self.encoder = nn.Sequential(
@@ -32,6 +33,7 @@ class Autoencoder(nn.Module):
             nn.ReLU(),
             nn.Linear(32, input_dim)
         )
+        
     def forward(self, x):
         encoded = self.encoder(x)
         decoded = self.decoder(encoded)

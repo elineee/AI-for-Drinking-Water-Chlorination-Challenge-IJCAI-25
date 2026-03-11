@@ -218,8 +218,6 @@ class LSTMVAEModel(LSTMAutoencoderModel):
             self._plot_reconstruction(true_seq, decoded_seq)
                         
             y_true = np.array(y_true)
-            print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
-
             y_pred = self._post_predictions(anomalies)
             
             results[node] = { "y_true": y_true, "y_pred": y_pred}

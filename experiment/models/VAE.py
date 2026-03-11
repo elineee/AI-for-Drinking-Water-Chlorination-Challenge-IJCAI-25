@@ -69,6 +69,9 @@ class VAEModel(AutoencoderModel):
 
     def _get_KLD_multiplier(self): 
         return 0.01
+    
+    def _get_threshold_multiplier(self):
+        return 4
 
     def run_model(self, train_batches : torch.Tensor, test_batches: torch.Tensor, epochs: int, hidden_dim : int, latent_dim : int) :
         """ 
@@ -97,8 +100,6 @@ class VAEModel(AutoencoderModel):
 
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
-
-        threshold_std = 1/ np.sqrt(latent_dim) # heuristic
 
         # Training 
         model.train()
@@ -143,7 +144,6 @@ class VAEModel(AutoencoderModel):
             threshold = (train_error.mean() + self._get_threshold_multiplier() * train_error.std()).item()
 
             # Anomaly detection with the threshold  
-
             test_errors =[]
             test_reconstructions = []
 
@@ -157,7 +157,7 @@ class VAEModel(AutoencoderModel):
             test_error = torch.cat(test_errors)
             test_reconstruction  = torch.cat(test_reconstructions)
             anomalies = test_error > threshold
-                
+
             print(f"threshold: {threshold:.4f}")
             print(f"train_error mean: {train_error.mean():.4f}, std: {train_error.std():.4f}")
             print(f"test_error mean: {test_error.mean():.4f}, std: {test_error.std():.4f}")
