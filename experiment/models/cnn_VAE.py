@@ -1,7 +1,6 @@
 
 from matplotlib import pyplot as plt
 import numpy as np
-import pandas as pd
 from sklearn.metrics import f1_score, recall_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
@@ -11,65 +10,10 @@ from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
 from models.SVR import SVRModel
-from models.model import AnomalyModel
+from models.cnn_VAE import CNNVAEModel, CNN
 
 
-class CNN(nn.Module):
-    def __init__(self, input_size):
-        super(CNN, self).__init__()
-        
-        self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
-        self.bn1 = nn.BatchNorm1d(64)
-        self.relu1 = nn.ReLU()
-        self.dropout1 = nn.Dropout(0.2)
-        
-        self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, padding=2)
-        self.bn2 = nn.BatchNorm1d(128)
-        self.relu2 = nn.ReLU()
-        self.dropout2 = nn.Dropout(0.2)
-
-        self.conv3 = nn.Conv1d(in_channels=128, out_channels=128, kernel_size=7, padding=3)
-        self.bn3 = nn.BatchNorm1d(128)
-        self.relu3 = nn.ReLU()
-        self.dropout3 = nn.Dropout(0.2)
-        
-        self.conv4 = nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
-        self.bn4 = nn.BatchNorm1d(64)
-        self.relu4 = nn.ReLU()
-        self.dropout4 = nn.Dropout(0.2)
-        
-        self.conv_out = nn.Conv1d(in_channels=64, out_channels=1, kernel_size=1)
-        
-    def forward(self, x):
-        x = x.transpose(1, 2)  # -> (batch, 2, 48)
-        
-        x = self.conv1(x)
-        x = self.bn1(x)
-        x = self.relu1(x)
-        x = self.dropout1(x)
-        
-        x = self.conv2(x)
-        x = self.bn2(x)
-        x = self.relu2(x)  
-        x = self.dropout2(x)
-
-        x = self.conv3(x)
-        x = self.bn3(x)
-        x = self.relu3(x)
-        x = self.dropout3(x)
-
-        x = self.conv4(x)
-        x = self.bn4(x)
-        x = self.relu4(x)
-        x = self.dropout4(x)
-
-        x = self.conv_out(x)
-
-        
-        return x
-
-
-class CNNModel(AnomalyModel):
+class CNNVAEModel(CNNVAEModel):
     
     def compute_weight(self, labels):
         """ Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
@@ -319,107 +263,6 @@ class CNNModel(AnomalyModel):
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
-            
-  
-    def create_labeled_features(self, df: pd.DataFrame, feature_column: str, label_column: str, window_size: int = 10):
-        """
-        Creates labeled features for anomaly detection using a sliding window approach.
-        
-        Parameters:
-        - df: a pandas DataFrame containing the data
-        - feature_column: the name of the column to use as feature
-        - label_column: the name of the column to use as label
-        - window_size: the size of the sliding window
-        Returns:
-        - a numpy array containing the extended features for each time step
-        - a numpy array containing the labels for each time step
-        """
-        for column in df.columns:
-            if feature_column in column:
-                feature_column = column
-                break
-        
-        for column in df.columns:
-            if label_column in column:
-                label_column = column
-                break
-        
-        feature = df[feature_column].values
-        label = df[label_column].values
-        label = self.get_labels(label)
-        
-        features = []
-        labels = []
-        for i in range(window_size, len(feature)):
-            row = feature[i-window_size:i]
-            label_value = label[i-window_size:i]
-            
-            features.append(row)
-            labels.append(label_value)
-        
-        return np.array(features), np.array(labels)
-
-
-    def create_direct_features(self, time_series, window_size: int = 10):
-        """ Creates features for anomaly detection using a sliding window approach.
-        
-        Parameters:
-        - time_series: a numpy array containing the time series data
-        - window_size: the size of the sliding window
-        
-        Returns:
-        - a numpy array containing the features for each time step, where each feature is the values of the time series in the sliding window
-        """
-        
-        feature = time_series
-        
-        features = []
-        for i in range(window_size, len(feature)):
-            row = feature[i-window_size:i]
-            
-            features.append(row)
-        
-        return np.array(features)
-    
-
-    def get_labels(self, label, window=3, anomaly=True):
-        """ Converts a label array into a new label array where each change point or anomaly is labeled as 1 and normal points are labeled as 0.
-        If change point, a window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
-        The change points are defined as the points where the original label changes from 0 to >0 
-        Parameters:
-        - label: a numpy array containing the original labels 
-        - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
-        - anomaly : wheter the labels are all the anomalies or change points 
-        
-        Returns:
-        - a numpy array containing the new labels, where each change point is labeled as 1 and normal points are labeled as 0
-        """
-        
-        
-        # change point/anomaly = 1 
-        # normal point = 0
-        
-        y = np.zeros(len(label), dtype=int) 
-        
-        for i in range(len(label)):
-            if anomaly : 
-                if label[i] > 0.01 :
-                    y[i] = 1
-                else:
-                    y[i] = 0
-            else :
-                if i == 0 and label[i] > 0:
-                    start = 0
-                    end = min(len(label), i + 2* window + 1)  
-                    y[start:end] = 1
-
-                if i > 0 and label[i-1] == 0 and label[i] > 0:
-
-                    start = max(0, i - window)  
-                    end = min(len(label), i + 2 * window + 1)  
-                    y[start:end] = 1
-        
-        return y.tolist()
 
 
     def get_data(self, svr_model, df, clean_dfs, node):

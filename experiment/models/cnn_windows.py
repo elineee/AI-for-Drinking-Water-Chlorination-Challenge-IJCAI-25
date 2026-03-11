@@ -6,11 +6,10 @@ from sklearn.metrics import f1_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, TensorDataset, DataLoader
-
+from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import calculate_labels_alarm, remove_first_x_days
 from utils import detect_change_point
-from experiment_config import ContaminationType, ExperimentConfig
+from experiment_config import ExperimentConfig
 from models.SVR import SVRModel
 from models.model import AnomalyModel
 
@@ -300,10 +299,8 @@ class CNNWindowsModel(AnomalyModel):
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
-            
 
-        
-    
+
     def create_labeled_features(self, df: pd.DataFrame, feature_column: str, label_column: str, window_left, window_right):
         """
         Creates labeled features for anomaly detection using a sliding window approach.
@@ -342,6 +339,7 @@ class CNNWindowsModel(AnomalyModel):
         
         return np.array(features), np.array(labels)
     
+
     def create_direct_features(self, time_series, window_left, window_right):
         """ Creates features for anomaly detection using a sliding window approach.
         
@@ -364,6 +362,7 @@ class CNNWindowsModel(AnomalyModel):
         
         return np.array(features)
     
+
     def get_labels(self, label, window=3, anomaly=True):
         """ Converts a label array into a new label array where each change point or anomaly is labeled as 1 and normal points are labeled as 0.
         If change point, a window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
@@ -403,6 +402,7 @@ class CNNWindowsModel(AnomalyModel):
         
         return y.tolist()
     
+
     def get_data(self, svr_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         

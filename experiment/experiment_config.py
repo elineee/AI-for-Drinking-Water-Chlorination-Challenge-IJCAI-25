@@ -30,6 +30,7 @@ class ModelName(Enum):
     CUSUM_ALARM = "CUSUM_alarm"
     CNN = "CNN"
     CNN_windows = "CNN_windows"
+    CNN_VAE  = "CNN_VAE"
 
 @dataclass
 class ExperimentConfig:

@@ -20,6 +20,7 @@ from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
 from models.cnn import CNNModel
 from models.cnn_windows import CNNWindowsModel
+from models.cnn_VAE import CNNVAEModel
 
 
 AVAILABLE_MODELS = {
@@ -43,7 +44,8 @@ AVAILABLE_MODELS = {
     ModelName.CUSUM: CusumModel,
     ModelName.CUSUM_ALARM: CusumAlarmModel,
     ModelName.CNN: CNNModel,
-    ModelName.CNN_windows: CNNWindowsModel
+    ModelName.CNN_windows: CNNWindowsModel,
+    ModelName.CNN_VAE: CNNVAEModel
 }
 
 class ExperimentRunner:
