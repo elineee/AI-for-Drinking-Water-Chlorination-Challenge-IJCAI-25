@@ -42,7 +42,6 @@ class CNN(nn.Module):
         self.conv_out = nn.Conv1d(in_channels=64, out_channels=1, kernel_size=1)
         
     def forward(self, x):
-
         x = x.transpose(1, 2)  # -> (batch, 2, 48)
         
         x = self.conv1(x)
@@ -112,6 +111,7 @@ class CNNModel(AnomalyModel):
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
+        # model = CNN(input_size=1)
         model = CNN(input_size=2)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
@@ -287,13 +287,17 @@ class CNNModel(AnomalyModel):
             
             # turn into multivarite 
             data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
+            # data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
             y_train = np.array(y_train) # shape of (4706, 48)
             y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 48)
             data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (2401, 48, 2)
+            # data_test = data_test.unsqueeze(2)
             y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 48)
             
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
+            
+            print("shape 1D", X_train.shape)
 
 
             weights = self.compute_weight(y_train)
