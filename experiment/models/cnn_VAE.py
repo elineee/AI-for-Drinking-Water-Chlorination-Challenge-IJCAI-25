@@ -9,40 +9,12 @@ from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
-from models.SVR import SVRModel
+from models.vae import vaeModel
 from models.cnn_VAE import CNNVAEModel, CNN
 
 
 class CNNVAEModel(CNNVAEModel):
     
-    def compute_weight(self, labels):
-        """ Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
-        
-        Parameters:
-        - labels: a tensor containing the labels for the training set, where 1 corresponds to an anomaly and 0 to a normal point
-        
-        Returns :
-        - a tensor containing the weight for the positive class, which can be used in the loss function to give more importance to the anomalies during training
-        
-        """
-        n_normal = 0 
-        n_anomalous = 0
-        for window in labels:
-            for label in window:
-                if int(label) == 0:
-                    n_normal += 1
-                else:
-                    n_anomalous += 1
-        
-        print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
-        
-        weight = n_normal / n_anomalous
-        
-        weights = torch.tensor([weight], dtype=torch.float32)
-
-        return weights
-    
-
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
         """ Trains the CNN model and evaluates it on the test set.
         
@@ -186,34 +158,35 @@ class CNNVAEModel(CNNVAEModel):
             
             print(f"Calculating results for node {node}")
             
-            config_svr = ExperimentConfig(
-                    config_name="SVR",
-                    contaminated_files=self.config.contaminated_files,
-                    example_files=self.config.example_files,
-                    nodes=[node],
-                    window_size=48, # 48 correspond à 48*30 min donc 1 jour
-                    model_name="SVR",
-                    model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
-                )
-            
-            svr_model = SVRModel(config_svr)
+            config = ExperimentConfig(
+            config_name="VAE",
+            example_files= self.config.contaminated_files,
+            contaminated_files=self.config.example_files,
+            nodes=[node],
+            window_size=100,
+            model_name="VAE",
+            model_params={}
+        ),
+                
+                
+            vae_model = VAEModel(config)
             
             new_contaminated_dfs = []
             data_train = []
-            data_svr_train = []
+            data_vae_train = []
             y_train = []
 
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels, y_svr = self.get_data(svr_model, df, clean_dfs, node)
+                df_clean, features, labels, y_vae = self.get_data(vae_model, df, clean_dfs, node)
                 new_contaminated_dfs.append(df_clean)
                 data_train.extend(features)
-                data_svr_train.extend(y_svr)
+                data_vae_train.extend(y_vae)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            df_clean_test, features_test, labels_test, y_svr_test = self.get_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
+            df_clean_test, features_test, labels_test, y_vae_test = self.get_data(vae_model, contaminated_dfs[-1], clean_dfs, node)
             
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
 
@@ -223,17 +196,17 @@ class CNNVAEModel(CNNVAEModel):
             data_test = np.array(features_test) # shape of (2401, 48)
             data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (2401, 48)
             
-            data_svr_train = np.array(data_svr_train) # shape of (4706, 48)
-            data_svr_train = torch.tensor(data_svr_train, dtype=torch.float32) # shape of (4706, 48)
-            data_svr_test = np.array(y_svr_test) # shape of (2401, 48)
-            data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) # shape of (2401, 48)
+            data_vae_train = np.array(data_vae_train) # shape of (4706, 48)
+            data_vae_train = torch.tensor(data_vae_train, dtype=torch.float32) # shape of (4706, 48)
+            data_vae_test = np.array(y_vae_test) # shape of (2401, 48)
+            data_vae_test = torch.tensor(data_vae_test, dtype=torch.float32) # shape of (2401, 48)
             
             # turn into multivarite 
-            data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
+            data_train = torch.stack((data_train, data_vae_train), dim=2) # shape of (4706, 48, 2)
             # data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
             y_train = np.array(y_train) # shape of (4706, 48)
             y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 48)
-            data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (2401, 48, 2)
+            data_test = torch.stack((data_test, data_vae_test), dim=2) # shape of (2401, 48, 2)
             # data_test = data_test.unsqueeze(2)
             y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 48)
             
@@ -265,34 +238,34 @@ class CNNVAEModel(CNNVAEModel):
         return results
 
 
-    def get_data(self, svr_model, df, clean_dfs, node):
+    def get_data(self, vae_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         
         Parameters:
-        - svr_model: the SVR model to use for generating features
+        - vae_model: the model to use for generating features
         - df: the contaminated dataframe to use for training and testing
-        - clean_dfs: a list of clean dataframes to use for training the SVR model
-        - node: the node id to use for generating features with the SVR model
+        - clean_dfs: a list of clean dataframes to use for training the vae model
+        - node: the node id to use for generating features with the vae model
         
         Returns:
         - df_clean: the cleaned dataframe after removing the first 3 days
         - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data
         - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels
-        - y_svr: the features generated by the SVR model, where each feature is a sliding window of the predicted values of the SVR model
+        - y_vae: the features generated by the vae model, where each feature is a sliding window of the predicted values of the vae model
         
         """
-        _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
-        y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
+        _, _, _, y_vae = model.predict(node, clean_dfs, [df])
+        y_vae = y_vae.squeeze()  # Convert (N, 1) to (N,)
         
         df_clean = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
         
         # add padding because different shape
-        if len(y_svr) < len(df_clean):
-            pad_size = len(df_clean) - len(y_svr)
-            y_svr = np.concatenate([np.zeros(pad_size), y_svr])
+        if len(y_vae) < len(df_clean):
+            pad_size = len(df_clean) - len(y_vae)
+            y_vae = np.concatenate([np.zeros(pad_size), y_vae])
         
         features, labels = self.create_labeled_features(df_clean, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
-        y_svr = self.create_direct_features(y_svr, window_size=self.config.window_size)
+        y_vae = self.create_direct_features(y_vae, window_size=self.config.window_size)
         
-        return df_clean, features, labels, y_svr
+        return df_clean, features, labels, y_vae
         
