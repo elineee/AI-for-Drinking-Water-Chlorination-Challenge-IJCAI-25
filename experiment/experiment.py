@@ -18,9 +18,9 @@ from models.LSTM_VAE_alarm import LSTMVAEAlarmModel
 from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
-from models.cnn import CNNModel
-from models.cnn_windows import CNNWindowsModel
-from models.cnn_VAE import CNNVAEModel
+from experiment.models.CNN import CNNModel
+from models.CNN_windows import CNNWindowsModel
+from models.CNN_VAE import CNNVAEModel
 
 
 AVAILABLE_MODELS = {
