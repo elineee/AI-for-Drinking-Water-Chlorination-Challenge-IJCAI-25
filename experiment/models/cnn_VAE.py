@@ -9,7 +9,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
-from models.CNN import CNNModel, CNN
+from models.cnn import CNNModel, CNN
 from models.VAE import VAEModel
 
 class CNNVAEModel(CNNModel):
