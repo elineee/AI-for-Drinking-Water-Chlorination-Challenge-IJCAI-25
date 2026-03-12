@@ -94,6 +94,7 @@ class CNNWindowsModel(AnomalyModel):
 
         return weights
     
+    
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
         """ Trains the CNN model and evaluates it on the test set.
         
@@ -246,14 +247,14 @@ class CNNWindowsModel(AnomalyModel):
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels, y_svr = self.get_data(svr_model, df, clean_dfs, node)
+                df_clean, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
                 new_contaminated_dfs.append(df_clean)
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            df_clean_test, features_test, labels_test, y_svr_test = self.get_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
+            df_clean_test, features_test, labels_test, y_svr_test = self._prepare_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
             
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, self.config.window_size+3)
 
@@ -403,7 +404,7 @@ class CNNWindowsModel(AnomalyModel):
         return y.tolist()
     
 
-    def get_data(self, svr_model, df, clean_dfs, node):
+    def _prepare_data(self, svr_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         
         Parameters:

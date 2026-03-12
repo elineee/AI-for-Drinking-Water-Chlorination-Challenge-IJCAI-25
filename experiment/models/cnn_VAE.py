@@ -9,11 +9,10 @@ from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
-from models.vae import vaeModel
-from models.cnn_VAE import CNNVAEModel, CNN
+from experiment.models.CNN.CNN import CNNModel, CNN
+from experiment.models.autoencoders.VAE import VAEModel
 
-
-class CNNVAEModel(CNNVAEModel):
+class CNNVAEModel(CNNModel):
     
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
         """ Trains the CNN model and evaluates it on the test set.
@@ -26,7 +25,6 @@ class CNNVAEModel(CNNVAEModel):
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        # model = CNN(input_size=1)
         model = CNN(input_size=2)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
@@ -43,15 +41,13 @@ class CNNVAEModel(CNNVAEModel):
             losses = []
             model.train()
             for _, data in enumerate(train_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
- 
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                windows, labels = data 
+                outputs = model(windows) 
+                outputs = outputs.squeeze(1) 
                 
-                probs = torch.sigmoid(outputs) # Convert logits to probabilities
+                probs = torch.sigmoid(outputs) 
+                preds = (probs > 0.5).float() 
 
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-                
                 optimizer.zero_grad()
                 loss = criterion(outputs, labels)
                 losses.append(loss.item())
@@ -60,6 +56,7 @@ class CNNVAEModel(CNNVAEModel):
                 
                 n_total_train += labels.numel()
                 n_corrects_train += (preds == labels).sum().item()
+
             train_loss.append(np.mean(losses))
             losses = []
             
@@ -160,13 +157,13 @@ class CNNVAEModel(CNNVAEModel):
             
             config = ExperimentConfig(
             config_name="VAE",
-            example_files= self.config.contaminated_files,
-            contaminated_files=self.config.example_files,
+            example_files= self.config.example_files,
+            contaminated_files=self.config.contaminated_files, 
             nodes=[node],
             window_size=100,
             model_name="VAE",
             model_params={}
-        ),
+            )
                 
                 
             vae_model = VAEModel(config)
@@ -238,7 +235,7 @@ class CNNVAEModel(CNNVAEModel):
         return results
 
 
-    def get_data(self, vae_model, df, clean_dfs, node):
+    def _prepare_data(self, vae_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         
         Parameters:
