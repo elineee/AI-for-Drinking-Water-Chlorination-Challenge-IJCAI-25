@@ -1,4 +1,3 @@
-
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -247,7 +246,7 @@ class CNNModel(AnomalyModel):
                     contaminated_files=self.config.contaminated_files,
                     example_files=self.config.example_files,
                     nodes=[node],
-                    window_size=48, # 48 correspond à 48*30 min donc 1 jour
+                    window_size=48, # 48*30 min = one day
                     model_name="SVR",
                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
                 )
@@ -262,14 +261,14 @@ class CNNModel(AnomalyModel):
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels, y_svr = self.get_data(svr_model, df, clean_dfs, node)
+                df_clean, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
                 new_contaminated_dfs.append(df_clean)
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            df_clean_test, features_test, labels_test, y_svr_test = self.get_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
+            df_clean_test, features_test, labels_test, y_svr_test = self._prepare_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
             
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
 
@@ -422,7 +421,7 @@ class CNNModel(AnomalyModel):
         return y.tolist()
 
 
-    def get_data(self, svr_model, df, clean_dfs, node):
+    def _prepare_data(self, svr_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         
         Parameters:
