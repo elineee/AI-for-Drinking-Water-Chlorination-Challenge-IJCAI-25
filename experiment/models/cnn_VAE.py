@@ -9,8 +9,8 @@ from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
-from CNN import CNNModel, CNN
-from VAE import VAEModel
+from models.CNN import CNNModel, CNN
+from models.VAE import VAEModel
 
 class CNNVAEModel(CNNModel):
     
@@ -213,7 +213,7 @@ class CNNVAEModel(CNNModel):
             print("shape 1D", X_train.shape)
 
 
-            weights = self.compute_weight(y_train)
+            weights = self._compute_weight(y_train)
             
             # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)

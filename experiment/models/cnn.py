@@ -1,12 +1,12 @@
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.metrics import f1_score, recall_score, recall_score
+from sklearn.metrics import f1_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
-from data_transformation import remove_first_x_days, calculate_labels_alarm
+from data_transformation import remove_first_x_days, calculate_labels_alarm, get_labels
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
 from models.SVR import SVRModel
@@ -70,52 +70,53 @@ class CNN(nn.Module):
 
 class CNNModel(AnomalyModel):
     
-    def compute_weight(self, labels):
-        """ Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
+    def _compute_weight(self, labels):
+        """ 
+        Computes the weight for the positive class (anomalies) based on the imbalance of the dataset.
+        Weights can be used in the loss function to give more importance to the anomalies during training.
         
         Parameters:
         - labels: a tensor containing the labels for the training set, where 1 corresponds to an anomaly and 0 to a normal point
         
         Returns :
-        - a tensor containing the weight for the positive class, which can be used in the loss function to give more importance to the anomalies during training
+        - weights: a tensor containing the weight for the positive class
         
         """
-        n_normal = 0 
-        n_anomalous = 0
-        for window in labels:
-            for label in window:
-                if int(label) == 0:
-                    n_normal += 1
-                else:
-                    n_anomalous += 1
+
+        labels_np = np.array(labels).flatten()
+        n_normal = (labels_np == 0).sum()
+        n_anomalous = (labels_np == 1).sum()
         
         print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
         
-        weight = n_normal / n_anomalous
-        
-        weights = torch.tensor([weight], dtype=torch.float32)
+        weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
 
         return weights
     
 
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
-        """ Trains the CNN model and evaluates it on the test set.
-        
+        """ 
+        Trains the CNN model and evaluates it on the test set.
+        The model predicts a label for each point in each window. 
+        For each time step, labels are given by majority vote: it is an anomaly (-1) if more than 50% of the windows covering it predict an anomaly.
+
         Parameters:
         - train_dataloader: DataLoader for the training set
         - val_dataloader: DataLoader for the validation set
         - test_dataloader: DataLoader for the test set
-        
+        - weights: tensor containing the weight for the positive class (anomalies)
+        - epochs: number of epochs 
+   
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
+
         # model = CNN(input_size=1)
         model = CNN(input_size=2)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-
         train_loss = []
         val_loss = []
         for epoch in range(epochs):
@@ -170,11 +171,11 @@ class CNNModel(AnomalyModel):
             
             
         plt.figure()
-        plt.plot(train_loss, label='train')
-        plt.plot(val_loss, label='validation')
-        plt.title("Évolution de la loss en fonction des epochs")
-        plt.xlabel('epoch')
-        plt.ylabel('loss')
+        plt.plot(train_loss, label="train")
+        plt.plot(val_loss, label="validation")
+        plt.title("Loss evolution over epochs")
+        plt.xlabel("epoch")
+        plt.ylabel("loss")
         plt.legend()
         plt.show()
         
@@ -211,9 +212,9 @@ class CNNModel(AnomalyModel):
                 i += 1
                 
                 n_corrects += (preds == labels).sum().item()
-                f1 = f1_score(labels, preds, average='binary', zero_division=1)
+                f1 = f1_score(labels, preds, average="binary", zero_division=1)
                 f1_scores.append(f1)
-                recall = recall_score(labels, preds, average='binary', zero_division=1)
+                recall = recall_score(labels, preds, average="binary", zero_division=1)
                 recall_scores.append(recall)
             
             print(f"Final Accuracy: {n_corrects/n_total:.4f}")
@@ -283,7 +284,7 @@ class CNNModel(AnomalyModel):
             data_svr_test = np.array(y_svr_test) # shape of (2401, 48)
             data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) # shape of (2401, 48)
             
-            # turn into multivarite 
+            # turn into multivariate 
             data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
             # data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
             y_train = np.array(y_train) # shape of (4706, 48)
@@ -298,7 +299,7 @@ class CNNModel(AnomalyModel):
             print("shape 1D", X_train.shape)
 
 
-            weights = self.compute_weight(y_train)
+            weights = self._compute_weight(y_train)
             
             # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)
@@ -329,6 +330,7 @@ class CNNModel(AnomalyModel):
         - feature_column: the name of the column to use as feature
         - label_column: the name of the column to use as label
         - window_size: the size of the sliding window
+
         Returns:
         - a numpy array containing the extended features for each time step
         - a numpy array containing the labels for each time step
@@ -345,7 +347,7 @@ class CNNModel(AnomalyModel):
         
         feature = df[feature_column].values
         label = df[label_column].values
-        label = self.get_labels(label)
+        label = get_labels(label)
         
         features = []
         labels = []
@@ -360,7 +362,8 @@ class CNNModel(AnomalyModel):
 
 
     def create_direct_features(self, time_series, window_size: int = 10):
-        """ Creates features for anomaly detection using a sliding window approach.
+        """ 
+        Creates features for anomaly detection using a sliding window approach.
         
         Parameters:
         - time_series: a numpy array containing the time series data
@@ -370,55 +373,13 @@ class CNNModel(AnomalyModel):
         - a numpy array containing the features for each time step, where each feature is the values of the time series in the sliding window
         """
         
-        feature = time_series
-        
         features = []
-        for i in range(window_size, len(feature)):
-            row = feature[i-window_size:i]
+        for i in range(window_size, len(time_series)):
+            row = time_series[i-window_size:i]
             
             features.append(row)
         
         return np.array(features)
-    
-
-    def get_labels(self, label, window=3, anomaly=True):
-        """ Converts a label array into a new label array where each change point or anomaly is labeled as 1 and normal points are labeled as 0.
-        If change point, a window is created around each change point to account for potential delays in detection (the window size is two times longer after than before the change point to account for potential delays in detection).
-        The change points are defined as the points where the original label changes from 0 to >0 
-        Parameters:
-        - label: a numpy array containing the original labels 
-        - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
-        - anomaly : wheter the labels are all the anomalies or change points 
-        
-        Returns:
-        - a numpy array containing the new labels, where each change point is labeled as 1 and normal points are labeled as 0
-        """
-        
-        
-        # change point/anomaly = 1 
-        # normal point = 0
-        
-        y = np.zeros(len(label), dtype=int) 
-        
-        for i in range(len(label)):
-            if anomaly : 
-                if label[i] > 0.01 :
-                    y[i] = 1
-                else:
-                    y[i] = 0
-            else :
-                if i == 0 and label[i] > 0:
-                    start = 0
-                    end = min(len(label), i + 2* window + 1)  
-                    y[start:end] = 1
-
-                if i > 0 and label[i-1] == 0 and label[i] > 0:
-
-                    start = max(0, i - window)  
-                    end = min(len(label), i + 2 * window + 1)  
-                    y[start:end] = 1
-        
-        return y.tolist()
 
 
     def _prepare_data(self, svr_model, df, clean_dfs, node):
