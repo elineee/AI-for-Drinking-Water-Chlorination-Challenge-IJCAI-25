@@ -78,6 +78,7 @@ class AutoencoderModel(AnomalyModel):
             prepared_contaminated_dfs
         )
 
+
     def run_model(self, train_batches : torch.Tensor, test_batches : torch.Tensor, epochs : int , latent_dim : int):
         """ 
         Trains the Autoencoder on the training data and detects anomalies on the test data.
@@ -111,7 +112,6 @@ class AutoencoderModel(AnomalyModel):
         model.train()
         
         for epoch in range(epochs):
-
             epoch_losses = []
 
             for batch in train_batches:
@@ -154,11 +154,9 @@ class AutoencoderModel(AnomalyModel):
         with torch.no_grad():
 
             # Computes the threshold 
-            
             train_errors = []
 
             for batch in train_batches:
-
                 batch = batch.to(device)
                 train_reconstruction = model(batch)
                 error = torch.mean((train_reconstruction - batch) ** 2, dim=1)
@@ -213,11 +211,12 @@ class AutoencoderModel(AnomalyModel):
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
-            # Plot the reconstruction of the disinfectant value
-            test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)            
-            signal = X_test[:, -1].cpu().numpy()
-            disinfectant_reconstruction = reconstructions[:, -1]
-            plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
+            # Plot the signal reconstruction by timestamp
+            # As we compute error for windows and not by points, we use the last point here (current value)
+            timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)      
+            signal = X_test[:, -1].cpu().numpy() 
+            reconstructed_signal = reconstructions[:, -1]  
+            plot_prediction(timestamps, signal, reconstructed_signal, f"Signal reconstruction node {node}")
 
         return results
     
