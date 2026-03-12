@@ -69,15 +69,18 @@ class VAEModel(AutoencoderModel):
 
     def _get_KLD_multiplier(self): 
         return 0.01
+
     
     def _get_threshold_multiplier(self):
         return 4
 
+
     def run_model(self, train_batches : torch.Tensor, test_batches: torch.Tensor, epochs: int, hidden_dim : int, latent_dim : int) :
         """ 
         Trains the VAE on the training data and detects anomalies on the test data.
-        The criterion is the sum of MSELoss and Kullback-Leibler divergence.
-        
+        The model reconstructs each window and computes a reconstruction error (MSELoss +  Kullback-Leibler divergence) per window.
+        A window is an anomaly if its reconstruction error exceeds a threshold computed from the training data (mean + multiplier * std).
+
         Parameters:
         - train_batches: the training data in batches (clean data)
         - test_batches: the test data in batches (contaminated data)
@@ -191,10 +194,7 @@ class VAEModel(AutoencoderModel):
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
-            # Plot the reconstruction of the disinfectant value
-            test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)            
-            signal = X_test[:, -1].cpu().numpy()
-            disinfectant_reconstruction = reconstructions[:, -1]
-            plot_prediction(test_timestamps, signal, disinfectant_reconstruction, f"Test reconstruction node {node}")
+            # Plot the signal
+            self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
 
         return results
