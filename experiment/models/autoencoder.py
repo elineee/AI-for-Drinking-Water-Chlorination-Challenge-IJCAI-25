@@ -92,9 +92,9 @@ class AutoencoderModel(AnomalyModel):
         - latent_dim: the dimension of the latent space of the Autoencoder 
 
         Returns:
-        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False)
-        - test_reconstruction: the reconstructed test data from the Autoencoder
-        - test_error: the reconstruction error for each test window
+        - a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False)
+        - a numpy array of the reconstructed test data from the Autoencoder
+        - a numpy array of the reconstruction error for each test window
         """
 
         torch.manual_seed(42)   
@@ -173,7 +173,6 @@ class AutoencoderModel(AnomalyModel):
             test_reconstructions = []
 
             for batch in test_batches:
-
                 batch = batch.to(device)
                 test_reconstruction = model(batch)
                 error = torch.mean((test_reconstruction - batch) ** 2, dim=1)
@@ -184,11 +183,7 @@ class AutoencoderModel(AnomalyModel):
             test_reconstruction = torch.cat(test_reconstructions)
             anomalies = test_error > threshold
             
-            return (
-                anomalies.cpu().numpy(),
-                test_reconstruction.cpu().numpy(),
-                test_error.cpu().numpy()
-            )        
+            return (anomalies.cpu().numpy(), test_reconstruction.cpu().numpy(), test_error.cpu().numpy())        
         
 
     def get_results(self):
