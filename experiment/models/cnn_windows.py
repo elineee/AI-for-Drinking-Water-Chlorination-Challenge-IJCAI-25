@@ -235,7 +235,6 @@ class CNNWindowsModel(AnomalyModel):
             
             svr_model = SVRModel(config_svr)
             
-            new_contaminated_dfs = []
             data_train = []
             data_svr_train = []
             y_train = []
@@ -244,7 +243,6 @@ class CNNWindowsModel(AnomalyModel):
             # train data 
             for df in contaminated_dfs[:-1]:
                 df_clean, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
-                new_contaminated_dfs.append(df_clean)
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)

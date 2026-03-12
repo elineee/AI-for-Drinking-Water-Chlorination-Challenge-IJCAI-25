@@ -29,7 +29,8 @@ class ModelName(Enum):
     CUSUM = "CUSUM"
     CUSUM_ALARM = "CUSUM_alarm"
     CNN = "CNN"
-    CNN_windows = "CNN_windows"
+    CNN_UNIVARIATE = "CNN_univariate"
+    CNN_WINDOWS = "CNN_windows"
     CNN_VAE  = "CNN_VAE"
 
 @dataclass

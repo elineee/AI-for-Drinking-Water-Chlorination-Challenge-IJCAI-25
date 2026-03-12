@@ -309,40 +309,40 @@ def calculate_labels_alarm(df: pd.DataFrame, contaminant_column: str, window_siz
 
 
 def get_labels(label_array, window=3, anomaly=True):
-        """ 
-        Converts a label array into a list where each change point or anomaly is labeled as 1 and normal point as 0.
+    """ 
+    Converts a label array into a list where each change point or anomaly is labeled as 1 and normal point as 0.
 
-        Two modes:
-        - anomaly=True: labels each point as 1 if its value exceeds 0.01, 0 otherwise.
-        - anomaly=False: detects change points from 0 to >0.  A window is created around each change point to account for detection delays (the window size is two times longer after than before the change point).
-        
-        Parameters:
-        - label_array: a numpy array containing the original labels 
-        - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
-        - anomaly : whether we want to detect anomalies (True) or change points (False) 
-        
-        Returns:
-        - a list containing the new labels, where each change point/anomaly is labeled as 1 and normal point as 0.
-        """
-        
-        y = np.zeros(len(label_array), dtype=int) 
-        
-        for i in range(len(label_array)):
-            if anomaly : 
-                y[i] = 1 if label_array[i] > 0.01 else 0
-            else :
-                if i == 0 and label_array[i] > 0:
-                    start = 0
-                    end = min(len(label_array), i + 2* window + 1)  
-                    y[start:end] = 1
-
-                if i > 0 and label_array[i-1] == 0 and label_array[i] > 0:
-                    start = max(0, i - window)  
-                    end = min(len(label_array), i + 2 * window + 1)  
-                    y[start:end] = 1
-        
-        return y.tolist()
+    Two modes:
+    - anomaly=True: labels each point as 1 if its value exceeds 0.01, 0 otherwise.
+    - anomaly=False: detects change points from 0 to >0.  A window is created around each change point to account for detection delays (the window size is two times longer after than before the change point).
     
+    Parameters:
+    - label_array: a numpy array containing the original labels 
+    - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
+    - anomaly : whether we want to detect anomalies (True) or change points (False) 
+    
+    Returns:
+    - a list containing the new labels, where each change point/anomaly is labeled as 1 and normal point as 0.
+    """
+    
+    y = np.zeros(len(label_array), dtype=int) 
+    
+    for i in range(len(label_array)):
+        if anomaly : 
+            y[i] = 1 if label_array[i] > 0.01 else 0
+        else :
+            if i == 0 and label_array[i] > 0:
+                start = 0
+                end = min(len(label_array), i + 2* window + 1)  
+                y[start:end] = 1
+
+            if i > 0 and label_array[i-1] == 0 and label_array[i] > 0:
+                start = max(0, i - window)  
+                end = min(len(label_array), i + 2 * window + 1)  
+                y[start:end] = 1
+    
+    return y.tolist()
+
 
 def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
     """ 

@@ -9,7 +9,7 @@ from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm, get_labels
 from utils import detect_change_point
 from experiment_config import ExperimentConfig
-from models.SVR import SVRModel
+from models.SVR import SVRModel 
 from models.model import AnomalyModel
 
 
@@ -69,7 +69,16 @@ class CNN(nn.Module):
 
 
 class CNNModel(AnomalyModel):
-    
+    """ Class for CNN multivariate model. It takes into account the raw signal and the signal given by another model (by default, model)."""
+
+    def _get_input_size(self):
+        """
+        Returns the number of input channels for the CNN model.
+        2 is for multivariate and 1 for univariate.
+        """
+        return 2 
+
+
     def _compute_weight(self, labels):
         """ 
         Computes the weight for the positive class (anomalies) based on the imbalance of the dataset.
@@ -111,8 +120,7 @@ class CNNModel(AnomalyModel):
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
 
-        # model = CNN(input_size=1)
-        model = CNN(input_size=2)
+        model = CNN(input_size=self._get_input_size())
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
@@ -231,8 +239,34 @@ class CNNModel(AnomalyModel):
                     mean_results_per_time_step.append(1)
 
             return mean_results_per_time_step
-                    
     
+
+    def _call_second_model(self, node):
+        """
+        Calls the secondary model used to generate additional features for the CNN.
+        By default, it is a SVR model. 
+        
+        Parameters:
+        - node: the node id 
+        
+        Returns:
+        - an instantiated model 
+        """
+
+        config_svr = ExperimentConfig(
+                config_name="SVR",
+                contaminated_files=self.config.contaminated_files,
+                example_files=self.config.example_files,
+                nodes=[node],
+                window_size=48, # 48*30 min = one day
+                model_name="SVR",
+                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+            )
+        
+        svr_model = SVRModel(config_svr)
+        return svr_model 
+
+
     def get_results(self):
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
@@ -242,35 +276,22 @@ class CNNModel(AnomalyModel):
             
             print(f"Calculating results for node {node}")
             
-            config_svr = ExperimentConfig(
-                    config_name="SVR",
-                    contaminated_files=self.config.contaminated_files,
-                    example_files=self.config.example_files,
-                    nodes=[node],
-                    window_size=48, # 48*30 min = one day
-                    model_name="SVR",
-                    model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
-                )
+            other_model = self._call_second_model(node)
             
-            svr_model = SVRModel(config_svr)
-            
-            new_contaminated_dfs = []
             data_train = []
-            data_svr_train = []
+            data_model_train = []
             y_train = []
 
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
-                new_contaminated_dfs.append(df_clean)
+                df_clean, features, labels, y_model = self._prepare_data(other_model, df, clean_dfs, node)
                 data_train.extend(features)
-                data_svr_train.extend(y_svr)
+                data_model_train.extend(y_model)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            df_clean_test, features_test, labels_test, y_svr_test = self._prepare_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
-            
+            df_clean_test, features_test, labels_test, y_model_test = self._prepare_data(other_model, contaminated_dfs[-1], clean_dfs, node)
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
 
             # turn data and y into tensors
@@ -279,27 +300,20 @@ class CNNModel(AnomalyModel):
             data_test = np.array(features_test) # shape of (2401, 48)
             data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (2401, 48)
             
-            data_svr_train = np.array(data_svr_train) # shape of (4706, 48)
-            data_svr_train = torch.tensor(data_svr_train, dtype=torch.float32) # shape of (4706, 48)
-            data_svr_test = np.array(y_svr_test) # shape of (2401, 48)
-            data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) # shape of (2401, 48)
+            data_model_train = np.array(data_model_train) # shape of (4706, 48)
+            data_model_train = torch.tensor(data_model_train, dtype=torch.float32) # shape of (4706, 48)
+            data_model_test = np.array(y_model_test) # shape of (2401, 48)
+            data_model_test = torch.tensor(data_model_test, dtype=torch.float32) # shape of (2401, 48)
             
             # turn into multivariate 
-            data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
-            # data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
+            data_train = torch.stack((data_train, data_model_train), dim=2) # shape of (4706, 48, 2)
             y_train = np.array(y_train) # shape of (4706, 48)
             y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 48)
-            data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (2401, 48, 2)
-            # data_test = data_test.unsqueeze(2)
+            data_test = torch.stack((data_test, data_model_test), dim=2) # shape of (2401, 48, 2)
             y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 48)
             
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
-            
-            print("shape 1D", X_train.shape)
-
-
-            weights = self._compute_weight(y_train)
             
             # create DataLoaders
             train_dataset = TensorDataset(X_train, y_train)
@@ -309,13 +323,10 @@ class CNNModel(AnomalyModel):
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
             
+            
+            weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
-            
             y_pred = detect_change_point(y_pred, count_required=5)
-            
-            print(y_true)
-            print(y_pred)
-            
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
@@ -382,34 +393,33 @@ class CNNModel(AnomalyModel):
         return np.array(features)
 
 
-    def _prepare_data(self, svr_model, df, clean_dfs, node):
+    def _prepare_data(self, second_model, df, clean_dfs, node):
         """ Prepares the data for training and testing the CNN model.
         
         Parameters:
-        - svr_model: the SVR model to use for generating features
+        - second_model: the other model to use for generating features
         - df: the contaminated dataframe to use for training and testing
-        - clean_dfs: a list of clean dataframes to use for training the SVR model
-        - node: the node id to use for generating features with the SVR model
+        - clean_dfs: a list of clean dataframes to use for training the second model
+        - node: the node id to use for generating features with the second model
         
         Returns:
         - df_clean: the cleaned dataframe after removing the first 3 days
         - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data
         - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels
-        - y_svr: the features generated by the SVR model, where each feature is a sliding window of the predicted values of the SVR model
-        
+        - y_model: the features generated by the second model, where each feature is a sliding window of the predicted values of the second model
         """
-        _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
-        y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
+        _, _, _, y_model = second_model.predict(node, clean_dfs, [df])
+        y_model = y_model.squeeze()  # Convert (N, 1) to (N,)
         
         df_clean = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
         
         # add padding because different shape
-        if len(y_svr) < len(df_clean):
-            pad_size = len(df_clean) - len(y_svr)
-            y_svr = np.concatenate([np.zeros(pad_size), y_svr])
+        if len(y_model) < len(df_clean):
+            pad_size = len(df_clean) - len(y_model)
+            y_model = np.concatenate([np.zeros(pad_size), y_model])
         
         features, labels = self.create_labeled_features(df_clean, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
-        y_svr = self.create_direct_features(y_svr, window_size=self.config.window_size)
+        y_model = self.create_direct_features(y_model, window_size=self.config.window_size)
         
-        return df_clean, features, labels, y_svr
+        return df_clean, features, labels, y_model
         

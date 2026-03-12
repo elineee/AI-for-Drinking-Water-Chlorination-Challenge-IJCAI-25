@@ -18,9 +18,10 @@ from models.LSTM_VAE_alarm import LSTMVAEAlarmModel
 from models.GAN import GANModel
 from models.cusum import CusumModel
 from models.cusum_alarm import CusumAlarmModel
-from models.cnn import CNNModel
-from models.cnn_windows import CNNWindowsModel
-from models.cnn_VAE import CNNVAEModel
+from models.CNN import CNNModel
+from models.CNN_univariate import CNNUnivariateModel
+from models.CNN_windows import CNNWindowsModel
+from models.CNN_VAE import CNNVAEModel
 
 
 AVAILABLE_MODELS = {
@@ -44,7 +45,8 @@ AVAILABLE_MODELS = {
     ModelName.CUSUM: CusumModel,
     ModelName.CUSUM_ALARM: CusumAlarmModel,
     ModelName.CNN: CNNModel,
-    ModelName.CNN_windows: CNNWindowsModel,
+    ModelName.CNN_UNIVARIATE: CNNUnivariateModel, 
+    ModelName.CNN_WINDOWS: CNNWindowsModel,
     ModelName.CNN_VAE: CNNVAEModel
 }
 
