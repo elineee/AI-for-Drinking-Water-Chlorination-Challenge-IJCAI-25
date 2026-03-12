@@ -82,6 +82,8 @@ class AutoencoderModel(AnomalyModel):
     def run_model(self, train_batches : torch.Tensor, test_batches : torch.Tensor, epochs : int , latent_dim : int):
         """ 
         Trains the Autoencoder on the training data and detects anomalies on the test data.
+        The model reconstructs each window and computes a reconstruction error (MSELoss) per window.
+        A window is an anomaly if its reconstruction error exceeds a threshold computed from the training data (mean + multiplier * std).
         
         Parameters:
         - train_batches: the training data in batches (clean data)
@@ -90,10 +92,11 @@ class AutoencoderModel(AnomalyModel):
         - latent_dim: the dimension of the latent space of the Autoencoder 
 
         Returns:
-        - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
+        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False)
         - test_reconstruction: the reconstructed test data from the Autoencoder
-        - test_error: the reconstruction error for each test sample
+        - test_error: the reconstruction error for each test window
         """
+
         torch.manual_seed(42)   
         sample_batch = next(iter(train_batches))
         input_dim = sample_batch.shape[1]
@@ -211,12 +214,24 @@ class AutoencoderModel(AnomalyModel):
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
-            # Plot the signal reconstruction by timestamp
-            # As we compute error for windows and not by points, we use the last point here (current value)
+            # Plot the signal
+            self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
+        return results
+
+
+    def _plot_reconstruction(self, prepared_contaminated_dfs, X_test, reconstructions, node):
+            """
+            Plot the reconstructed signal and the true signal by timestamp for a node. 
+            As errors are computed by windows and not by points, we use the last point of each window for each timestep. 
+
+            Parameters:
+            - prepared_contaminated_dfs: the contaminated dataframes after preprocessing
+            - X_test: the test data tensor
+            - reconstructions: the reconstructed windows from the model
+            - node: the node id 
+            """
+
             timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)      
             signal = X_test[:, -1].cpu().numpy() 
             reconstructed_signal = reconstructions[:, -1]  
             plot_prediction(timestamps, signal, reconstructed_signal, f"Signal reconstruction node {node}")
-
-        return results
-    
