@@ -8,7 +8,7 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm, get_labels
 from utils import detect_change_point
-from experiment_config import ExperimentConfig
+from experiment_config import ContaminationType, ExperimentConfig
 from models.SVR import SVRModel 
 from models.model import AnomalyModel
 
@@ -252,15 +252,28 @@ class CNNModel(AnomalyModel):
         Returns:
         - an instantiated model 
         """
-
-        config_svr = ExperimentConfig(
-                config_name="SVR",
+        
+        if self.config.contaminants[0] == ContaminationType.ARSENIC:
+            config_svr = ExperimentConfig(
+                config_name="SVR_arsenic",
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
                 window_size=48, # 48*30 min = one day
                 model_name="SVR",
                 model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                contaminants=[ContaminationType.ARSENIC]
+            )
+        else:
+            config_svr = ExperimentConfig(
+                config_name="SVR_pathogen",
+                contaminated_files=self.config.contaminated_files,
+                example_files=self.config.example_files,
+                nodes=[node],
+                window_size=288, # 288*5 min = one day
+                model_name="SVR",
+                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                contaminants=[ContaminationType.PATHOGEN]
             )
         
         svr_model = SVRModel(config_svr)
