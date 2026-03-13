@@ -1,6 +1,8 @@
+import pickle
+
 from matplotlib import pyplot as plt
 import numpy as np
-from sklearn.metrics import f1_score
+from sklearn.cluster import KMeans
 
 
 def plot_prediction(timestamps , actual, pred, title, figsize=(15,6)):
@@ -104,4 +106,46 @@ def detect_change_point(predictions: np.array, count_required=20):
                 counter = 0
                 y_pred.append(1)
         return np.array(y_pred)
+
+def get_interesting_and_similar_nodes(df, contaminated_node, dependencies_dict_path, cluster_number):
+    """ Returns a cluster of nodes with similar behavior and interesting to monitor using k_means clustering.
+    
+    Parameters:
+    - df: the dataframe containing the time series data
+    - contaminated_node: the node where the contamination event occurs
+    - dependencies_dict_path: path to the dependencies dict that contains the interesting nodes to monitor for each contaminated node
+    - cluster: the cluster number to select among the different cluster of interesting nodes (can be 0, 1 or 2)
+    
+    Returns:
+    - a list of interesting nodes behaving similarly
+    
+    """
+    
+    with open(dependencies_dict_path, 'rb') as f:
+        dependencies_dict = pickle.load(f)
+    interesting_nodes = dependencies_dict[contaminated_node]
+    
+    time_series_data = get_times_series(df, interesting_nodes)
+    
+    X = np.array(list(time_series_data.values()))
+    kmeans = KMeans(n_clusters=3, random_state=0, n_init="auto").fit_predict(X)
+    print(kmeans)
+
+    cluster_nodes = {}
+    for i in range(len(kmeans)):
+        cluster = kmeans[i]
+        node = interesting_nodes[i]
+        if cluster not in cluster_nodes:
+            cluster_nodes[cluster] = []
+        cluster_nodes[cluster].append(node)
+        
+    return cluster_nodes[cluster_number]
+
+def get_times_series(df, nodes): 
+    time_series_data = {}
+    for node in nodes:
+        column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
+        if column_name_cl in df.columns:
+            time_series_data[node] = df[column_name_cl].values
+    return time_series_data
 
