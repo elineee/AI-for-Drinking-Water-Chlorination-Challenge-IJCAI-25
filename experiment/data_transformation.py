@@ -109,36 +109,6 @@ def get_data_for_one_node(data: str | pd.DataFrame, node_number: str, to_csv: bo
         
     return new_df
 
-def get_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: list[str], to_csv: bool = False):
-    """ 
-    Extracts data for several nodes and returns it as a pandas DataFrame.
-
-    Parameters:
-    - data: a file path (str) or a pandas DataFrame containing the data
-    - node_numbers: a list of node numbers to extract
-    - to_csv: whether to save the extracted data to a csv file
-    
-    Returns:
-    - new_df: a pandas DataFrame containing the data for the specified nodes
-    """
-    
-    if isinstance(data, str):
-        df = pd.read_csv(data)
-    elif isinstance(data, pd.DataFrame):
-        df = data.copy()
-    else:
-        raise TypeError("`data` must be a file path (str) or a pandas DataFrame")
-    
-    new_df = df[df["node"].isin(node_numbers)].copy()
-
-    if new_df.empty:
-        raise ValueError(f"No data found for nodes {node_numbers}")
-
-    if to_csv:
-        new_df.to_csv(f"nodes_{'_'.join(map(str, node_numbers))}.csv", index=False)
-        
-    return new_df
-
 
 def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: list[int], method: str = "mean", to_csv: bool = False):
     """ 
@@ -168,6 +138,8 @@ def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: lis
         df_aggregated = df.groupby("timestep").mean()
     elif method == "sum":
         df_aggregated = df.groupby("timestep").sum()
+    elif method == "separated":
+        df_aggregated = df[df["node"].isin(node_numbers)].copy()
     else:
         raise ValueError("`method` must be either 'mean' or 'sum'")
 
