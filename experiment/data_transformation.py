@@ -290,10 +290,16 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     labels = []
     
     for i in range(window_size, len(feature)):
-        if feature[i] > 0.01: 
-            labels.append(-1)
-        else:
-            labels.append(1)
+        if "arsenic" in contaminant_column.lower():
+             if feature[i] > 0.01: 
+                labels.append(-1)
+             else:
+                labels.append(1)
+        else: 
+            if feature[i] > 0: 
+                labels.append(-1)
+            else:
+                labels.append(1)
 
     labels = np.array(labels)
     
