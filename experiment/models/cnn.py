@@ -243,9 +243,8 @@ class CNNModel(AnomalyModel):
 
     def _call_second_model(self, node):
         """
-        Calls the secondary model used to generate additional features for the CNN.
-        By default, it is a SVR model. 
-        
+        Calls the second model (a SVR Model) used to generate additional features for the CNN.
+   
         Parameters:
         - node: the node id 
         

@@ -68,7 +68,7 @@ class CNNUnivariateModel(CNNModel):
 
     
     def _prepare_data(self, df):
-        """ Prepares the data for training and testing the CNN model.
+        """ Prepares the data for training and testing the CNN univariate model.
         
         Parameters:
         - df: the contaminated dataframe to use for training and testing
