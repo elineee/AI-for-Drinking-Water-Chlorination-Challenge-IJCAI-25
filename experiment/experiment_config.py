@@ -6,6 +6,7 @@ class ContaminationType(Enum):
     """Enumeration of contamination types"""
     ARSENIC = "arsenic"
     CHLORINE = "chlorine"
+    PATHOGEN = "pathogen"
 
 class ModelName(Enum):
     """Enumeration of model names"""
@@ -45,7 +46,7 @@ class ExperimentConfig:
     - nodes: a list of node numbers on which model will be trained/tested
     - contaminants: a list of ContaminationType to specify which contaminants to use (arsenic by default)
     - model_params: a dictionary of parameters to pass to the model (e.g., n_neighbors for LOF)
-    - aggregate_method: whether to train models on each node separately or on aggregated nodes (e.g., mean/sum) 
+    - aggregate_method: whether to train models on each node separately or on aggregated nodes (e.g., mean/sum) or on all nodes alltogether
     """
 
     model_name: ModelName
