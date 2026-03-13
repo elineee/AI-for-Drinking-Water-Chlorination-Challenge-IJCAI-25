@@ -5,6 +5,7 @@ from experiment_config import ContaminationType
 
 CONTAMINANT_ID = {
     ContaminationType.ARSENIC: "AsIII",
+    ContaminationType.PATHOGEN: "P"
 }
 
 def change_data_format(file_name: str, contaminants: list[ContaminationType], to_csv: bool = False):
@@ -75,10 +76,10 @@ def get_node_number(column_name: str):
     Returns:
     - the node number extracted from the column name
     """
-    return int(column_name.split(" @ ")[1].split(" ")[0])
+    return str(column_name.split(" @ ")[1].split(" ")[0])
 
 
-def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bool = False):
+def get_data_for_one_node(data: str | pd.DataFrame, node_number: str, to_csv: bool = False):
     """ 
     Extracts data for one node and returns it as a pandas DataFrame.
 
@@ -105,6 +106,36 @@ def get_data_for_one_node(data: str | pd.DataFrame, node_number: int, to_csv: bo
 
     if to_csv:
         new_df.to_csv(f"node_{node_number}.csv", index=False)
+        
+    return new_df
+
+def get_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: list[str], to_csv: bool = False):
+    """ 
+    Extracts data for several nodes and returns it as a pandas DataFrame.
+
+    Parameters:
+    - data: a file path (str) or a pandas DataFrame containing the data
+    - node_numbers: a list of node numbers to extract
+    - to_csv: whether to save the extracted data to a csv file
+    
+    Returns:
+    - new_df: a pandas DataFrame containing the data for the specified nodes
+    """
+    
+    if isinstance(data, str):
+        df = pd.read_csv(data)
+    elif isinstance(data, pd.DataFrame):
+        df = data.copy()
+    else:
+        raise TypeError("`data` must be a file path (str) or a pandas DataFrame")
+    
+    new_df = df[df["node"].isin(node_numbers)].copy()
+
+    if new_df.empty:
+        raise ValueError(f"No data found for nodes {node_numbers}")
+
+    if to_csv:
+        new_df.to_csv(f"nodes_{'_'.join(map(str, node_numbers))}.csv", index=False)
         
     return new_df
 
@@ -355,7 +386,13 @@ def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
     Returns:
     - new_df: a pandas DataFrame containing the data with the first x days removed
     """
-    timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
+    for column in df.columns: 
+        if "dist" in column:
+            # 5 minutes timestep, so 288 timesteps per day 
+            timesteps_to_remove = 288 * days_to_remove
+        else:
+            timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
+        break
     
     new_df = df[df["timestep"] >= timesteps_to_remove].copy()
 
