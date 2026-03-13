@@ -1,3 +1,4 @@
+import os
 import torch
 import torch.nn as nn
 import torch.optim as optim
@@ -103,31 +104,40 @@ class VAEModel(AutoencoderModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
-        # Training 
-        model.train()
-        for epoch in range(epochs):
- 
-            KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 200) * self._get_KLD_multiplier())
-            epoch_losses = []
-            epoch_mse = []
-            epoch_kld = []
+        FILE_PTH = "VAE_model.pth"
+    
+        # If training has already be done 
+        if os.path.exists(FILE_PTH):
+            model.load_state_dict(torch.load(FILE_PTH, weights_only=True))
 
-            for batch in train_batches:
-                batch = batch.to(device) 
-                optimizer.zero_grad()
-                train_reconstruction, mu, log_var = model(batch)
-                KLD = -0.5 * torch.mean(1 + log_var - mu.pow(2) - log_var.exp())
-                reconstruction_loss = criterion(train_reconstruction, batch)
-                train_loss = reconstruction_loss + KLD_multiplier * KLD
-                train_loss.backward()
-                optimizer.step()
+        else:
+            # Training 
+            model.train()
+            for epoch in range(epochs):
+    
+                KLD_multiplier = min(self._get_KLD_multiplier(), (epoch / 200) * self._get_KLD_multiplier())
+                epoch_losses = []
+                epoch_mse = []
+                epoch_kld = []
 
-                epoch_losses.append(train_loss.item())
-                epoch_mse.append(reconstruction_loss.item())
-                epoch_kld.append(KLD.item())
+                for batch in train_batches:
+                    batch = batch.to(device) 
+                    optimizer.zero_grad()
+                    train_reconstruction, mu, log_var = model(batch)
+                    KLD = -0.5 * torch.mean(1 + log_var - mu.pow(2) - log_var.exp())
+                    reconstruction_loss = criterion(train_reconstruction, batch)
+                    train_loss = reconstruction_loss + KLD_multiplier * KLD
+                    train_loss.backward()
+                    optimizer.step()
 
-            if (epoch + 1) % 50 == 0:
-                print(f" Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}, MSE: {np.mean(epoch_mse):.4f}, KLD: {np.mean(epoch_kld):.4f}")
+                    epoch_losses.append(train_loss.item())
+                    epoch_mse.append(reconstruction_loss.item())
+                    epoch_kld.append(KLD.item())
+
+                if (epoch + 1) % 50 == 0:
+                    print(f" Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}, MSE: {np.mean(epoch_mse):.4f}, KLD: {np.mean(epoch_kld):.4f}")
+
+            torch.save(model.state_dict(), FILE_PTH)
 
         # Evaluation 
         model.eval()
