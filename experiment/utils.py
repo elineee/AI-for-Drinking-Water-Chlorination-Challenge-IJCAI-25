@@ -142,6 +142,17 @@ def get_interesting_and_similar_nodes(df, contaminated_node, dependencies_dict_p
     return cluster_nodes[cluster_number]
 
 def get_times_series(df, nodes): 
+    """ 
+    Extracts the time series data for the specified nodes from the dataframe.
+    
+    Parameters:
+    - df: the dataframe containing the time series data
+    - nodes: list of nodes to extract the time series for
+    
+    Returns:
+    - a dictionary with node as key and time series as value
+    """
+    
     time_series_data = {}
     for node in nodes:
         column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
