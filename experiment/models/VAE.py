@@ -5,7 +5,6 @@ from torch.utils.data import DataLoader
 import numpy as np
 import pandas as pd
 from models.autoencoder import AutoencoderModel
-from utils import plot_prediction, build_timestamps
 
 # https://www.datacamp.com/tutorial/variational-autoencoders
 # https://medium.com/@sofeikov/implementing-variational-autoencoders-from-scratch-533782d8eb95
