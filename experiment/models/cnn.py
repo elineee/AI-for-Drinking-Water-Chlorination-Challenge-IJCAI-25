@@ -40,7 +40,7 @@ class CNN(nn.Module):
         self.conv_out = nn.Conv1d(in_channels=64, out_channels=1, kernel_size=1)
         
     def forward(self, x):
-        x = x.transpose(1, 2)  # -> (batch, 2, 48)
+        x = x.transpose(1, 2)  # -> (batch, number_of_features, window_size)
         
         x = self.conv1(x)
         x = self.bn1(x)
@@ -136,10 +136,10 @@ class CNNModel(AnomalyModel):
             losses = []
             model.train()
             for _, data in enumerate(train_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
  
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                outputs = model(windows) # outputs shape (batch, 1, window_size)
+                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
                 
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
@@ -159,10 +159,10 @@ class CNNModel(AnomalyModel):
             model.eval()
             with torch.no_grad():
                 for _, data in enumerate(val_dataloader):
-                    windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                    windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
     
-                    outputs = model(windows) # outputs shape (batch, 1, 48)
-                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                    outputs = model(windows) # outputs shape (batch, 1, window_size)
+                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
                     
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
@@ -198,10 +198,10 @@ class CNNModel(AnomalyModel):
         with torch.no_grad():
             i = 0
             for _, data in enumerate(test_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
  
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                outputs = model(windows) # outputs shape (batch, 1, window_size)
+                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
                 
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
@@ -308,22 +308,22 @@ class CNNModel(AnomalyModel):
             y_true = calculate_labels_alarm(prepared_df_test, self.config.contaminants[0].value, 0)
 
             # turn data and y into tensors
-            data_train = np.array(data_train) # shape of (4706, 48)
-            data_train = torch.tensor(data_train, dtype=torch.float32) # shape of (4706, 48)
-            data_test = np.array(features_test) # shape of (2401, 48)
-            data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (2401, 48)
+            data_train = np.array(data_train) # shape of (number of total train elements, window size)
+            data_train = torch.tensor(data_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            data_test = np.array(features_test) # shape of (number of total test elements, window_size)
+            data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (number of total test elements, window_size)
             
-            data_model_train = np.array(data_model_train) # shape of (4706, 48)
-            data_model_train = torch.tensor(data_model_train, dtype=torch.float32) # shape of (4706, 48)
-            data_model_test = np.array(predicted_features_test) # shape of (2401, 48)
-            data_model_test = torch.tensor(data_model_test, dtype=torch.float32) # shape of (2401, 48)
+            data_model_train = np.array(data_model_train) # shape of (number of total train elements, window size)
+            data_model_train = torch.tensor(data_model_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            data_model_test = np.array(predicted_features_test) # shape of (number of total test elements, window_size)
+            data_model_test = torch.tensor(data_model_test, dtype=torch.float32) # shape of (number of total test elements, window size)
             
             # turn into multivariate 
-            data_train = torch.stack((data_train, data_model_train), dim=2) # shape of (4706, 48, 2)
-            y_train = np.array(y_train) # shape of (4706, 48)
-            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 48)
-            data_test = torch.stack((data_test, data_model_test), dim=2) # shape of (2401, 48, 2)
-            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 48)
+            data_train = torch.stack((data_train, data_model_train), dim=2) # shape of (number of total train elements, window size, 2)
+            y_train = np.array(y_train) # shape of (number of total train elements, window size)
+            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            data_test = torch.stack((data_test, data_model_test), dim=2) # shape of (number of total test elements, window size, 2)
+            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (number of total test elements, window size)
             
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
@@ -332,7 +332,7 @@ class CNNModel(AnomalyModel):
             train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
             test_dataset = TensorDataset(data_test, y_test)
-            train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
+            train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size, window_size)
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
@@ -423,7 +423,7 @@ class CNNModel(AnomalyModel):
         _, _, _, predicted_values = second_model.predict(node, clean_dfs, [df])
         predicted_values = predicted_values.squeeze()  # Convert (N, 1) to (N,)
         
-        prepared_df = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
+        prepared_df = remove_first_x_days(df, 3) 
         
         # add padding because different shape
         if len(predicted_values) < len(prepared_df):
