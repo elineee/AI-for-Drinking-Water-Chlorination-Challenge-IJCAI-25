@@ -9,7 +9,7 @@ import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import calculate_labels_alarm, remove_first_x_days, get_labels
 from utils import detect_change_point
-from experiment_config import ExperimentConfig
+from experiment_config import ContaminationType, ExperimentConfig
 from models.SVR import SVRModel
 from models.model import AnomalyModel
 
@@ -213,7 +213,44 @@ class CNNWindowsModel(AnomalyModel):
 
             return y_pred
     
-    
+    def _call_second_model(self, node):
+        """
+        Calls the second model (a SVR Model) used to generate additional features for the CNN.
+   
+        Parameters:
+        - node: the node id 
+        
+        Returns:
+        - svr_model: an instantiated svr model 
+        """
+        
+        if self.config.contaminants[0] == ContaminationType.ARSENIC:
+            config_svr = ExperimentConfig(
+                config_name="SVR_arsenic",
+                contaminated_files=self.config.contaminated_files,
+                example_files=self.config.example_files,
+                nodes=[node],
+                window_size=48, # 48*30 min = one day
+                model_name="SVR",
+                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                contaminants=[ContaminationType.ARSENIC]
+            )
+        else:
+            config_svr = ExperimentConfig(
+                config_name="SVR_pathogen",
+                contaminated_files=self.config.contaminated_files,
+                example_files=self.config.example_files,
+                nodes=[node],
+                window_size=288, # 288*5 min = one day
+                model_name="SVR",
+                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                contaminants=[ContaminationType.PATHOGEN]
+            )
+        
+        svr_model = SVRModel(config_svr)
+        return svr_model 
+
+
     def get_results(self):
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
@@ -223,18 +260,8 @@ class CNNWindowsModel(AnomalyModel):
             
             print(f"Calculating results for node {node}")
             
-            config_svr = ExperimentConfig(
-                    config_name="SVR",
-                    contaminated_files=self.config.contaminated_files,
-                    example_files=self.config.example_files,
-                    nodes=[node],
-                    window_size=48, # 48 correspond à 48*30 min donc 1 jour
-                    model_name="SVR",
-                    model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
-                )
-            
-            svr_model = SVRModel(config_svr)
-            
+            svr_model = self._call_second_model(node)
+
             data_train = []
             data_svr_train = []
             y_train = []
@@ -242,15 +269,15 @@ class CNNWindowsModel(AnomalyModel):
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
+                prepared_df, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)
             
             # test data (last dataset)
-            df_clean_test, features_test, labels_test, y_svr_test = self._prepare_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
+            prepared_df_test, features_test, labels_test, y_svr_test = self._prepare_data(svr_model, contaminated_dfs[-1], clean_dfs, node)
             
-            y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, self.config.window_size+3)
+            y_true = calculate_labels_alarm(prepared_df_test, self.config.contaminants[0].value, self.config.window_size+3)
 
             # turn data and y into tensors
             data_train = np.array(data_train) # shape of (4706, 48)
@@ -305,9 +332,10 @@ class CNNWindowsModel(AnomalyModel):
         - feature_column: the name of the column to use as feature
         - label_column: the name of the column to use as label
         - window_size: the size of the sliding window
+        
         Returns:
-        - a numpy array containing the extended features for each time step
-        - a numpy array containing the labels for each time step
+        - a numpy array containing the features for each time step (shape (number of windows, window_left + window_right))
+        - a numpy array containing the label for the center time step of each window (shape (number of windows,))
         """
         for column in df.columns:
             if feature_column in column:
@@ -345,7 +373,8 @@ class CNNWindowsModel(AnomalyModel):
         - window_right: the size of the window to the right of each time step
         
         Returns:
-        - a numpy array containing the features for each time step, where each feature is the values of the time series in the sliding window
+        - a numpy array containing the features for each time step, where each feature is the values of the time series in the sliding window (shape (number of windows, window_left + window_right))
+
         """
                 
         features = []
@@ -358,35 +387,33 @@ class CNNWindowsModel(AnomalyModel):
 
 
     def _prepare_data(self, svr_model, df, clean_dfs, node):
-        """ Prepares the data for training and testing the CNN model.
+        """ 
+        Prepares the data for training and testing the CNN model.
         
         Parameters:
         - svr_model: the SVR model to use for generating features
         - df: the contaminated dataframe to use for training and testing
         - clean_dfs: a list of clean dataframes to use for training the SVR model
         - node: the node id to use for generating features with the SVR model
-        
+
         Returns:
-        - df_clean: the cleaned dataframe after removing the first 3 days
-        - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data
-        - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels
-        - y_svr: the features generated by the SVR model, where each feature is a sliding window of the predicted values of the SVR model
-        
+        - prepared_df: the contaminated dataframe after removing the first 3 days
+        - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data (shape (number of windows, window_left + window_right))
+        - labels: the labels for training/testing the CNN model, where each label corresponds to the center time step of the window (shape (number of windows,))
+        - y_svr: the features generated by the SVR model, where each feature is a sliding window of the predicted values of the SVR model (shape (number of windows, window_left + window_right))
+
         """
         _, _, _, y_svr = svr_model.predict(node, clean_dfs, [df])
         y_svr = y_svr.squeeze()  # Convert (N, 1) to (N,)
         
-        df_clean = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
+        prepared_df = remove_first_x_days(df, 3) # shape of (2401,) x2 = 4802
         
         # add padding because different shape
-        if len(y_svr) < len(df_clean):
-            pad_size = len(df_clean) - len(y_svr)
+        if len(y_svr) < len(prepared_df):
+            pad_size = len(prepared_df) - len(y_svr)
             y_svr = np.concatenate([np.zeros(pad_size), y_svr])
         
-        features, labels = self.create_labeled_features(df_clean, self.config.disinfectant.value, self.config.contaminants[0].value, window_left=self.config.window_size, window_right=3)
-        print("features shape", features.shape)  # Should be (N, window_size + window_right)
-        print("labels shape", labels.shape)      # Should be (N,)
+        features, labels = self.create_labeled_features(prepared_df, self.config.disinfectant.value, self.config.contaminants[0].value, window_left=self.config.window_size, window_right=3)
         y_svr = self.create_direct_features(y_svr, window_left=self.config.window_size, window_right=3)
-        print("y_svr shape", y_svr.shape)      # Should be (N, window_size + window_right)
         
-        return df_clean, features, labels, y_svr
+        return prepared_df, features, labels, y_svr

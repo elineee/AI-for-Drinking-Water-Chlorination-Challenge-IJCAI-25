@@ -20,8 +20,8 @@ class CusumModel(AnomalyModel):
         - contaminated_dfs: dataframes with testing data (contaminated data)
 
         Returns:
-        - X_train: flattened training features
-        - X_test: flattened test features
+        - X_train: flattened training features (shape (number of windows * window_size,))
+        - X_test: flattened test features (shape (number of windows * window_size,))
         - prepared_contaminated_dfs: contaminated dataframes after preprocessing
         """
 
