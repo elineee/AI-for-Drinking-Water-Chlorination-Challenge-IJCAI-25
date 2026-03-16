@@ -3,6 +3,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.utils.data import DataLoader
 from data_transformation import calculate_labels_alarm
 from utils import cusum_detection
 from models.autoencoder import AutoencoderModel, Autoencoder
@@ -15,22 +16,22 @@ class AutoencoderAlarmModel(AutoencoderModel):
     def _calculate_labels(self, df, contaminant, window_size):
         return calculate_labels_alarm(df, contaminant, window_size)
 
-    def run_model(self, train_batches: torch.Tensor, test_batches: torch.Tensor, epochs: int, latent_dim: int) :
+    def run_model(self, train_batches: DataLoader, test_batches: DataLoader, epochs: int, latent_dim: int) :
         """ 
         Trains the Autoencoder on the training data and detects anomalies on the test data.
         The model reconstructs each window and computes a reconstruction error (MSELoss) per window.
         A window is an anomaly if its CUSUM score exceeds a threshold computed from the training data.
         
         Parameters:
-        - train_batches: the training data in batches (clean data)
-        - test_batches: the test data in batches (contaminated data)
+        - train_batches: the training data in batches (clean data). Each batch has shape (batch_size, window_size).
+        - test_batches: the test data in batches (contaminated data). Each batch has shape (batch_size, window_size).
         - epochs: the number of epochs to train the model 
         - latent_dim: the dimension of the latent space of the Autoencoder 
 
         Returns:
-        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False)
-        - a numpy array of the reconstructed test data from the Autoencoder
-        - a numpy array of the reconstruction error for each test window
+        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False) (shape (number of windows,))
+        - test_reconstruction: the reconstructed test windows from the Autoencoder (shape (number of windows, window_size))
+        - test_error: the mean reconstruction error per window (shape (number of windows,))
         """
         torch.manual_seed(42)
         device = "cuda" if torch.cuda.is_available() else "cpu"

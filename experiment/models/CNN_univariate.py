@@ -75,8 +75,8 @@ class CNNUnivariateModel(CNNModel):
 
         Returns:
         - df_clean: the cleaned dataframe after removing the first 3 days
-        - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data
-        - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels
+        - features: the features for training/testing the CNN model, where each feature is a sliding window of the time series data (shape (number of windows, window_size))
+        - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels (shape (number of windows, window_size))
         
         """
         df_clean = remove_first_x_days(df, 3) 

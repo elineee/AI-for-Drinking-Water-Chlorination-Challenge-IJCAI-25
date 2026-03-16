@@ -75,30 +75,29 @@ class VAEModel(AutoencoderModel):
         return 4
 
 
-    def run_model(self, train_batches : torch.Tensor, test_batches: torch.Tensor, epochs: int, hidden_dim : int, latent_dim : int) :
+    def run_model(self, train_batches : DataLoader, test_batches: DataLoader, epochs: int, hidden_dim : int, latent_dim : int) :
         """ 
         Trains the VAE on the training data and detects anomalies on the test data.
         The model reconstructs each window and computes a reconstruction error (MSELoss +  Kullback-Leibler divergence) per window.
         A window is an anomaly if its reconstruction error exceeds a threshold computed from the training data (mean + multiplier * std).
 
         Parameters:
-        - train_batches: the training data in batches (clean data)
-        - test_batches: the test data in batches (contaminated data)
+        - train_batches: the training data in batches (clean data). Each batch has shape (batch_size, window_size).
+        - test_batches: the test data in batches (contaminated data). Each batch has shape (batch_size, window_size).
         - epochs: the number of epochs to train the model 
         - hidden_dim: the dimension of the hidden layer
         - latent_dim: the dimension of the latent space of the VAE
 
         Returns:
-        - anomalies: a numpy array of boolean values indicating whether each test sample is an anomaly (True) or not (False)
-        - test_reconstruction: the reconstructed test data from the VAE
-        - test_error: the reconstruction error for each test sample
+        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False) (shape (number of windows,))
+        - test_reconstruction: the reconstructed test window from the VAE (shape (number of windows, window_size))
+        - test_error: the mean reconstruction error per window (shape (number of windows, ))
         """
         torch.manual_seed(42)
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-        # shape: (batch_size, num_features)
         sample_batch = next(iter(train_batches))
-        input_dim = sample_batch.shape[-1]
+        input_dim = sample_batch.shape[1] # Get window_size
         model = VAE(input_dim, hidden_dim, latent_dim).to(device)
 
         criterion = nn.MSELoss()
@@ -174,11 +173,7 @@ class VAEModel(AutoencoderModel):
             print(f"train_error mean: {train_error.mean():.4f}, std: {train_error.std():.4f}")
             print(f"test_error mean: {test_error.mean():.4f}, std: {test_error.std():.4f}")
         
-            return (
-                anomalies.cpu().numpy(),
-                test_reconstruction.cpu().numpy(),
-                test_error.cpu().numpy()
-            )        
+            return ( anomalies.cpu().numpy(), test_reconstruction.cpu().numpy(), test_error.cpu().numpy())        
 
 
     def get_results(self):

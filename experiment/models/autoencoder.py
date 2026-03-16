@@ -56,10 +56,11 @@ class AutoencoderModel(AnomalyModel):
         - contaminated_dfs: dataframes with testing data (contamined data)
 
         Returns: 
-        - tensor with the normalized training data (clean data)
-        - tensor with the normalized testing data (contaminated data)
+        - X_train : tensor with the normalized training data (clean data)
+        - X_test: tensor with the normalized testing data (contaminated data)
         - prepared_contaminated_dfs: contaminated dataframes after preprocessing
         """
+
 
         _, X_train = self._prepare_dataset(clean_dfs, feature_type="extended")
         prepared_contaminated_dfs , X_test = self._prepare_dataset(contaminated_dfs, feature_type="extended")
@@ -72,34 +73,33 @@ class AutoencoderModel(AnomalyModel):
         X_train = (X_train - train_mean) / train_std
         X_test = (X_test - train_mean) / train_std
 
-        return (
-            torch.tensor(X_train, dtype=torch.float32),
-            torch.tensor(X_test, dtype=torch.float32),
-            prepared_contaminated_dfs
-        )
+        X_train = torch.tensor(X_train, dtype=torch.float32)
+        X_test = torch.tensor(X_test, dtype=torch.float32)
+
+        return (X_train, X_test, prepared_contaminated_dfs)
 
 
-    def run_model(self, train_batches : torch.Tensor, test_batches : torch.Tensor, epochs : int , latent_dim : int):
+    def run_model(self, train_batches : DataLoader, test_batches : DataLoader, epochs : int , latent_dim : int):
         """ 
         Trains the Autoencoder on the training data and detects anomalies on the test data.
         The model reconstructs each window and computes a reconstruction error (MSELoss) per window.
         A window is an anomaly if its reconstruction error exceeds a threshold computed from the training data (mean + multiplier * std).
         
         Parameters:
-        - train_batches: the training data in batches (clean data)
-        - test_batches: the test data in batches (contaminated data)
+        - train_batches: the training data in batches (clean data). Each batch has shape (batch_size, window_size).
+        - test_batches: the test data in batches (contaminated data). Each batch has shape (batch_size, window_size).
         - epochs: the number of epochs to train the model 
         - latent_dim: the dimension of the latent space of the Autoencoder 
 
         Returns:
-        - a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False)
-        - a numpy array of the reconstructed test data from the Autoencoder
-        - a numpy array of the reconstruction error for each test window
+        - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False) (shape (number of windows,))
+        - test_reconstruction: the reconstructed test windows from the Autoencoder (shape (number of windows, window_size))
+        - test_error: the mean reconstruction error per window (shape (number of windows,))
         """
 
         torch.manual_seed(42)   
         sample_batch = next(iter(train_batches))
-        input_dim = sample_batch.shape[1]
+        input_dim = sample_batch.shape[1] # Get window_size
         device = "cuda" if torch.cuda.is_available() else "cpu"
 
         model = Autoencoder(input_dim, latent_dim)
@@ -211,6 +211,7 @@ class AutoencoderModel(AnomalyModel):
             
             # Plot the signal
             self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
+
         return results
 
 
@@ -221,8 +222,8 @@ class AutoencoderModel(AnomalyModel):
 
             Parameters:
             - prepared_contaminated_dfs: the contaminated dataframes after preprocessing
-            - X_test: the test data tensor
-            - reconstructions: the reconstructed windows from the model
+            - X_test: the test data tensor (shape (number of windows, windows_size))
+            - reconstructions: the reconstructed windows from the model (shape (number of windows, windows_size))
             - node: the node id 
             """
 
