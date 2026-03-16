@@ -75,7 +75,7 @@ class VAEModel(AutoencoderModel):
         return 4
 
 
-    def run_model(self, train_batches : DataLoader, test_batches: DataLoader, epochs: int, hidden_dim : int, latent_dim : int) :
+    def run_model(self, train_batches : DataLoader, test_batches: DataLoader, epochs: int, hidden_dim : int, latent_dim : int, node : str) :
         """ 
         Trains the VAE on the training data and detects anomalies on the test data.
         The model reconstructs each window and computes a reconstruction error (MSELoss +  Kullback-Leibler divergence) per window.
@@ -87,6 +87,7 @@ class VAEModel(AutoencoderModel):
         - epochs: the number of epochs to train the model 
         - hidden_dim: the dimension of the hidden layer
         - latent_dim: the dimension of the latent space of the VAE
+        - node: the node id to train the model 
 
         Returns:
         - anomalies: a numpy array of boolean values indicating whether each test window is an anomaly (True) or not (False) (shape (number of windows,))
@@ -103,7 +104,7 @@ class VAEModel(AutoencoderModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
 
-        FILE_PTH = "VAE_model.pth"
+        FILE_PTH = f"VAE_model_{node}.pth"
     
         # If training has already be done 
         if os.path.exists(FILE_PTH):
@@ -136,7 +137,8 @@ class VAEModel(AutoencoderModel):
                 if (epoch + 1) % 50 == 0:
                     print(f" Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}, MSE: {np.mean(epoch_mse):.4f}, KLD: {np.mean(epoch_kld):.4f}")
 
-            torch.save(model.state_dict(), FILE_PTH)
+                torch.save(model.state_dict(), FILE_PTH)
+
 
         # Evaluation 
         model.eval()
@@ -191,7 +193,7 @@ class VAEModel(AutoencoderModel):
 
             # Anomaly detection
             # TODO : handle multiple contaminants, for now only one contaminant is handled
-            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4 )
+            anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4, node=node )
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
             y_pred = np.where(anomalies, -1, 1)  
