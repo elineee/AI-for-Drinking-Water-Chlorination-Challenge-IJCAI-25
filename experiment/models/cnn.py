@@ -99,7 +99,10 @@ class CNNModel(AnomalyModel):
         
         print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
         
-        weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
+        if n_anomalous != 0: 
+            weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
+        else: 
+            weights = torch.tensor([n_normal / 1], dtype=torch.float32) 
 
         return weights
     

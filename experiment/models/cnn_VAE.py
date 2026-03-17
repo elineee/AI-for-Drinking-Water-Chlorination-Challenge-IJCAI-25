@@ -1,7 +1,7 @@
 import numpy as np
 from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days
-from experiment_config import ExperimentConfig
+from experiment_config import ExperimentConfig, ContaminationType
 from models.CNN import CNNModel, CNN
 from models.VAE import VAEModel
 
@@ -15,6 +15,8 @@ class CNNVAEModel(CNNModel):
                     window_size=100,
                     model_name="VAE",
                     model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+
                 )
                   
             vae_model = VAEModel(config_vae)
@@ -41,7 +43,7 @@ class CNNVAEModel(CNNModel):
         X_train, X_test, _ = vae_model._prepare_data(clean_dfs, [df])
         train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
         test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
-        _, _ , errors  = vae_model.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4, node = node )
+        _, _ , errors  = vae_model.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4, node = node)
             
         prepared_df = remove_first_x_days(df, 3)
 
