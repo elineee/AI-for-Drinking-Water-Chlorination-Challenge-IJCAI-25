@@ -7,20 +7,30 @@ from models.VAE import VAEModel
 
 class CNNVAEModel(CNNModel):
     def _call_second_model(self, node):
-            config_vae = ExperimentConfig(
-                    config_name="VAE",
-                    contaminated_files=self.config.contaminated_files,
-                    example_files=self.config.example_files,
-                    nodes=[node],
-                    window_size=400,
-                    model_name="VAE",
-                    model_params={},
-                    contaminants=[ContaminationType.PATHOGEN]
+        """
+        Calls the second model (a VAE Model) used to generate additional features for the CNN.
+   
+        Parameters:
+        - node: the node id 
+        
+        Returns:
+        - vae_model: an instantiated vae model 
+        """
+                
+        config_vae = ExperimentConfig(
+                config_name="VAE",
+                contaminated_files=self.config.contaminated_files,
+                example_files=self.config.example_files,
+                nodes=[node],
+                window_size=400,
+                model_name="VAE",
+                model_params={},
+                contaminants=[ContaminationType.PATHOGEN]
 
-                )
-                  
-            vae_model = VAEModel(config_vae)
-            return vae_model
+            )
+                
+        vae_model = VAEModel(config_vae)
+        return vae_model
       
   
     def _prepare_data(self, vae_model, df, clean_dfs, node):
@@ -57,6 +67,4 @@ class CNNVAEModel(CNNModel):
         y_vae = self.create_direct_features(signal_errors, window_size=self.config.window_size)
         
         return prepared_df, features, labels, y_vae
-
-
 
