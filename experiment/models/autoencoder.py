@@ -23,8 +23,7 @@ class Autoencoder(nn.Module):
             nn.Dropout(0.1),
             nn.Linear(32, 32),
             nn.ReLU(),
-            nn.Linear(32, latent_dim),
-            nn.ReLU()
+            nn.Linear(32, latent_dim)
         )
         self.decoder = nn.Sequential(
             nn.Linear(latent_dim, 32),
