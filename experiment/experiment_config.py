@@ -33,6 +33,7 @@ class ModelName(Enum):
     CNN_UNIVARIATE = "CNN_univariate"
     CNN_WINDOWS = "CNN_windows"
     CNN_VAE  = "CNN_VAE"
+    GPR = "GPR"
 
 @dataclass
 class ExperimentConfig:

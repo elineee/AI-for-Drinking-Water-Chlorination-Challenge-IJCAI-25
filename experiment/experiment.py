@@ -22,6 +22,7 @@ from models.CNN import CNNModel
 from models.CNN_univariate import CNNUnivariateModel
 from models.CNN_windows import CNNWindowsModel
 from models.CNN_VAE import CNNVAEModel
+from models.GPR import GPRModel
 
 
 AVAILABLE_MODELS = {
@@ -47,7 +48,8 @@ AVAILABLE_MODELS = {
     ModelName.CNN: CNNModel,
     ModelName.CNN_UNIVARIATE: CNNUnivariateModel, 
     ModelName.CNN_WINDOWS: CNNWindowsModel,
-    ModelName.CNN_VAE: CNNVAEModel
+    ModelName.CNN_VAE: CNNVAEModel,
+    ModelName.GPR : GPRModel
 }
 
 class ExperimentRunner:
