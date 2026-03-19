@@ -6,7 +6,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import calculate_labels_alarm, remove_first_x_days
-from experiment.utils import add_noisy_dfs, detect_change_point
+from utils import add_noisy_dfs, detect_change_point
 from experiment_config import ContaminationType, ExperimentConfig
 from models.VAE import VAE, VAEModel
 from models.CNN import CNNModel
@@ -54,7 +54,7 @@ class VAECNNModel(CNNModel):
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
-                window_size=400,
+                window_size= self.config.window_size,
                 model_name="VAE",
                 model_params={},
                 contaminants=[ContaminationType.PATHOGEN]
