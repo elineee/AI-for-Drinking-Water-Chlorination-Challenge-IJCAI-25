@@ -161,6 +161,14 @@ def get_times_series(df, nodes):
     return time_series_data
 
 def gaussian_noise(x):
+    """ Adds gaussian noise to the input array x. The noise has a mean of 0 and a standard deviation randomly chosen from a predefined list. 
+    
+    Parameters:
+    - x: input array to which the noise will be added
+    
+    Returns:
+    - x with added gaussian noise
+    """
     mu = 0.0
     std = [0.01, 0.03, 0.05, 0.07]
     noise = np.random.normal(mu, np.random.choice(std), size = x.shape)
@@ -168,6 +176,14 @@ def gaussian_noise(x):
     return x_noisy 
 
 def blank_values(x):
+    """ Adds blank values to the input array x.
+    
+    Parameters:
+    - x: input array to which blank values will be added
+
+    Returns:
+    - x with added blank values
+    """
     percentage = [0.01, 0.03, 0.05]
     x_noised = x.copy()
     num_defects = int(np.random.choice(percentage) * len(x))
@@ -176,6 +192,15 @@ def blank_values(x):
     return x_noised
 
 def add_noisy_dfs(dfs):
+    """ 
+    Adds noisy versions of the dataframes to the original list of dataframes. For each dataframe, a version with gaussian noise and a version with blank values are created with a certain probability.
+    
+    Parameters:
+    - dfs: list of dataframes to which the noisy versions will be added
+    
+    Returns:
+    - a list of dataframes including the original and the noisy versions
+    """
     noisy_dfs = []
     column_name = "chlorine_concentration"
     proba_gauss = 0.7
