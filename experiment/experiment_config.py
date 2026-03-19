@@ -24,6 +24,8 @@ class ModelName(Enum):
     LSTM_AUTOENCODER_ALARM = "LSTM_Autoencoder_alarm"
     VAE = "VAE"
     VAE_ALARM = "VAE_ALARM"
+    VAE_ENCODER = "VAE_ENCODER"
+    VAE_CNN = "VAE_CNN"
     LSTM_VAE = "LSTM_VAE"
     LSTM_VAE_ALARM = "LSTM_VAE_ALARM"
     GAN = "GAN"

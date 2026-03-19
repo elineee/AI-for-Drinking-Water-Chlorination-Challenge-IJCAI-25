@@ -75,6 +75,9 @@ class VAEModel(AutoencoderModel):
         return 4
 
 
+    def _get_name_model(self): 
+        return VAE
+    
     def run_model(self, train_batches : DataLoader, test_batches: DataLoader, epochs: int, hidden_dim : int, latent_dim : int, node : str) :
         """ 
         Trains the VAE on the training data and detects anomalies on the test data.
@@ -99,7 +102,8 @@ class VAEModel(AutoencoderModel):
 
         sample_batch = next(iter(train_batches))
         input_dim = sample_batch.shape[1] # Get window_size
-        model = VAE(input_dim, hidden_dim, latent_dim).to(device)
+        model_name = self._get_name_model()
+        model = model_name(input_dim, hidden_dim, latent_dim).to(device)
 
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-8)
