@@ -8,7 +8,7 @@ import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import calculate_labels_alarm, remove_first_x_days, get_labels
-from utils import detect_change_point
+from utils import add_noisy_dfs, detect_change_point
 from experiment_config import ContaminationType, ExperimentConfig
 from models.SVR import SVRModel
 from models.model import AnomalyModel
@@ -257,6 +257,10 @@ class CNNWindowsModel(AnomalyModel):
         
         for node, contaminated_dfs in all_contaminated_dfs.items():
             clean_dfs = all_clean_dfs[node]
+            
+            clean_dfs = add_noisy_dfs(clean_dfs)
+            test_contaminated_df = contaminated_dfs[-1]
+            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
             
             print(f"Calculating results for node {node}")
             

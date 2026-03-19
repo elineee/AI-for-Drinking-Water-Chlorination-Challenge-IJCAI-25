@@ -3,7 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import GridSearchCV
 from sklearn.svm import SVR
-from utils import plot_prediction, build_timestamps
+from utils import add_noisy_dfs, plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
 # based on https://github.com/microsoft/ML-For-Beginners/blob/main/7-TimeSeries/3-SVR/README.md
@@ -152,6 +152,8 @@ class SVRModel(AnomalyModel):
         results = {}
         
         for node, clean_dfs in all_clean_dfs.items():
+            
+            clean_dfs = add_noisy_dfs(clean_dfs)
             
             contaminated_dfs = all_contaminated_dfs[node]
             

@@ -348,7 +348,7 @@ class CNNModel(AnomalyModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=5)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=10)
             y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
