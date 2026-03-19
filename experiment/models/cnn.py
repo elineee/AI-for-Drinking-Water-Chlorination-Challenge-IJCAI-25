@@ -5,9 +5,9 @@ from sklearn.metrics import f1_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
-from torch.utils.data import TensorDataset, DataLoader
+from torch.utils.data import Dataset, TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm, get_labels
-from utils import detect_change_point
+from utils import detect_change_point, add_noisy_dfs, gaussian_noise, blank_values
 from experiment_config import ContaminationType, ExperimentConfig
 from models.SVR import SVRModel 
 from models.model import AnomalyModel
@@ -42,6 +42,7 @@ class CNN(nn.Module):
     def forward(self, x):
         x = x.transpose(1, 2)  # -> (batch, number_of_features, window_size)
         
+        
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
@@ -66,6 +67,7 @@ class CNN(nn.Module):
 
         
         return x
+
 
 
 class CNNModel(AnomalyModel):
@@ -280,6 +282,8 @@ class CNNModel(AnomalyModel):
         
         svr_model = SVRModel(config_svr)
         return svr_model 
+    
+
 
 
     def get_results(self):
@@ -288,6 +292,11 @@ class CNNModel(AnomalyModel):
         
         for node, contaminated_dfs in all_contaminated_dfs.items():
             clean_dfs = all_clean_dfs[node]
+            
+            clean_dfs = add_noisy_dfs(clean_dfs)
+            test_contaminated_df = contaminated_dfs[-1]
+            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
+            
             
             print(f"Calculating results for node {node}")
             
@@ -339,8 +348,8 @@ class CNNModel(AnomalyModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
-            y_pred = detect_change_point(y_pred, count_required=5)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=5)
+            y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results

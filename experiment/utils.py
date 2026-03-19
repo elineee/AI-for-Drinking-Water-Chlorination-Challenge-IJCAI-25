@@ -160,3 +160,33 @@ def get_times_series(df, nodes):
             time_series_data[node] = df[column_name_cl].values
     return time_series_data
 
+def gaussian_noise(x):
+    mu = 0.0
+    std = [0.01, 0.03, 0.05, 0.07]
+    noise = np.random.normal(mu, np.random.choice(std), size = x.shape)
+    x_noisy = x + noise
+    return x_noisy 
+
+def blank_values(x):
+    percentage = [0.01, 0.03, 0.05]
+    x_noised = x.copy()
+    num_defects = int(np.random.choice(percentage) * len(x))
+    defect_indices = np.random.choice(len(x), num_defects, replace=False)
+    x_noised[defect_indices] = 0
+    return x_noised
+
+def add_noisy_dfs(dfs):
+    noisy_dfs = []
+    column_name = "chlorine_concentration"
+    proba_gauss = 0.7
+    proba_blank = 0.7
+    for df in dfs:
+        noisy_dfs.append(df) 
+        df_copy = df.copy()
+        if np.random.rand() < proba_gauss:
+            df_copy[column_name] = gaussian_noise(df_copy[column_name].values)
+        if np.random.rand() < proba_blank:
+            df_copy[column_name] = blank_values(df_copy[column_name].values)
+        noisy_dfs.append(df_copy)
+    return noisy_dfs
+
