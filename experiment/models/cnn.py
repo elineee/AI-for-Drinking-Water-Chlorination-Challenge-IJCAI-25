@@ -69,7 +69,6 @@ class CNN(nn.Module):
         return x
 
 
-
 class CNNModel(AnomalyModel):
     """ Class for CNN multivariate model. It takes into account the raw signal and the signal given by another model (by default, model).
     Note: In the CNN configuration, the last file of contaminated_files si the file for testing."""
@@ -283,8 +282,6 @@ class CNNModel(AnomalyModel):
         svr_model = SVRModel(config_svr)
         return svr_model 
     
-
-
 
     def get_results(self):
         results = {}

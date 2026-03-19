@@ -63,6 +63,22 @@ class VAE(nn.Module):
         decoded = self.decoder(z)
         return decoded, mu, log_var
     
+    def encode(self, x):
+        """
+        Encodes input data into the latent space.
+
+        Parameters:
+        - x: input tensor (shape (batch_size, input_dim))
+
+        Returns:
+        - z: embedding in the latent space (shape (batch_size, latent_dim))
+        """
+
+        encoded = self.encoder(x)
+        mu = self.mu(encoded)
+        log_var = self.log_var(encoded)
+        z = self.reparameterize(mu, log_var)
+        return z
     
 class VAEModel(AutoencoderModel):
     """ Class for Variational Autoencoder model"""
