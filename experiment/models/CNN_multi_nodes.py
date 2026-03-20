@@ -1,6 +1,7 @@
 from cProfile import label
 
 from matplotlib import pyplot as plt
+from networkx import nodes
 import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score, recall_score
@@ -123,7 +124,7 @@ class CNNMultiNodesModel(AnomalyModel):
         - epochs: number of epochs 
    
         Returns:
-        - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
+        - results_per_node : a dictionary mapping each node to its corresponding predicted labels (numpy array), where -1 corresponds to an anomaly and 1 to a normal point
         """
         model = CNN(input_size=self._get_input_size())
 
@@ -256,91 +257,112 @@ class CNNMultiNodesModel(AnomalyModel):
         
         nodes = self.config.nodes
 
+        # init dictionaries to store the time series and labels for each node for the train set 
         dict_time_series = {}
         dict_labels = {}
         for node in nodes:
             dict_time_series[node] = []
             dict_labels[node] = []
             
-        # pas oublier d'ajouter du bruit plus tard 
+        # TODO : add noise later
+        # get the features and labels for the training set 
         for df in self.config.contaminated_files[:-1]: 
             df = pd.read_csv(df)
             for node in nodes: 
-                column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
-                contaminant_id = CONTAMINANT_ID[self.config.contaminants[0]]
-                column_label_name = f"bulk_species_node [MG] at {contaminant_id} @ {node}" # ici, faudra que je récupère le bon id
-                if column_name_cl in df.columns:
-                    time_serie = df[column_name_cl].values
-                else:
-                    print(f"Column {column_name_cl} not found in DataFrame.")
-                if column_label_name in df.columns:
-                    label = df[column_label_name].values
-                    label = get_labels(label)
-            
-                if "dist" in node:
-                    time_serie = time_serie[288:] # remove first 3 days 
-                    label = label[288:]
-                else: 
-                    time_serie = time_serie[48:] # remove first 3 days 
-                    label = label[48:]
-                
-                features = []
-                labels = []
-                for i in range(self.config.window_size, len(time_serie)):
-                    row = time_serie[i-self.config.window_size:i]
-                    label_value = label[i-self.config.window_size:i]
-                    
-                    features.append(row)
-                    labels.append(label_value)
-                features = np.array(features)
-                features = torch.tensor(features, dtype=torch.float32)
-                labels = np.array(labels)
-                labels = torch.tensor(labels, dtype=torch.float32)
+                features, labels = self.prepare_data(df, node)
                 dict_time_series[node].append(features)
                 dict_labels[node].append(labels)
-        
-        
+       
+        # init dictionaries to store the time series and labels for each node for the test set
         dict_time_series_test = {}
         dict_labels_test = {}
         for node in nodes:
             dict_time_series_test[node] = []
             dict_labels_test[node] = []
-            
+        
+        # get the features and labels for the test set
         df = pd.read_csv(self.config.contaminated_files[-1])
         for node in nodes: 
-            column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
-            contaminant_id = CONTAMINANT_ID[self.config.contaminants[0]]
-            column_label_name = f"bulk_species_node [MG] at {contaminant_id} @ {node}" # ici, faudra que je récupère le bon id
-            if column_name_cl in df.columns:
-                time_serie = df[column_name_cl].values
-            else:
-                print(f"Column {column_name_cl} not found in DataFrame.")
-            if column_label_name in df.columns:
-                label = df[column_label_name].values
-                label = get_labels(label)
-        
-            if "dist" in node:
-                time_serie = time_serie[288:] # remove first 3 days 
-                label = label[288:]
-            else: 
-                time_serie = time_serie[48:] # remove first 3 days 
-                label = label[48:]
-            
-            features = []
-            labels = []
-            for i in range(self.config.window_size, len(time_serie)):
-                row = time_serie[i-self.config.window_size:i]
-                label_value = label[i-self.config.window_size:i]
-                
-                features.append(row)
-                labels.append(label_value)
-            features = np.array(features)
-            features = torch.tensor(features, dtype=torch.float32)
-            labels = np.array(labels)
-            labels = torch.tensor(labels, dtype=torch.float32)
+            features, labels = self.prepare_data(df, node)
             dict_time_series_test[node].append(features)
             dict_labels_test[node].append(labels)
+        
+        # get the true labels for each node   
+        y_true = self.get_y_true()
+
+        # concatenate the time series features and labels for each node to create the final training and test sets
+        data_train = torch.stack([torch.cat(dict_time_series[node], dim=0) for node in nodes], dim=2) # shape of (number of total train elements, window size, number of nodes)
+        y_train = torch.stack([torch.cat(dict_labels[node], dim=0) for node in nodes], dim=2) # shape of (number of total train elements, window size, number of nodes)
+        
+        data_test = torch.stack([torch.cat(dict_time_series_test[node], dim=0) for node in nodes], dim=2) # shape of (number of total test elements, window size, number of nodes) 
+        y_test = torch.stack([torch.cat(dict_labels_test[node], dim=0) for node in nodes], dim=2) # shape of (number of total test elements, window size, number of nodes)
+        
+        # split the training set into a training set and a validation set
+        X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
+        
+        # create DataLoaders for the training, validation and test sets
+        train_dataset = TensorDataset(X_train, y_train)
+        val_dataset = TensorDataset(X_val, y_val)
+        test_dataset = TensorDataset(data_test, y_test)
+        train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size, window_size, number of features)
+        val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
+        test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
+        weights = self._compute_weight(y_train)
+        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=10)
+        
+        
+        dict_pred = {}
+        for key, value in y_pred.items(): 
+            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=10)
             
+        # get the results 
+        results = {}
+        for node in self.config.nodes:
+            if y_true[node] is not None:
+                results[node] = {
+                    "y_true": self.get_label_alarm(y_true[node]),
+                    "y_pred": self.get_label_alarm(dict_pred[node])
+                }
+            else:
+                print(f"No true labels for node {node}, skipping evaluation.")
+
+        return results
+    
+
+    
+    
+    def get_label_alarm(self, label):
+        """ 
+        Calculates labels for anomaly detection. Labels are -1 from the moment the value of the contaminant column becomes an anomaly (> 0) and 1 before that.
+        
+        Parameters:
+        - label: a numpy array containing the values of whether there is an anomaly (-1) or not (1) for each time step in the test set
+        
+        Returns:
+        - labels: a numpy array containing the labels alarm where everything is 1 before the first anomaly and -1 from the first anomaly
+        """
+        anomaly_started = False
+        labels = []
+        for element in label:
+            if element == -1: 
+                anomaly_started = True
+
+            if anomaly_started:
+                labels.append(-1)
+            else:
+                labels.append(1)
+
+        labels = np.array(labels)
+        
+        return labels
+    
+    def get_y_true(self): 
+        """ 
+        Retrieves the true labels for each node in the experiment.
+        
+        Returns:
+        - y_true: a dictionary mapping each node to its corresponding true labels (numpy array), where -1 corresponds to an anomaly and 1 to a normal point
+        """
         y_true = {}
         df = pd.read_csv(self.config.contaminated_files[-1])
         for node in self.config.nodes:
@@ -361,62 +383,49 @@ class CNNMultiNodesModel(AnomalyModel):
              else:
                 print(f"Column {column_label_name} not found in DataFrame.")
                 y_true[node] = None
-
-        
-        data_train = torch.stack([torch.cat(dict_time_series[node], dim=0) for node in nodes], dim=2) # shape of (number of total train elements, window size, number of nodes)
-        print(f"Shape of data_train: {data_train.shape}")
-        y_train = torch.stack([torch.cat(dict_labels[node], dim=0) for node in nodes], dim=2) # shape of (number of total train elements, window size, number of nodes)
-        print(f"Shape of y_train: {y_train.shape}")
-        
-        data_test = torch.stack([torch.cat(dict_time_series_test[node], dim=0) for node in nodes], dim=2) # shape of (number of total test elements, window size, number of nodes) 
-        print(f"Shape of data_test: {data_test.shape}")
-        y_test = torch.stack([torch.cat(dict_labels_test[node], dim=0) for node in nodes], dim=2) # shape of (number of total test elements, window size, number of nodes)
-        print(f"Shape of y_test: {y_test.shape}")
-        
-        X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
-        
-        train_dataset = TensorDataset(X_train, y_train)
-        val_dataset = TensorDataset(X_val, y_val)
-        test_dataset = TensorDataset(data_test, y_test)
-        train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size, window_size, number of features)
-        val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
-        test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
-        weights = self._compute_weight(y_train)
-        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=1)
-        
-        
-        dict_pred = {}
-        for key, value in y_pred.items(): 
-            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=10)
-            
-        
-        results = {}
-        for node in self.config.nodes:
-            if y_true[node] is not None:
-                results[node] = {
-                    "y_true": self.get_label_alarm(y_true[node]),
-                    "y_pred": self.get_label_alarm(dict_pred[node])
-                }
-            else:
-                print(f"No true labels for node {node}, skipping evaluation.")
-
-        print(results)
-        return results
+        return y_true
     
+    def prepare_data(self, df, node):
+        """ Prepares the data for training and testing the CNN model. It retrieves the time series and labels for a given node, removes the first 3 days, and creates windows of the specified size.
+        
+        Parameters:
+        - df: the DataFrame containing the data for a contaminated file
+        - node: the node for which to prepare the data
+        
+        Returns:
+        - features: a tensor containing the windows of the time series for the given node, where each window has the shape (window_size, number of features)
+        - labels: a tensor containing the corresponding labels for each window, where each label has the shape (window_size, number of features) and indicates whether there is an anomaly (-1) or not (1) for each time step in the window
+        """
+        column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
+        contaminant_id = CONTAMINANT_ID[self.config.contaminants[0]]
+        column_label_name = f"bulk_species_node [MG] at {contaminant_id} @ {node}" 
+        if column_name_cl in df.columns:
+            time_serie = df[column_name_cl].values
+        else:
+            print(f"Column {column_name_cl} not found in DataFrame.")
+        if column_label_name in df.columns:
+            label = df[column_label_name].values
+            label = get_labels(label)
     
-    def get_label_alarm(self, label):
-        anomaly_started = False
+        if "dist" in node:
+            time_serie = time_serie[288:] # remove first 3 days 
+            label = label[288:]
+        else: 
+            time_serie = time_serie[48:] # remove first 3 days 
+            label = label[48:]
+        
+        features = []
         labels = []
-        for element in label:
-            if element == -1: 
-                anomaly_started = True
-
-            if anomaly_started:
-                labels.append(-1)
-            else:
-                labels.append(1)
-
+        for i in range(self.config.window_size, len(time_serie)):
+            row = time_serie[i-self.config.window_size:i]
+            label_value = label[i-self.config.window_size:i]
+            
+            features.append(row)
+            labels.append(label_value)
+        features = np.array(features)
+        features = torch.tensor(features, dtype=torch.float32)
         labels = np.array(labels)
+        labels = torch.tensor(labels, dtype=torch.float32)
         
-        return labels
+        return features, labels
         
