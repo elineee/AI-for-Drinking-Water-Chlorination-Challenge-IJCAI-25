@@ -35,6 +35,7 @@ class ModelName(Enum):
     CNN_WINDOWS = "CNN_windows"
     CNN_VAE  = "CNN_VAE"
     GPR = "GPR"
+    CNN_MULTI_NODES = "CNN_multi_nodes"
 
 @dataclass
 class ExperimentConfig:
