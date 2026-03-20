@@ -97,8 +97,8 @@ class CNNUnivariateModel(CNNModel):
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
 
             # create DataLoaders
-            train_dataset = AugmentedTensorDataset(X_train, y_train, augment=TimeSeriesAugmentation([gaussian_noise, blank_value]))
-            # train_dataset = TensorDataset(X_train, y_train)
+            # train_dataset = AugmentedTensorDataset(X_train, y_train, augment=TimeSeriesAugmentation([gaussian_noise, blank_value]))
+            train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
             test_dataset = TensorDataset(data_test, y_test)
             train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True) # one batch = (32, 48)

@@ -80,7 +80,7 @@ class VAECNNModel(CNNModel):
         Returns:
         - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = VAECNN(latent_dim=4, hidden_dim=64, window_size=self.config.window_size)
+        model = VAECNN(latent_dim=32, hidden_dim=128, window_size=self.config.window_size)
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
@@ -99,7 +99,7 @@ class VAECNNModel(CNNModel):
  
                 outputs = model(windows) # outputs shape (batch, window_size)
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
                 
                 optimizer.zero_grad()
                 loss = criterion(outputs, labels)
@@ -118,7 +118,7 @@ class VAECNNModel(CNNModel):
                     windows, labels = data # windows shape (batch, latent_dim), labels shape (batch, window_size)
                     outputs = model(windows) # outputs shape (batch, window_size)
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                    preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
                     
                     loss = criterion(outputs, labels)
                     losses.append(loss.item())
@@ -152,7 +152,7 @@ class VAECNNModel(CNNModel):
                 windows, labels = data # windows shape (batch, latent_dim), labels shape (batch, window_size) 
                 outputs = model(windows) # outputs shape (batch, window_size)              
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
 
                 labels = labels.flatten()
                 n_total += len(labels)
@@ -195,10 +195,10 @@ class VAECNNModel(CNNModel):
         for node, contaminated_dfs in all_contaminated_dfs.items():
             clean_dfs = all_clean_dfs[node]
             
-            # Add noise 
-            clean_dfs = add_noisy_dfs(clean_dfs)
-            test_contaminated_df = contaminated_dfs[-1]
-            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
+            # Add noise to the train data
+            # clean_dfs = add_noisy_dfs(clean_dfs)
+            # test_contaminated_df = contaminated_dfs[-1]
+            # contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
             
             print(f"Calculating results for node {node}")
                         
@@ -236,8 +236,8 @@ class VAECNNModel(CNNModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=10)
-            y_pred = detect_change_point(y_pred, count_required=10)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=50)
+            y_pred = detect_change_point(y_pred, count_required=20)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
@@ -258,8 +258,8 @@ class VAECNNModel(CNNModel):
         - z : embeddings computed by the encoder (shape (number of windows, latent_dim))
         - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels (shape (number of windows, window_size))
         """
-        hidden_dim = 64
-        latent_dim = 4
+        hidden_dim = 128
+        latent_dim = 32
 
         # Train the VAE and save the weights of the model
         vae_encoder = self._call_vae_model(node)
