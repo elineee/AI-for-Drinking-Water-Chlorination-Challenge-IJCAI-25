@@ -255,6 +255,20 @@ class CNNMultiNodesModel(AnomalyModel):
     def get_results(self):
         
         nodes = self.config.nodes
+        
+        dfs = []
+        for file in self.config.contaminated_files[:-1]:
+            df = pd.read_csv(file)
+            dfs.append(df)
+        
+        print(len(dfs))
+        dfs = self.add_noisy_dfs(dfs, nodes)
+        print(len(dfs))
+        
+        dfs.append(pd.read_csv(self.config.contaminated_files[-1])) 
+
+        
+            
 
         # init dictionaries to store the time series and labels for each node for the train set 
         dict_time_series = {}
@@ -265,8 +279,7 @@ class CNNMultiNodesModel(AnomalyModel):
             
         # TODO : add noise later
         # get the features and labels for the training set 
-        for df in self.config.contaminated_files[:-1]: 
-            df = pd.read_csv(df)
+        for df in dfs[:-1]: 
             for node in nodes: 
                 features, labels = self.prepare_data(df, node)
                 dict_time_series[node].append(features)
@@ -280,7 +293,7 @@ class CNNMultiNodesModel(AnomalyModel):
             dict_labels_test[node] = []
         
         # get the features and labels for the test set
-        df = pd.read_csv(self.config.contaminated_files[-1])
+        df = dfs[-1]
         for node in nodes: 
             features, labels = self.prepare_data(df, node)
             dict_time_series_test[node].append(features)
@@ -427,4 +440,64 @@ class CNNMultiNodesModel(AnomalyModel):
         labels = torch.tensor(labels, dtype=torch.float32)
         
         return features, labels
+    
+    
+    def gaussian_noise(self, x):
+        """ Adds gaussian noise to the input array x. The noise has a mean of 0 and a standard deviation randomly chosen from a predefined list. 
+        
+        Parameters:
+        - x: input array to which the noise will be added
+        
+        Returns:
+        - x with added gaussian noise
+        """
+        mu = 0.0
+        std = [0.01, 0.03, 0.05, 0.07]
+        noise = np.random.normal(mu, np.random.choice(std), size = x.shape)
+        x_noisy = x + noise
+        return x_noisy 
+
+    def blank_values(self, x):
+        """ Adds blank values to the input array x.
+        
+        Parameters:
+        - x: input array to which blank values will be added
+
+        Returns:
+        - x with added blank values
+        """
+        percentage = [0.01, 0.03, 0.05]
+        x_noised = x.copy()
+        num_defects = int(np.random.choice(percentage) * len(x))
+        defect_indices = np.random.choice(len(x), num_defects, replace=False)
+        x_noised[defect_indices] = 0
+        return x_noised
+
+    def add_noisy_dfs(self, dfs, nodes):
+        """ 
+        Adds noisy versions of the dataframes to the original list of dataframes. For each dataframe, a version with gaussian noise and a version with blank values are created with a certain probability.
+        
+        Parameters:
+        - dfs: list of dataframes to which the noisy versions will be added
+        - nodes: list of nodes for which to create noisy versions
+        
+        Returns:
+        - a list of dataframes including the original and the noisy versions
+        """
+        noisy_dfs = []
+        proba_gauss = 0.7
+        proba_blank = 0.7
+        for df in dfs:
+            noisy_dfs.append(df) 
+            df_copy = df.copy()
+            if np.random.rand() < proba_gauss:
+                for node in nodes:
+                    column_name = f"bulk_species_node [MG] at Chlorine @ {node}"
+                    df_copy[column_name] = self.gaussian_noise(df_copy[column_name].values)
+            if np.random.rand() < proba_blank:
+                for node in nodes:
+                    column_name = f"bulk_species_node [MG] at Chlorine @ {node}"
+                    df_copy[column_name] = self.blank_values(df_copy[column_name].values)
+            noisy_dfs.append(df_copy)
+        return noisy_dfs
         
