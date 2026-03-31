@@ -304,7 +304,7 @@ def calculate_labels_alarm(df: pd.DataFrame, contaminant_column: str, window_siz
     
     anomaly_started = False
     for i in range(window_size, len(feature)):
-        if feature[i] > 0.01: 
+        if feature[i] > 0: 
             anomaly_started = True
         
         if anomaly_started:
