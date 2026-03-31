@@ -1,3 +1,5 @@
+import os
+
 from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
@@ -129,35 +131,40 @@ class CNNModel(AnomalyModel):
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        train_loss = []
-        val_loss = []
-        for epoch in range(epochs):
-            n_corrects_train = 0
-            n_corrects_val = 0
-            n_total_train = 0
-            n_total_val = 0
-            losses = []
-            model.train()
-            for _, data in enumerate(train_dataloader):
-                windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
- 
-                outputs = model(windows) # outputs shape (batch, 1, window_size)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
-                
-                probs = torch.sigmoid(outputs) # Convert logits to probabilities
+        if os.path.exists("cnn.pth"):
+            model.load_state_dict(torch.load("cnn.pth", weights_only=True))
+        else:
+            train_loss = []
+            val_loss = []
+            for epoch in range(epochs):
+                n_corrects_train = 0
+                n_corrects_val = 0
+                n_total_train = 0
+                n_total_val = 0
+                losses = []
+                model.train()
+                for _, data in enumerate(train_dataloader):
+                    windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+    
+                    outputs = model(windows) # outputs shape (batch, 1, window_size)
+                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
+                    
+                    probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                    
+                    optimizer.zero_grad()
+                    loss = criterion(outputs, labels)
+                    losses.append(loss.item())
+                    loss.backward()
+                    optimizer.step()
+                    
+                    n_total_train += labels.numel()
+                    n_corrects_train += (preds == labels).sum().item()
+                train_loss.append(np.mean(losses))
+                losses = []
                 
-                optimizer.zero_grad()
-                loss = criterion(outputs, labels)
-                losses.append(loss.item())
-                loss.backward()
-                optimizer.step()
-                
-                n_total_train += labels.numel()
-                n_corrects_train += (preds == labels).sum().item()
-            train_loss.append(np.mean(losses))
-            losses = []
+            torch.save(model.state_dict(), "cnn.pth")
             
             model.eval()
             with torch.no_grad():
@@ -182,14 +189,14 @@ class CNNModel(AnomalyModel):
             print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
             
             
-        plt.figure()
-        plt.plot(train_loss, label="train")
-        plt.plot(val_loss, label="validation")
-        plt.title("Loss evolution over epochs")
-        plt.xlabel("epoch")
-        plt.ylabel("loss")
-        plt.legend()
-        plt.show()
+            plt.figure()
+            plt.plot(train_loss, label="train")
+            plt.plot(val_loss, label="validation")
+            plt.title("Loss evolution over epochs")
+            plt.xlabel("epoch")
+            plt.ylabel("loss")
+            plt.legend()
+            plt.show()
         
         model.eval()
         n_corrects = 0
@@ -345,7 +352,7 @@ class CNNModel(AnomalyModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=10)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=5)
             y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
