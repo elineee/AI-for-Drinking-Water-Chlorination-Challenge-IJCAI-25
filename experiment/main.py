@@ -14,9 +14,9 @@ if __name__ == "__main__":
     # CONTAMINATED_FILES = [".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_1.csv", ".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_3.csv", ".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_5.csv", ".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_4.csv", ".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_2.csv", ".\\data\\data_hanoi\\hanoi_scada_data_conta_node_24_gaussian_noise_2.csv"]
     # CONTAMINATED_FILES = [".\\data\\data_hanoi\\hanoi_scada_data_conta_node_23_2.csv"]
     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean.csv"]
-    CONTAMINATED_FILES = [".\\data\\data_compet\\scada_data_conta_node_1.csv",".\\data\\data_compet\\scada_data_conta_node_35_2.csv", ".\\data\\data_compet\\scada_data_conta_node_35_4.csv", ".\\data\\data_compet\\scada_data_conta_node_35_5.csv", ".\\data\\data_compet\\scada_data_conta_node_106.csv", ".\\data\\data_compet\\scada_data_conta_node_306_2.csv", ".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_106_2.csv"]
-    CONTAMINATED_FILES_2 = [".\\data\\data_compet\\scada_data_conta_node_1.csv",".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_106_2.csv", ".\\data\\data_compet\\scada_data_conta_node_306.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_306.csv"]
-    CONTAMINATED_FILES_3 = [".\\data\\data_compet\\scada_data_conta_node_1.csv",".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_106_2.csv", ".\\data\\data_compet\\scada_data_conta_node_306.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_35_3.csv"]
+    CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_conta_node_1.csv", ".\\data\\data_compet\\scada_data_conta_node_376_5.csv", ".\\data\\data_compet\\scada_data_conta_node_306_2.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_106_2.csv", ".\\data\\data_compet\\scada_data_conta_node_376_2.csv", ".\\data\\data_compet\\scada_data_conta_node_376_3.csv"]
+    CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_conta_node_376_2.csv", ".\\data\\data_compet\\scada_data_conta_node_376_4.csv"]
+    CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_conta_node_376_2.csv", ".\\data\\data_compet\\scada_data_conta_node_106.csv"]
     # CONTAMINATED_FILES = [".\\data\\data_compet\\scada_data_conta_node_1.csv",".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_306.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_106.csv", ".\\data\\data_compet\\scada_data_conta_node_35_gaussian_noise_2.csv", ".\\data\\data_compet\\scada_data_conta_node_35_gaussian_noise_3.csv", ".\\data\\data_compet\\scada_data_conta_node_35_gaussian_noise.csv"]
     
     #CONTAMINATED_FILES = [".\\data\\data_compet\\scada_data_conta_node_1.csv",".\\data\\data_compet\\scada_data_conta_node_35.csv", ".\\data\\data_compet\\scada_data_conta_node_306.csv", ".\\data\\data_compet\\scada_data_conta_node_356.csv", ".\\data\\data_compet\\scada_data_conta_node_376.csv", ".\\data\\data_compet\\scada_data_conta_node_423.csv", ".\\data\\data_compet\\scada_data_conta_node_106.csv", ".\\data\\data_compet\\scada_data_conta_node_35_gaussian_noise.csv"]
@@ -142,9 +142,9 @@ if __name__ == "__main__":
     
     ExperimentConfig(
                     config_name="CNN",
-                    contaminated_files=CONTAMINATED_FILES,
+                    contaminated_files=CONTAMINATED_FILES1,
                     example_files=CLEAN_FILES,
-                    nodes=["dist33"],
+                    nodes=["dist11"],
                     window_size=150, 
                     model_name=ModelName.CNN,
                     model_params={},
@@ -153,9 +153,9 @@ if __name__ == "__main__":
     
     ExperimentConfig(
                     config_name="CNN2",
-                    contaminated_files=CONTAMINATED_FILES_2,
+                    contaminated_files=CONTAMINATED_FILES2,
                     example_files=CLEAN_FILES,
-                    nodes=["dist33"],
+                    nodes=["dist11"],
                     window_size=150, 
                     model_name=ModelName.CNN,
                     model_params={},
@@ -164,9 +164,9 @@ if __name__ == "__main__":
     
     ExperimentConfig(
                     config_name="CNN3",
-                    contaminated_files=CONTAMINATED_FILES_3,
+                    contaminated_files=CONTAMINATED_FILES3,
                     example_files=CLEAN_FILES,
-                    nodes=["dist33"],
+                    nodes=["dist11"],
                     window_size=150, 
                     model_name=ModelName.CNN,
                     model_params={},
