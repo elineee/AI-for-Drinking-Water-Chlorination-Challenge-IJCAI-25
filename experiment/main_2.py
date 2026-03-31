@@ -1,4 +1,4 @@
-# Other configs
+# Other configs (Aur configs)
 
 from experiment import ExperimentRunner
 from experiment_config import ExperimentConfig, ModelName, ContaminationType
