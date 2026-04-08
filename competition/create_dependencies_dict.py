@@ -94,17 +94,17 @@ def get_interesting_nodes(df, nodes):
                     interesting_nodes.append(node)
         return interesting_nodes
     
-def get_node_where_significant_change(df_clean, df_contaminated, nodes):
-        significant_change_nodes = []
-        for node in nodes:
-            column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
-            if column_name_cl in df_clean.columns and column_name_cl in df_contaminated.columns:
-                mean_clean = df_clean[column_name_cl].mean() 
-                mean_contaminated = df_contaminated[column_name_cl].mean() 
-                difference = abs(mean_contaminated - mean_clean)
-                if difference > 0.005:  # Threshold for significant change
-                    significant_change_nodes.append(node)
-        return significant_change_nodes
+# def get_node_where_significant_change(df_clean, df_contaminated, nodes):
+#         significant_change_nodes = []
+#         for node in nodes:
+#             column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
+#             if column_name_cl in df_clean.columns and column_name_cl in df_contaminated.columns:
+#                 mean_clean = df_clean[column_name_cl].mean() 
+#                 mean_contaminated = df_contaminated[column_name_cl].mean() 
+#                 difference = abs(mean_contaminated - mean_clean)
+#                 if difference > 0.005:  # Threshold for significant change
+#                     significant_change_nodes.append(node)
+#         return significant_change_nodes
 
 for node_id in ALL_NODES:
     f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.inp")
@@ -166,17 +166,17 @@ for node_id in ALL_NODES:
     interesting_nodes = get_interesting_nodes(df_contaminated, contaminated_nodes)
     print(interesting_nodes)
 
-    significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
-    print(significant_change_nodes)
+    # significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
+    # print(significant_change_nodes)
 
-    dict_dependencies[node_id] = significant_change_nodes
+    dict_dependencies[node_id] = interesting_nodes
 
 # save using pickle 
 import pickle
-with open('dict_dependencies.pkl', 'wb') as f:
+with open('dict_dependencies_all.pkl', 'wb') as f:
     pickle.dump(dict_dependencies, f)
 # test if can load : 
-with open('dict_dependencies.pkl', 'rb') as f:
+with open('dict_dependencies_all.pkl', 'rb') as f:
     loaded_dict = pickle.load(f)
 print(loaded_dict)
 

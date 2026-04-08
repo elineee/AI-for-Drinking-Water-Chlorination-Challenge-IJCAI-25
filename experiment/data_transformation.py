@@ -322,7 +322,7 @@ def get_labels(label_array, window=3, anomaly=True):
     Converts a label array into a list where each change point or anomaly is labeled as 1 and normal point as 0.
 
     Two modes:
-    - anomaly=True: labels each point as 1 if its value exceeds 0.01, 0 otherwise.
+    - anomaly=True: labels each point as 1 if its value exceeds 0.
     - anomaly=False: detects change points from 0 to >0.  A window is created around each change point to account for detection delays (the window size is two times longer after than before the change point).
     
     Parameters:
