@@ -15,6 +15,9 @@ from models.SVR import SVRModel
 from models.model import AnomalyModel
 
 
+
+
+
 class CNN(nn.Module):
     def __init__(self, input_size):
         super(CNN, self).__init__()
@@ -95,6 +98,12 @@ class CNNModel(AnomalyModel):
         - weights: a tensor containing the weight for the positive class
         
         """
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
 
         labels_np = np.array(labels).flatten()
         n_normal = (labels_np == 0).sum()
@@ -103,9 +112,9 @@ class CNNModel(AnomalyModel):
         print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
         
         if n_anomalous != 0: 
-            weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
+            weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32, device=device)
         else: 
-            weights = torch.tensor([n_normal / 1], dtype=torch.float32) 
+            weights = torch.tensor([n_normal / 1], dtype=torch.float32, device=device) 
 
         return weights
     
@@ -126,13 +135,21 @@ class CNNModel(AnomalyModel):
         Returns:
         - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = CNN(input_size=self._get_input_size())
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
+            
+        model = CNN(input_size=self._get_input_size()).to(device)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        if os.path.exists("cnn.pth"):
-            model.load_state_dict(torch.load("cnn.pth", weights_only=True))
+        node = self.config.nodes[0]
+        if os.path.exists(f"cnn_{node}.pth"):
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=device, weights_only=True))
         else:
             train_loss = []
             val_loss = []
@@ -145,6 +162,8 @@ class CNNModel(AnomalyModel):
                 model.train()
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+                    windows = windows.to(device)
+                    labels = labels.to(device)
     
                     outputs = model(windows) # outputs shape (batch, 1, window_size)
                     outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
@@ -164,12 +183,14 @@ class CNNModel(AnomalyModel):
                 train_loss.append(np.mean(losses))
                 losses = []
                 
-            torch.save(model.state_dict(), "cnn.pth")
+            torch.save(model.state_dict(), f"cnn_{node}.pth")
             
             model.eval()
             with torch.no_grad():
                 for _, data in enumerate(val_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+                    windows = windows.to(device)
+                    labels = labels.to(device)
     
                     outputs = model(windows) # outputs shape (batch, 1, window_size)
                     outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
@@ -209,6 +230,8 @@ class CNNModel(AnomalyModel):
             i = 0
             for _, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+                windows = windows.to(device)
+                labels = labels.to(device)
  
                 outputs = model(windows) # outputs shape (batch, 1, window_size)
                 outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
@@ -291,6 +314,13 @@ class CNNModel(AnomalyModel):
     
 
     def get_results(self):
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
+            
         results = {}
         all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
         
@@ -324,21 +354,21 @@ class CNNModel(AnomalyModel):
 
             # turn data and y into tensors
             data_train = np.array(data_train) # shape of (number of total train elements, window size)
-            data_train = torch.tensor(data_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            data_train = torch.tensor(data_train, dtype=torch.float32, device=device) # shape of (number of total train elements, window size)
             data_test = np.array(features_test) # shape of (number of total test elements, window_size)
-            data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (number of total test elements, window_size)
+            data_test = torch.tensor(data_test, dtype=torch.float32, device=device) # shape of (number of total test elements, window_size)
             
             data_model_train = np.array(data_model_train) # shape of (number of total train elements, window size)
-            data_model_train = torch.tensor(data_model_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            data_model_train = torch.tensor(data_model_train, dtype=torch.float32, device=device) # shape of (number of total train elements, window size)
             data_model_test = np.array(predicted_features_test) # shape of (number of total test elements, window_size)
-            data_model_test = torch.tensor(data_model_test, dtype=torch.float32) # shape of (number of total test elements, window size)
+            data_model_test = torch.tensor(data_model_test, dtype=torch.float32, device=device) # shape of (number of total test elements, window size)
             
             # turn into multivariate 
             data_train = torch.stack((data_train, data_model_train), dim=2) # shape of (number of total train elements, window size, 2)
             y_train = np.array(y_train) # shape of (number of total train elements, window size)
-            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (number of total train elements, window size)
+            y_train = torch.tensor(y_train, dtype=torch.float32, device=device) # shape of (number of total train elements, window size)
             data_test = torch.stack((data_test, data_model_test), dim=2) # shape of (number of total test elements, window size, 2)
-            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (number of total test elements, window size)
+            y_test = torch.tensor(labels_test, dtype=torch.float32, device=device) # shape of (number of total test elements, window size)
             
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
@@ -353,7 +383,7 @@ class CNNModel(AnomalyModel):
                 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=5)
-            y_pred = detect_change_point(y_pred, count_required=10)
+            y_pred = detect_change_point(y_pred, count_required=20)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
