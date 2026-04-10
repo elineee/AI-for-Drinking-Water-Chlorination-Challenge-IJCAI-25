@@ -1,5 +1,7 @@
 
 
+import os
+
 from matplotlib import pyplot as plt
 
 import numpy as np
@@ -130,66 +132,72 @@ class CNNMultiNodesModel(AnomalyModel):
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-        train_loss = []
-        val_loss = []
-        for epoch in range(epochs):
-            n_corrects_train = 0
-            n_corrects_val = 0
-            n_total_train = 0
-            n_total_val = 0
-            losses = []
-            model.train()
-            for _, data in enumerate(train_dataloader):
-                windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
- 
-                outputs = model(windows) # outputs shape (batch, N_nodes, window_size)
-                outputs = outputs.transpose(1, 2) # -> (batch, window_size, N_nodes)
-                
-                optimizer.zero_grad()
-                loss = criterion(outputs, labels)
-                loss.backward()
-                optimizer.step()
-                losses.append(loss.item())
-                
-                probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-    
-                n_total_train += labels.numel()
-                n_corrects_train += (preds == labels).sum().item()
-            train_loss.append(np.mean(losses))
-            losses = []
-            
-            model.eval()
-            with torch.no_grad():
-                for _, data in enumerate(val_dataloader):
+        if os.path.exists("cnn_multi_nodes.pth"):
+            model.load_state_dict(torch.load("cnn_multi_nodes.pth"))
+            print("Model loaded from file.")
+        else: 
+            train_loss = []
+            val_loss = []
+            for epoch in range(epochs):
+                n_corrects_train = 0
+                n_corrects_val = 0
+                n_total_train = 0
+                n_total_val = 0
+                losses = []
+                model.train()
+                for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
     
                     outputs = model(windows) # outputs shape (batch, N_nodes, window_size)
                     outputs = outputs.transpose(1, 2) # -> (batch, window_size, N_nodes)
+                    
+                    optimizer.zero_grad()
                     loss = criterion(outputs, labels)
+                    loss.backward()
+                    optimizer.step()
                     losses.append(loss.item())
                     
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
-
                     preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-                    
-                    n_total_val += labels.numel()
-                    n_corrects_val += (preds == labels).sum().item()
-            val_loss.append(np.mean(losses))
-            losses = []
+        
+                    n_total_train += labels.numel()
+                    n_corrects_train += (preds == labels).sum().item()
+                train_loss.append(np.mean(losses))
+                losses = []
                 
+                model.eval()
+                with torch.no_grad():
+                    for _, data in enumerate(val_dataloader):
+                        windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+        
+                        outputs = model(windows) # outputs shape (batch, N_nodes, window_size)
+                        outputs = outputs.transpose(1, 2) # -> (batch, window_size, N_nodes)
+                        loss = criterion(outputs, labels)
+                        losses.append(loss.item())
+                        
+                        probs = torch.sigmoid(outputs) # Convert logits to probabilities
+
+                        preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                        
+                        n_total_val += labels.numel()
+                        n_corrects_val += (preds == labels).sum().item()
+                val_loss.append(np.mean(losses))
+                losses = []
+                    
+                
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss[-1]:.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+                
+                
+            plt.figure()
+            plt.plot(train_loss, label="train")
+            plt.plot(val_loss, label="validation")
+            plt.title("Loss evolution over epochs")
+            plt.xlabel("epoch")
+            plt.ylabel("loss")
+            plt.legend()
+            plt.show()
             
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss[-1]:.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
-            
-            
-        plt.figure()
-        plt.plot(train_loss, label="train")
-        plt.plot(val_loss, label="validation")
-        plt.title("Loss evolution over epochs")
-        plt.xlabel("epoch")
-        plt.ylabel("loss")
-        plt.legend()
-        plt.show()
+            torch.save(model.state_dict(), f"cnn_multi_nodes.pth")
         
         model.eval()
         n_corrects = 0
