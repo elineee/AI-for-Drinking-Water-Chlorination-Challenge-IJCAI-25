@@ -8,7 +8,7 @@ class SVRAlarmModel(SVRModel):
     
     def _get_threshold_multiplier(self):
         if self.config.contaminants[0] == ContaminationType.ARSENIC:
-            return 5
+            return 30
         else:
             return 10
 
@@ -17,6 +17,6 @@ class SVRAlarmModel(SVRModel):
     
     def _post_predictions(self, y_pred):
         if self.config.contaminants[0] == ContaminationType.ARSENIC:
-            return detect_change_point(y_pred, 5)
+            return detect_change_point(y_pred, 20)
         else:
             return detect_change_point(y_pred, 5)

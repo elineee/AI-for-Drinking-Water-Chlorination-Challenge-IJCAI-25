@@ -1,0 +1,2762 @@
+  Page 1                                    Fri Apr 10 11:17:07 2026
+
+  ******************************************************************
+  *                           E P A N E T                          *
+  *                   Hydraulic and Water Quality                  *
+  *                   Analysis for Pipe Networks                   *
+  *                          Version 2.3.04                        *
+  ******************************************************************
+  
+  Processing MSX input file arsenic_contamination.msx
+  
+  Analysis begun Fri Apr 10 11:17:08 2026
+
+   
+  Hydraulic Status:
+  -----------------------------------------------------------------------
+     0:00:00: Balanced after 5 trials
+     0:00:00: Reservoir 9 is emptying
+     0:00:00: Tank 2 is filling at 36.58 m
+   
+     0:30:00: Balanced after 2 trials
+   
+     0:42:38: Pump 9 changed by Tank 2 control
+     0:42:38: Balanced after 4 trials
+     0:42:38: Reservoir 9 is closed
+     0:42:38: Tank 2 is emptying at 42.67 m
+     0:42:38: Pump 9 changed from open to closed
+   
+     1:00:00: Balanced after 2 trials
+   
+     1:30:00: Balanced after 2 trials
+   
+     2:00:00: Balanced after 2 trials
+   
+     2:30:00: Balanced after 2 trials
+   
+     3:00:00: Balanced after 2 trials
+   
+     3:30:00: Balanced after 2 trials
+   
+     4:00:00: Balanced after 2 trials
+   
+     4:30:00: Balanced after 2 trials
+   
+     5:00:00: Balanced after 2 trials
+   
+     5:30:00: Balanced after 2 trials
+   
+     6:00:00: Balanced after 2 trials
+   
+     6:30:00: Balanced after 2 trials
+   
+     7:00:00: Balanced after 2 trials
+   
+     7:30:00: Balanced after 2 trials
+   
+     8:00:00: Balanced after 2 trials
+   
+     8:30:00: Balanced after 2 trials
+   
+     9:00:00: Balanced after 2 trials
+   
+     9:30:00: Balanced after 2 trials
+   
+    10:00:00: Balanced after 2 trials
+   
+    10:03:09: Pump 9 changed by Tank 2 control
+    10:03:09: Balanced after 10 trials
+    10:03:09: Reservoir 9 is emptying
+    10:03:09: Tank 2 is filling at 33.53 m
+    10:03:09: Pump 9 changed from closed to open
+   
+    10:30:00: Balanced after 2 trials
+   
+    11:00:00: Balanced after 2 trials
+   
+    11:14:24: Pump 9 changed by Tank 2 control
+    11:14:24: Balanced after 9 trials
+    11:14:24: Reservoir 9 is closed
+    11:14:24: Tank 2 is emptying at 42.67 m
+    11:14:24: Pump 9 changed from open to closed
+   
+    11:30:00: Balanced after 2 trials
+   
+    12:00:00: Balanced after 2 trials
+   
+    12:30:00: Balanced after 2 trials
+   
+    13:00:00: Balanced after 2 trials
+   
+    13:30:00: Balanced after 2 trials
+   
+    14:00:00: Balanced after 2 trials
+   
+    14:30:00: Balanced after 2 trials
+   
+    15:00:00: Balanced after 2 trials
+   
+    15:30:00: Balanced after 2 trials
+   
+    16:00:00: Balanced after 2 trials
+   
+    16:30:00: Balanced after 2 trials
+   
+    17:00:00: Balanced after 2 trials
+   
+    17:30:00: Balanced after 2 trials
+   
+    17:53:49: Pump 9 changed by Tank 2 control
+    17:53:49: Balanced after 10 trials
+    17:53:49: Reservoir 9 is emptying
+    17:53:49: Tank 2 is filling at 33.53 m
+    17:53:49: Pump 9 changed from closed to open
+   
+    18:00:00: Balanced after 2 trials
+   
+    18:30:00: Balanced after 2 trials
+   
+    19:00:00: Balanced after 2 trials
+   
+    19:01:32: Pump 9 changed by Tank 2 control
+    19:01:32: Balanced after 7 trials
+    19:01:32: Reservoir 9 is closed
+    19:01:32: Tank 2 is emptying at 42.67 m
+    19:01:32: Pump 9 changed from open to closed
+   
+    19:30:00: Balanced after 2 trials
+   
+    20:00:00: Balanced after 2 trials
+   
+    20:30:00: Balanced after 2 trials
+   
+    21:00:00: Balanced after 2 trials
+   
+    21:30:00: Balanced after 2 trials
+   
+    22:00:00: Balanced after 2 trials
+   
+    22:30:00: Balanced after 2 trials
+   
+    23:00:00: Balanced after 2 trials
+   
+    23:30:00: Balanced after 2 trials
+   
+    24:00:00: Balanced after 2 trials
+   
+    24:30:00: Balanced after 2 trials
+   
+    25:00:00: Balanced after 2 trials
+   
+    25:30:00: Balanced after 2 trials
+   
+    26:00:00: Balanced after 2 trials
+   
+    26:30:00: Balanced after 2 trials
+   
+    27:00:00: Balanced after 2 trials
+   
+    27:30:00: Balanced after 2 trials
+   
+    28:00:00: Balanced after 2 trials
+   
+    28:15:39: Pump 9 changed by Tank 2 control
+    28:15:39: Balanced after 12 trials
+    28:15:39: Reservoir 9 is emptying
+    28:15:39: Tank 2 is filling at 33.53 m
+    28:15:39: Pump 9 changed from closed to open
+   
+    28:30:00: Balanced after 2 trials
+   
+    29:00:00: Balanced after 2 trials
+   
+    29:18:56: Pump 9 changed by Tank 2 control
+    29:18:56: Balanced after 4 trials
+    29:18:56: Reservoir 9 is closed
+    29:18:56: Tank 2 is emptying at 42.67 m
+    29:18:56: Pump 9 changed from open to closed
+   
+    29:30:00: Balanced after 2 trials
+   
+    30:00:00: Balanced after 2 trials
+   
+    30:30:00: Balanced after 2 trials
+   
+    31:00:00: Balanced after 2 trials
+   
+    31:30:00: Balanced after 2 trials
+   
+    32:00:00: Balanced after 2 trials
+   
+    32:30:00: Balanced after 2 trials
+   
+    33:00:00: Balanced after 2 trials
+   
+    33:30:00: Balanced after 2 trials
+   
+    34:00:00: Balanced after 2 trials
+   
+    34:30:00: Balanced after 2 trials
+   
+    35:00:00: Balanced after 2 trials
+   
+    35:30:00: Balanced after 2 trials
+   
+    35:47:16: Pump 9 changed by Tank 2 control
+    35:47:16: Balanced after 10 trials
+    35:47:16: Reservoir 9 is emptying
+    35:47:16: Tank 2 is filling at 33.53 m
+    35:47:16: Pump 9 changed from closed to open
+   
+    36:00:00: Balanced after 2 trials
+   
+    36:30:00: Balanced after 2 trials
+   
+    36:56:48: Pump 9 changed by Tank 2 control
+    36:56:48: Balanced after 9 trials
+    36:56:48: Reservoir 9 is closed
+    36:56:48: Tank 2 is emptying at 42.67 m
+    36:56:48: Pump 9 changed from open to closed
+   
+    37:00:00: Balanced after 2 trials
+   
+    37:30:00: Balanced after 2 trials
+   
+    38:00:00: Balanced after 2 trials
+   
+    38:30:00: Balanced after 2 trials
+   
+    39:00:00: Balanced after 2 trials
+   
+    39:30:00: Balanced after 2 trials
+   
+    40:00:00: Balanced after 2 trials
+   
+    40:30:00: Balanced after 2 trials
+   
+    41:00:00: Balanced after 2 trials
+   
+    41:30:00: Balanced after 2 trials
+   
+    42:00:00: Balanced after 2 trials
+   
+    42:30:00: Balanced after 2 trials
+   
+    43:00:00: Balanced after 2 trials
+   
+    43:30:00: Balanced after 2 trials
+   
+    43:44:06: Pump 9 changed by Tank 2 control
+    43:44:06: Balanced after 11 trials
+    43:44:06: Reservoir 9 is emptying
+    43:44:06: Tank 2 is filling at 33.53 m
+    43:44:06: Pump 9 changed from closed to open
+   
+    44:00:00: Balanced after 2 trials
+   
+    44:30:00: Balanced after 2 trials
+   
+    44:53:02: Pump 9 changed by Tank 2 control
+    44:53:02: Balanced after 9 trials
+    44:53:02: Reservoir 9 is closed
+    44:53:02: Tank 2 is emptying at 42.67 m
+    44:53:02: Pump 9 changed from open to closed
+   
+    45:00:00: Balanced after 2 trials
+   
+    45:30:00: Balanced after 3 trials
+   
+    46:00:00: Balanced after 2 trials
+   
+    46:30:00: Balanced after 2 trials
+   
+    47:00:00: Balanced after 2 trials
+   
+    47:30:00: Balanced after 2 trials
+   
+    48:00:00: Balanced after 2 trials
+   
+    48:30:00: Balanced after 2 trials
+   
+    49:00:00: Balanced after 2 trials
+   
+    49:30:00: Balanced after 2 trials
+   
+    50:00:00: Balanced after 2 trials
+   
+    50:30:00: Balanced after 2 trials
+   
+    51:00:00: Balanced after 2 trials
+   
+    51:30:00: Balanced after 2 trials
+   
+    52:00:00: Balanced after 2 trials
+   
+    52:30:00: Balanced after 2 trials
+   
+    53:00:00: Balanced after 2 trials
+   
+    53:30:00: Balanced after 2 trials
+   
+    54:00:00: Balanced after 2 trials
+   
+    54:30:00: Balanced after 2 trials
+   
+    55:00:00: Balanced after 2 trials
+   
+    55:04:23: Pump 9 changed by Tank 2 control
+    55:04:23: Balanced after 11 trials
+    55:04:23: Reservoir 9 is emptying
+    55:04:23: Tank 2 is filling at 33.53 m
+    55:04:23: Pump 9 changed from closed to open
+   
+    55:30:00: Balanced after 2 trials
+   
+    56:00:00: Balanced after 2 trials
+   
+    56:12:45: Pump 9 changed by Tank 2 control
+    56:12:45: Balanced after 8 trials
+    56:12:45: Reservoir 9 is closed
+    56:12:45: Tank 2 is emptying at 42.67 m
+    56:12:45: Pump 9 changed from open to closed
+   
+    56:30:00: Balanced after 2 trials
+   
+    57:00:00: Balanced after 2 trials
+   
+    57:30:00: Balanced after 2 trials
+   
+    58:00:00: Balanced after 2 trials
+   
+    58:30:00: Balanced after 2 trials
+   
+    59:00:00: Balanced after 2 trials
+   
+    59:30:00: Balanced after 2 trials
+   
+    60:00:00: Balanced after 2 trials
+   
+    60:30:00: Balanced after 2 trials
+   
+    61:00:00: Balanced after 2 trials
+   
+    61:30:00: Balanced after 2 trials
+   
+    61:50:34: Pump 9 changed by Tank 2 control
+    61:50:34: Balanced after 11 trials
+    61:50:34: Reservoir 9 is emptying
+    61:50:34: Tank 2 is filling at 33.53 m
+    61:50:34: Pump 9 changed from closed to open
+   
+    62:00:00: Balanced after 2 trials
+   
+    62:30:00: Balanced after 2 trials
+   
+    62:58:51: Pump 9 changed by Tank 2 control
+    62:58:51: Balanced after 9 trials
+    62:58:51: Reservoir 9 is closed
+    62:58:51: Tank 2 is emptying at 42.67 m
+    62:58:51: Pump 9 changed from open to closed
+   
+    63:00:00: Balanced after 2 trials
+   
+    63:30:00: Balanced after 2 trials
+   
+    64:00:00: Balanced after 2 trials
+   
+    64:30:00: Balanced after 2 trials
+   
+    65:00:00: Balanced after 2 trials
+   
+    65:30:00: Balanced after 2 trials
+   
+    66:00:00: Balanced after 2 trials
+   
+    66:30:00: Balanced after 2 trials
+   
+    67:00:00: Balanced after 2 trials
+   
+    67:30:00: Balanced after 2 trials
+   
+    68:00:00: Balanced after 2 trials
+   
+    68:30:00: Balanced after 2 trials
+   
+    69:00:00: Balanced after 2 trials
+   
+    69:29:20: Pump 9 changed by Tank 2 control
+    69:29:20: Balanced after 11 trials
+    69:29:20: Reservoir 9 is emptying
+    69:29:20: Tank 2 is filling at 33.53 m
+    69:29:20: Pump 9 changed from closed to open
+   
+    69:30:00: Balanced after 2 trials
+   
+    70:00:00: Balanced after 2 trials
+   
+    70:30:00: Balanced after 2 trials
+   
+    70:36:55: Pump 9 changed by Tank 2 control
+    70:36:55: Balanced after 5 trials
+    70:36:55: Reservoir 9 is closed
+    70:36:55: Tank 2 is emptying at 42.67 m
+    70:36:55: Pump 9 changed from open to closed
+   
+    71:00:00: Balanced after 2 trials
+   
+    71:30:00: Balanced after 2 trials
+   
+    72:00:00: Balanced after 2 trials
+   
+    72:30:00: Balanced after 2 trials
+   
+    73:00:00: Balanced after 2 trials
+   
+    73:30:00: Balanced after 2 trials
+   
+    74:00:00: Balanced after 2 trials
+   
+    74:30:00: Balanced after 2 trials
+   
+    75:00:00: Balanced after 2 trials
+   
+    75:30:00: Balanced after 2 trials
+   
+    76:00:00: Balanced after 2 trials
+   
+    76:30:00: Balanced after 2 trials
+   
+    77:00:00: Balanced after 2 trials
+   
+    77:30:00: Balanced after 2 trials
+   
+    78:00:00: Balanced after 2 trials
+   
+    78:30:00: Balanced after 2 trials
+   
+    79:00:00: Balanced after 2 trials
+   
+    79:30:00: Balanced after 2 trials
+   
+    80:00:00: Balanced after 2 trials
+   
+    80:30:00: Balanced after 2 trials
+   
+    80:39:10: Pump 9 changed by Tank 2 control
+    80:39:10: Balanced after 11 trials
+    80:39:10: Reservoir 9 is emptying
+    80:39:10: Tank 2 is filling at 33.53 m
+    80:39:10: Pump 9 changed from closed to open
+   
+    81:00:00: Balanced after 2 trials
+   
+    81:30:00: Balanced after 2 trials
+   
+    81:49:32: Pump 9 changed by Tank 2 control
+    81:49:32: Balanced after 8 trials
+    81:49:32: Reservoir 9 is closed
+    81:49:32: Tank 2 is emptying at 42.67 m
+    81:49:32: Pump 9 changed from open to closed
+   
+    82:00:00: Balanced after 2 trials
+   
+    82:30:00: Balanced after 2 trials
+   
+    83:00:00: Balanced after 2 trials
+   
+    83:30:00: Balanced after 2 trials
+   
+    84:00:00: Balanced after 2 trials
+   
+    84:30:00: Balanced after 2 trials
+   
+    85:00:00: Balanced after 2 trials
+   
+    85:30:00: Balanced after 2 trials
+   
+    86:00:00: Balanced after 2 trials
+   
+    86:30:00: Balanced after 2 trials
+   
+    87:00:00: Balanced after 2 trials
+   
+    87:30:00: Balanced after 2 trials
+   
+    88:00:00: Balanced after 2 trials
+   
+    88:03:37: Pump 9 changed by Tank 2 control
+    88:03:37: Balanced after 11 trials
+    88:03:37: Reservoir 9 is emptying
+    88:03:37: Tank 2 is filling at 33.53 m
+    88:03:37: Pump 9 changed from closed to open
+   
+    88:30:00: Balanced after 2 trials
+   
+    89:00:00: Balanced after 2 trials
+   
+    89:11:10: Pump 9 changed by Tank 2 control
+    89:11:10: Balanced after 8 trials
+    89:11:10: Reservoir 9 is closed
+    89:11:10: Tank 2 is emptying at 42.67 m
+    89:11:10: Pump 9 changed from open to closed
+   
+    89:30:00: Balanced after 2 trials
+   
+    90:00:00: Balanced after 2 trials
+   
+    90:30:00: Balanced after 2 trials
+   
+    91:00:00: Balanced after 2 trials
+   
+    91:30:00: Balanced after 2 trials
+   
+    92:00:00: Balanced after 2 trials
+   
+    92:30:00: Balanced after 2 trials
+   
+    93:00:00: Balanced after 2 trials
+   
+    93:30:00: Balanced after 2 trials
+   
+    94:00:00: Balanced after 2 trials
+   
+    94:30:00: Balanced after 2 trials
+   
+    95:00:00: Balanced after 2 trials
+   
+    95:30:00: Balanced after 2 trials
+   
+    95:58:35: Pump 9 changed by Tank 2 control
+    95:58:35: Balanced after 11 trials
+    95:58:35: Reservoir 9 is emptying
+    95:58:35: Tank 2 is filling at 33.53 m
+    95:58:35: Pump 9 changed from closed to open
+   
+    96:00:00: Balanced after 2 trials
+   
+    96:30:00: Balanced after 2 trials
+   
+    97:00:00: Balanced after 2 trials
+   
+    97:02:51: Pump 9 changed by Tank 2 control
+    97:02:51: Balanced after 4 trials
+    97:02:51: Reservoir 9 is closed
+    97:02:51: Tank 2 is emptying at 42.67 m
+    97:02:51: Pump 9 changed from open to closed
+   
+    97:30:00: Balanced after 2 trials
+   
+    98:00:00: Balanced after 2 trials
+   
+    98:30:00: Balanced after 2 trials
+   
+    99:00:00: Balanced after 2 trials
+   
+    99:30:00: Balanced after 2 trials
+   
+   100:00:00: Balanced after 2 trials
+   
+   100:30:00: Balanced after 2 trials
+   
+   101:00:00: Balanced after 2 trials
+   
+   101:30:00: Balanced after 2 trials
+   
+   102:00:00: Balanced after 2 trials
+   
+   102:30:00: Balanced after 2 trials
+   
+   103:00:00: Balanced after 2 trials
+   
+   103:30:00: Balanced after 2 trials
+   
+   104:00:00: Balanced after 2 trials
+   
+   104:30:00: Balanced after 2 trials
+   
+   105:00:00: Balanced after 3 trials
+   
+   105:28:39: Pump 9 changed by Tank 2 control
+   105:28:39: Balanced after 10 trials
+   105:28:39: Reservoir 9 is emptying
+   105:28:39: Tank 2 is filling at 33.53 m
+   105:28:39: Pump 9 changed from closed to open
+   
+   105:30:00: Balanced after 2 trials
+   
+   106:00:00: Balanced after 2 trials
+   
+   106:30:00: Balanced after 2 trials
+   
+   106:40:43: Pump 9 changed by Tank 2 control
+   106:40:43: Balanced after 9 trials
+   106:40:43: Reservoir 9 is closed
+   106:40:43: Tank 2 is emptying at 42.67 m
+   106:40:43: Pump 9 changed from open to closed
+   
+   107:00:00: Balanced after 2 trials
+   
+   107:30:00: Balanced after 2 trials
+   
+   108:00:00: Balanced after 2 trials
+   
+   108:30:00: Balanced after 2 trials
+   
+   109:00:00: Balanced after 2 trials
+   
+   109:30:00: Balanced after 2 trials
+   
+   110:00:00: Balanced after 2 trials
+   
+   110:30:00: Balanced after 2 trials
+   
+   111:00:00: Balanced after 2 trials
+   
+   111:30:00: Balanced after 2 trials
+   
+   112:00:00: Balanced after 2 trials
+   
+   112:30:00: Balanced after 2 trials
+   
+   112:30:34: Pump 9 changed by Tank 2 control
+   112:30:34: Balanced after 11 trials
+   112:30:34: Reservoir 9 is emptying
+   112:30:34: Tank 2 is filling at 33.53 m
+   112:30:34: Pump 9 changed from closed to open
+   
+   113:00:00: Balanced after 2 trials
+   
+   113:30:00: Balanced after 2 trials
+   
+   113:38:53: Pump 9 changed by Tank 2 control
+   113:38:53: Balanced after 7 trials
+   113:38:53: Reservoir 9 is closed
+   113:38:53: Tank 2 is emptying at 42.67 m
+   113:38:53: Pump 9 changed from open to closed
+   
+   114:00:00: Balanced after 2 trials
+   
+   114:30:00: Balanced after 2 trials
+   
+   115:00:00: Balanced after 2 trials
+   
+   115:30:00: Balanced after 2 trials
+   
+   116:00:00: Balanced after 2 trials
+   
+   116:30:00: Balanced after 2 trials
+   
+   117:00:00: Balanced after 2 trials
+   
+   117:30:00: Balanced after 2 trials
+   
+   118:00:00: Balanced after 2 trials
+   
+   118:30:00: Balanced after 2 trials
+   
+   119:00:00: Balanced after 2 trials
+   
+   119:30:00: Balanced after 2 trials
+   
+   120:00:00: Balanced after 2 trials
+   
+   120:30:00: Balanced after 2 trials
+   
+   120:45:48: Pump 9 changed by Tank 2 control
+   120:45:48: Balanced after 11 trials
+   120:45:48: Reservoir 9 is emptying
+   120:45:48: Tank 2 is filling at 33.53 m
+   120:45:48: Pump 9 changed from closed to open
+   
+   121:00:00: Balanced after 2 trials
+   
+   121:30:00: Balanced after 2 trials
+   
+   121:49:37: Pump 9 changed by Tank 2 control
+   121:49:37: Balanced after 4 trials
+   121:49:37: Reservoir 9 is closed
+   121:49:37: Tank 2 is emptying at 42.67 m
+   121:49:37: Pump 9 changed from open to closed
+   
+   122:00:00: Balanced after 2 trials
+   
+   122:30:00: Balanced after 2 trials
+   
+   123:00:00: Balanced after 2 trials
+   
+   123:30:00: Balanced after 2 trials
+   
+   124:00:00: Balanced after 2 trials
+   
+   124:30:00: Balanced after 2 trials
+   
+   125:00:00: Balanced after 2 trials
+   
+   125:30:00: Balanced after 2 trials
+   
+   126:00:00: Balanced after 2 trials
+   
+   126:30:00: Balanced after 2 trials
+   
+   127:00:00: Balanced after 2 trials
+   
+   127:30:00: Balanced after 2 trials
+   
+   128:00:00: Balanced after 2 trials
+   
+   128:30:00: Balanced after 2 trials
+   
+   129:00:00: Balanced after 2 trials
+   
+   129:30:00: Balanced after 2 trials
+   
+   130:00:00: Balanced after 2 trials
+   
+   130:30:00: Balanced after 2 trials
+   
+   130:55:42: Pump 9 changed by Tank 2 control
+   130:55:42: Balanced after 11 trials
+   130:55:42: Reservoir 9 is emptying
+   130:55:42: Tank 2 is filling at 33.53 m
+   130:55:42: Pump 9 changed from closed to open
+   
+   131:00:00: Balanced after 2 trials
+   
+   131:30:00: Balanced after 2 trials
+   
+   132:00:00: Balanced after 2 trials
+   
+   132:05:32: Pump 9 changed by Tank 2 control
+   132:05:32: Balanced after 8 trials
+   132:05:32: Reservoir 9 is closed
+   132:05:32: Tank 2 is emptying at 42.67 m
+   132:05:32: Pump 9 changed from open to closed
+   
+   132:30:00: Balanced after 2 trials
+   
+   133:00:00: Balanced after 2 trials
+   
+   133:30:00: Balanced after 2 trials
+   
+   134:00:00: Balanced after 2 trials
+   
+   134:30:00: Balanced after 2 trials
+   
+   135:00:00: Balanced after 2 trials
+   
+   135:30:00: Balanced after 2 trials
+   
+   136:00:00: Balanced after 2 trials
+   
+   136:30:00: Balanced after 2 trials
+   
+   137:00:00: Balanced after 2 trials
+   
+   137:30:00: Balanced after 2 trials
+   
+   138:00:00: Balanced after 2 trials
+   
+   138:19:49: Pump 9 changed by Tank 2 control
+   138:19:49: Balanced after 10 trials
+   138:19:49: Reservoir 9 is emptying
+   138:19:49: Tank 2 is filling at 33.53 m
+   138:19:49: Pump 9 changed from closed to open
+   
+   138:30:00: Balanced after 2 trials
+   
+   139:00:00: Balanced after 2 trials
+   
+   139:28:04: Pump 9 changed by Tank 2 control
+   139:28:04: Balanced after 9 trials
+   139:28:04: Reservoir 9 is closed
+   139:28:04: Tank 2 is emptying at 42.67 m
+   139:28:04: Pump 9 changed from open to closed
+   
+   139:30:00: Balanced after 2 trials
+   
+   140:00:00: Balanced after 2 trials
+   
+   140:30:00: Balanced after 2 trials
+   
+   141:00:00: Balanced after 2 trials
+   
+   141:30:00: Balanced after 2 trials
+   
+   142:00:00: Balanced after 2 trials
+   
+   142:30:00: Balanced after 2 trials
+   
+   143:00:00: Balanced after 2 trials
+   
+   143:30:00: Balanced after 2 trials
+   
+   144:00:00: Balanced after 2 trials
+   
+   144:30:00: Balanced after 2 trials
+   
+   145:00:00: Balanced after 2 trials
+   
+   145:30:00: Balanced after 2 trials
+   
+   146:00:00: Balanced after 2 trials
+   
+   146:30:00: Balanced after 2 trials
+   
+   147:00:00: Balanced after 2 trials
+   
+   147:30:00: Balanced after 2 trials
+   
+   148:00:00: Balanced after 2 trials
+   
+   148:30:00: Balanced after 2 trials
+   
+   149:00:00: Balanced after 2 trials
+   
+   149:30:00: Balanced after 2 trials
+   
+   149:49:47: Pump 9 changed by Tank 2 control
+   149:49:47: Balanced after 15 trials
+   149:49:47: Reservoir 9 is emptying
+   149:49:47: Tank 2 is filling at 33.53 m
+   149:49:47: Pump 9 changed from closed to open
+   
+   150:00:00: Balanced after 2 trials
+   
+   150:30:00: Balanced after 2 trials
+   
+   150:53:27: Pump 9 changed by Tank 2 control
+   150:53:27: Balanced after 5 trials
+   150:53:27: Reservoir 9 is closed
+   150:53:27: Tank 2 is emptying at 42.67 m
+   150:53:27: Pump 9 changed from open to closed
+   
+   151:00:00: Balanced after 2 trials
+   
+   151:30:00: Balanced after 2 trials
+   
+   152:00:00: Balanced after 2 trials
+   
+   152:30:00: Balanced after 2 trials
+   
+   153:00:00: Balanced after 2 trials
+   
+   153:30:00: Balanced after 2 trials
+   
+   154:00:00: Balanced after 2 trials
+   
+   154:30:00: Balanced after 2 trials
+   
+   155:00:00: Balanced after 2 trials
+   
+   155:30:00: Balanced after 2 trials
+   
+   156:00:00: Balanced after 2 trials
+   
+   156:30:00: Balanced after 2 trials
+   
+   157:00:00: Balanced after 2 trials
+   
+   157:30:00: Balanced after 2 trials
+   
+   157:59:06: Pump 9 changed by Tank 2 control
+   157:59:06: Balanced after 11 trials
+   157:59:06: Reservoir 9 is emptying
+   157:59:06: Tank 2 is filling at 33.53 m
+   157:59:06: Pump 9 changed from closed to open
+   
+   158:00:00: Balanced after 2 trials
+   
+   158:30:00: Balanced after 2 trials
+   
+   159:00:00: Balanced after 2 trials
+   
+   159:06:40: Pump 9 changed by Tank 2 control
+   159:06:40: Balanced after 7 trials
+   159:06:40: Reservoir 9 is closed
+   159:06:40: Tank 2 is emptying at 42.67 m
+   159:06:40: Pump 9 changed from open to closed
+   
+   159:30:00: Balanced after 2 trials
+   
+   160:00:00: Balanced after 2 trials
+   
+   160:30:00: Balanced after 2 trials
+   
+   161:00:00: Balanced after 2 trials
+   
+   161:30:00: Balanced after 2 trials
+   
+   162:00:00: Balanced after 2 trials
+   
+   162:30:00: Balanced after 2 trials
+   
+   163:00:00: Balanced after 2 trials
+   
+   163:30:00: Balanced after 2 trials
+   
+   164:00:00: Balanced after 2 trials
+   
+   164:30:00: Balanced after 2 trials
+   
+   165:00:00: Balanced after 2 trials
+   
+   165:30:00: Balanced after 2 trials
+   
+   166:00:00: Balanced after 2 trials
+   
+   166:08:18: Pump 9 changed by Tank 2 control
+   166:08:18: Balanced after 10 trials
+   166:08:18: Reservoir 9 is emptying
+   166:08:18: Tank 2 is filling at 33.53 m
+   166:08:18: Pump 9 changed from closed to open
+   
+   166:30:00: Balanced after 2 trials
+   
+   167:00:00: Balanced after 2 trials
+   
+   167:14:27: Pump 9 changed by Tank 2 control
+   167:14:27: Balanced after 6 trials
+   167:14:27: Reservoir 9 is closed
+   167:14:27: Tank 2 is emptying at 42.67 m
+   167:14:27: Pump 9 changed from open to closed
+   
+   167:30:00: Balanced after 2 trials
+   
+   168:00:00: Balanced after 2 trials
+   
+   168:30:00: Balanced after 2 trials
+   
+   169:00:00: Balanced after 2 trials
+   
+   169:30:00: Balanced after 2 trials
+   
+   170:00:00: Balanced after 2 trials
+   
+   170:30:00: Balanced after 2 trials
+   
+   171:00:00: Balanced after 2 trials
+   
+   171:30:00: Balanced after 2 trials
+   
+   172:00:00: Balanced after 2 trials
+   
+   172:30:00: Balanced after 2 trials
+   
+   173:00:00: Balanced after 2 trials
+   
+   173:30:00: Balanced after 2 trials
+   
+   174:00:00: Balanced after 2 trials
+   
+   174:30:00: Balanced after 2 trials
+   
+   175:00:00: Balanced after 2 trials
+   
+   175:30:00: Balanced after 2 trials
+   
+   176:00:00: Balanced after 2 trials
+   
+   176:30:00: Balanced after 2 trials
+   
+   177:00:00: Balanced after 2 trials
+   
+   177:15:02: Pump 9 changed by Tank 2 control
+   177:15:02: Balanced after 10 trials
+   177:15:02: Reservoir 9 is emptying
+   177:15:02: Tank 2 is filling at 33.53 m
+   177:15:02: Pump 9 changed from closed to open
+   
+   177:30:00: Balanced after 2 trials
+   
+   178:00:00: Balanced after 2 trials
+   
+   178:26:14: Pump 9 changed by Tank 2 control
+   178:26:14: Balanced after 9 trials
+   178:26:14: Reservoir 9 is closed
+   178:26:14: Tank 2 is emptying at 42.67 m
+   178:26:14: Pump 9 changed from open to closed
+   
+   178:30:00: Balanced after 2 trials
+   
+   179:00:00: Balanced after 2 trials
+   
+   179:30:00: Balanced after 2 trials
+   
+   180:00:00: Balanced after 2 trials
+   
+   180:30:00: Balanced after 2 trials
+   
+   181:00:00: Balanced after 2 trials
+   
+   181:30:00: Balanced after 2 trials
+   
+   182:00:00: Balanced after 2 trials
+   
+   182:30:00: Balanced after 2 trials
+   
+   183:00:00: Balanced after 2 trials
+   
+   183:30:00: Balanced after 2 trials
+   
+   184:00:00: Balanced after 2 trials
+   
+   184:30:00: Balanced after 2 trials
+   
+   184:39:16: Pump 9 changed by Tank 2 control
+   184:39:16: Balanced after 11 trials
+   184:39:16: Reservoir 9 is emptying
+   184:39:16: Tank 2 is filling at 33.53 m
+   184:39:16: Pump 9 changed from closed to open
+   
+   185:00:00: Balanced after 2 trials
+   
+   185:30:00: Balanced after 2 trials
+   
+   185:46:28: Pump 9 changed by Tank 2 control
+   185:46:28: Balanced after 8 trials
+   185:46:28: Reservoir 9 is closed
+   185:46:28: Tank 2 is emptying at 42.67 m
+   185:46:28: Pump 9 changed from open to closed
+   
+   186:00:00: Balanced after 2 trials
+   
+   186:30:00: Balanced after 2 trials
+   
+   187:00:00: Balanced after 2 trials
+   
+   187:30:00: Balanced after 2 trials
+   
+   188:00:00: Balanced after 2 trials
+   
+   188:30:00: Balanced after 2 trials
+   
+   189:00:00: Balanced after 2 trials
+   
+   189:30:00: Balanced after 2 trials
+   
+   190:00:00: Balanced after 2 trials
+   
+   190:30:00: Balanced after 2 trials
+   
+   191:00:00: Balanced after 2 trials
+   
+   191:30:00: Balanced after 2 trials
+   
+   192:00:00: Balanced after 2 trials
+   
+   192:30:00: Balanced after 2 trials
+   
+   193:00:00: Balanced after 2 trials
+   
+   193:06:01: Pump 9 changed by Tank 2 control
+   193:06:01: Balanced after 14 trials
+   193:06:01: Reservoir 9 is emptying
+   193:06:01: Tank 2 is filling at 33.53 m
+   193:06:01: Pump 9 changed from closed to open
+   
+   193:30:00: Balanced after 2 trials
+   
+   194:00:00: Balanced after 2 trials
+   
+   194:08:54: Pump 9 changed by Tank 2 control
+   194:08:54: Balanced after 4 trials
+   194:08:54: Reservoir 9 is closed
+   194:08:54: Tank 2 is emptying at 42.67 m
+   194:08:54: Pump 9 changed from open to closed
+   
+   194:30:00: Balanced after 2 trials
+   
+   195:00:00: Balanced after 2 trials
+   
+   195:30:00: Balanced after 2 trials
+   
+   196:00:00: Balanced after 2 trials
+   
+   196:30:00: Balanced after 2 trials
+   
+   197:00:00: Balanced after 2 trials
+   
+   197:30:00: Balanced after 2 trials
+   
+   198:00:00: Balanced after 2 trials
+   
+   198:30:00: Balanced after 2 trials
+   
+   199:00:00: Balanced after 2 trials
+   
+   199:30:00: Balanced after 2 trials
+   
+   200:00:00: Balanced after 2 trials
+   
+   200:30:00: Balanced after 2 trials
+   
+   201:00:00: Balanced after 2 trials
+   
+   201:30:00: Balanced after 2 trials
+   
+   202:00:00: Balanced after 2 trials
+   
+   202:30:00: Balanced after 2 trials
+   
+   202:34:51: Pump 9 changed by Tank 2 control
+   202:34:51: Balanced after 11 trials
+   202:34:51: Reservoir 9 is emptying
+   202:34:51: Tank 2 is filling at 33.53 m
+   202:34:51: Pump 9 changed from closed to open
+   
+   203:00:00: Balanced after 2 trials
+   
+   203:30:00: Balanced after 2 trials
+   
+   203:45:19: Pump 9 changed by Tank 2 control
+   203:45:19: Balanced after 9 trials
+   203:45:19: Reservoir 9 is closed
+   203:45:19: Tank 2 is emptying at 42.67 m
+   203:45:19: Pump 9 changed from open to closed
+   
+   204:00:00: Balanced after 2 trials
+   
+   204:30:00: Balanced after 2 trials
+   
+   205:00:00: Balanced after 2 trials
+   
+   205:30:00: Balanced after 2 trials
+   
+   206:00:00: Balanced after 2 trials
+   
+   206:30:00: Balanced after 2 trials
+   
+   207:00:00: Balanced after 2 trials
+   
+   207:30:00: Balanced after 2 trials
+   
+   208:00:00: Balanced after 2 trials
+   
+   208:30:00: Balanced after 2 trials
+   
+   209:00:00: Balanced after 2 trials
+   
+   209:30:00: Balanced after 2 trials
+   
+   210:00:00: Balanced after 2 trials
+   
+   210:21:41: Pump 9 changed by Tank 2 control
+   210:21:41: Balanced after 11 trials
+   210:21:41: Reservoir 9 is emptying
+   210:21:41: Tank 2 is filling at 33.53 m
+   210:21:41: Pump 9 changed from closed to open
+   
+   210:30:00: Balanced after 2 trials
+   
+   211:00:00: Balanced after 2 trials
+   
+   211:30:00: Balanced after 2 trials
+   
+   211:30:23: Pump 9 changed by Tank 2 control
+   211:30:23: Balanced after 8 trials
+   211:30:23: Reservoir 9 is closed
+   211:30:23: Tank 2 is emptying at 42.67 m
+   211:30:23: Pump 9 changed from open to closed
+   
+   212:00:00: Balanced after 2 trials
+   
+   212:30:00: Balanced after 2 trials
+   
+   213:00:00: Balanced after 2 trials
+   
+   213:30:00: Balanced after 2 trials
+   
+   214:00:00: Balanced after 2 trials
+   
+   214:30:00: Balanced after 2 trials
+   
+   215:00:00: Balanced after 2 trials
+   
+   215:30:00: Balanced after 2 trials
+   
+   216:00:00: Balanced after 2 trials
+   
+   216:30:00: Balanced after 2 trials
+   
+   217:00:00: Balanced after 2 trials
+   
+   217:30:00: Balanced after 2 trials
+   
+   218:00:00: Balanced after 2 trials
+   
+   218:30:00: Balanced after 2 trials
+   
+   219:00:00: Balanced after 2 trials
+   
+   219:30:00: Balanced after 2 trials
+   
+   220:00:00: Balanced after 2 trials
+   
+   220:30:00: Balanced after 2 trials
+   
+   220:51:03: Pump 9 changed by Tank 2 control
+   220:51:03: Balanced after 11 trials
+   220:51:03: Reservoir 9 is emptying
+   220:51:03: Tank 2 is filling at 33.53 m
+   220:51:03: Pump 9 changed from closed to open
+   
+   221:00:00: Balanced after 2 trials
+   
+   221:30:00: Balanced after 2 trials
+   
+   221:55:31: Pump 9 changed by Tank 2 control
+   221:55:31: Balanced after 7 trials
+   221:55:31: Reservoir 9 is closed
+   221:55:31: Tank 2 is emptying at 42.67 m
+   221:55:31: Pump 9 changed from open to closed
+   
+   222:00:00: Balanced after 2 trials
+   
+   222:30:00: Balanced after 2 trials
+   
+   223:00:00: Balanced after 2 trials
+   
+   223:30:00: Balanced after 2 trials
+   
+   224:00:00: Balanced after 2 trials
+   
+   224:30:00: Balanced after 2 trials
+   
+   225:00:00: Balanced after 2 trials
+   
+   225:30:00: Balanced after 2 trials
+   
+   226:00:00: Balanced after 2 trials
+   
+   226:30:00: Balanced after 2 trials
+   
+   227:00:00: Balanced after 2 trials
+   
+   227:30:00: Balanced after 2 trials
+   
+   227:58:24: Pump 9 changed by Tank 2 control
+   227:58:24: Balanced after 10 trials
+   227:58:24: Reservoir 9 is emptying
+   227:58:24: Tank 2 is filling at 33.53 m
+   227:58:24: Pump 9 changed from closed to open
+   
+   228:00:00: Balanced after 2 trials
+   
+   228:30:00: Balanced after 2 trials
+   
+   229:00:00: Balanced after 2 trials
+   
+   229:07:54: Pump 9 changed by Tank 2 control
+   229:07:54: Balanced after 8 trials
+   229:07:54: Reservoir 9 is closed
+   229:07:54: Tank 2 is emptying at 42.67 m
+   229:07:54: Pump 9 changed from open to closed
+   
+   229:30:00: Balanced after 2 trials
+   
+   230:00:00: Balanced after 2 trials
+   
+   230:30:00: Balanced after 2 trials
+   
+   231:00:00: Balanced after 2 trials
+   
+   231:30:00: Balanced after 2 trials
+   
+   232:00:00: Balanced after 2 trials
+   
+   232:30:00: Balanced after 2 trials
+   
+   233:00:00: Balanced after 2 trials
+   
+   233:30:00: Balanced after 2 trials
+   
+   234:00:00: Balanced after 2 trials
+   
+   234:30:00: Balanced after 2 trials
+   
+   235:00:00: Balanced after 2 trials
+   
+   235:30:00: Balanced after 2 trials
+   
+   235:34:22: Pump 9 changed by Tank 2 control
+   235:34:22: Balanced after 10 trials
+   235:34:22: Reservoir 9 is emptying
+   235:34:22: Tank 2 is filling at 33.53 m
+   235:34:22: Pump 9 changed from closed to open
+   
+   236:00:00: Balanced after 2 trials
+   
+   236:30:00: Balanced after 2 trials
+   
+   236:43:22: Pump 9 changed by Tank 2 control
+   236:43:22: Balanced after 9 trials
+   236:43:22: Reservoir 9 is closed
+   236:43:22: Tank 2 is emptying at 42.67 m
+   236:43:22: Pump 9 changed from open to closed
+   
+   237:00:00: Balanced after 2 trials
+   
+   237:30:00: Balanced after 2 trials
+   
+   238:00:00: Balanced after 2 trials
+   
+   238:30:00: Balanced after 2 trials
+   
+   239:00:00: Balanced after 2 trials
+   
+   239:30:00: Balanced after 2 trials
+   
+   240:00:00: Balanced after 2 trials
+   
+   240:30:00: Balanced after 2 trials
+   
+   241:00:00: Balanced after 2 trials
+   
+   241:30:00: Balanced after 2 trials
+   
+   242:00:00: Balanced after 2 trials
+   
+   242:30:00: Balanced after 2 trials
+   
+   243:00:00: Balanced after 2 trials
+   
+   243:30:00: Balanced after 2 trials
+   
+   244:00:00: Balanced after 2 trials
+   
+   244:30:00: Balanced after 2 trials
+   
+   245:00:00: Balanced after 2 trials
+   
+   245:30:00: Balanced after 2 trials
+   
+   246:00:00: Balanced after 2 trials
+   
+   246:30:00: Balanced after 2 trials
+   
+   246:41:31: Pump 9 changed by Tank 2 control
+   246:41:31: Balanced after 11 trials
+   246:41:31: Reservoir 9 is emptying
+   246:41:31: Tank 2 is filling at 33.53 m
+   246:41:31: Pump 9 changed from closed to open
+   
+   247:00:00: Balanced after 2 trials
+   
+   247:30:00: Balanced after 2 trials
+   
+   247:49:23: Pump 9 changed by Tank 2 control
+   247:49:23: Balanced after 9 trials
+   247:49:23: Reservoir 9 is closed
+   247:49:23: Tank 2 is emptying at 42.67 m
+   247:49:23: Pump 9 changed from open to closed
+   
+   248:00:00: Balanced after 2 trials
+   
+   248:30:00: Balanced after 2 trials
+   
+   249:00:00: Balanced after 2 trials
+   
+   249:30:00: Balanced after 2 trials
+   
+   250:00:00: Balanced after 2 trials
+   
+   250:30:00: Balanced after 2 trials
+   
+   251:00:00: Balanced after 2 trials
+   
+   251:30:00: Balanced after 2 trials
+   
+   252:00:00: Balanced after 2 trials
+   
+   252:30:00: Balanced after 2 trials
+   
+   253:00:00: Balanced after 2 trials
+   
+   253:30:00: Balanced after 2 trials
+   
+   253:32:32: Pump 9 changed by Tank 2 control
+   253:32:32: Balanced after 11 trials
+   253:32:32: Reservoir 9 is emptying
+   253:32:32: Tank 2 is filling at 33.53 m
+   253:32:32: Pump 9 changed from closed to open
+   
+   254:00:00: Balanced after 2 trials
+   
+   254:30:00: Balanced after 2 trials
+   
+   254:40:29: Pump 9 changed by Tank 2 control
+   254:40:29: Balanced after 7 trials
+   254:40:29: Reservoir 9 is closed
+   254:40:29: Tank 2 is emptying at 42.67 m
+   254:40:29: Pump 9 changed from open to closed
+   
+   255:00:00: Balanced after 2 trials
+   
+   255:30:00: Balanced after 2 trials
+   
+   256:00:00: Balanced after 2 trials
+   
+   256:30:00: Balanced after 2 trials
+   
+   257:00:00: Balanced after 2 trials
+   
+   257:30:00: Balanced after 2 trials
+   
+   258:00:00: Balanced after 2 trials
+   
+   258:30:00: Balanced after 2 trials
+   
+   259:00:00: Balanced after 2 trials
+   
+   259:30:00: Balanced after 2 trials
+   
+   260:00:00: Balanced after 2 trials
+   
+   260:30:00: Balanced after 2 trials
+   
+   261:00:00: Balanced after 2 trials
+   
+   261:11:13: Pump 9 changed by Tank 2 control
+   261:11:13: Balanced after 10 trials
+   261:11:13: Reservoir 9 is emptying
+   261:11:13: Tank 2 is filling at 33.53 m
+   261:11:13: Pump 9 changed from closed to open
+   
+   261:30:00: Balanced after 2 trials
+   
+   262:00:00: Balanced after 2 trials
+   
+   262:19:19: Pump 9 changed by Tank 2 control
+   262:19:19: Balanced after 9 trials
+   262:19:19: Reservoir 9 is closed
+   262:19:19: Tank 2 is emptying at 42.67 m
+   262:19:19: Pump 9 changed from open to closed
+   
+   262:30:00: Balanced after 2 trials
+   
+   263:00:00: Balanced after 2 trials
+   
+   263:30:00: Balanced after 2 trials
+   
+   264:00:00: Balanced after 2 trials
+   
+   264:30:00: Balanced after 2 trials
+   
+   265:00:00: Balanced after 2 trials
+   
+   265:30:00: Balanced after 2 trials
+   
+   266:00:00: Balanced after 2 trials
+   
+   266:30:00: Balanced after 2 trials
+   
+   267:00:00: Balanced after 2 trials
+   
+   267:30:00: Balanced after 2 trials
+   
+   268:00:00: Balanced after 2 trials
+   
+   268:30:00: Balanced after 2 trials
+   
+   269:00:00: Balanced after 2 trials
+   
+   269:30:00: Balanced after 2 trials
+   
+   270:00:00: Balanced after 2 trials
+   
+   270:30:00: Balanced after 2 trials
+   
+   271:00:00: Balanced after 2 trials
+   
+   271:30:00: Balanced after 2 trials
+   
+   271:52:31: Pump 9 changed by Tank 2 control
+   271:52:31: Balanced after 10 trials
+   271:52:31: Reservoir 9 is emptying
+   271:52:31: Tank 2 is filling at 33.53 m
+   271:52:31: Pump 9 changed from closed to open
+   
+   272:00:00: Balanced after 2 trials
+   
+   272:30:00: Balanced after 2 trials
+   
+   273:00:00: Balanced after 2 trials
+   
+   273:03:51: Pump 9 changed by Tank 2 control
+   273:03:51: Balanced after 8 trials
+   273:03:51: Reservoir 9 is closed
+   273:03:51: Tank 2 is emptying at 42.67 m
+   273:03:51: Pump 9 changed from open to closed
+   
+   273:30:00: Balanced after 2 trials
+   
+   274:00:00: Balanced after 2 trials
+   
+   274:30:00: Balanced after 2 trials
+   
+   275:00:00: Balanced after 2 trials
+   
+   275:30:00: Balanced after 2 trials
+   
+   276:00:00: Balanced after 2 trials
+   
+   276:30:00: Balanced after 2 trials
+   
+   277:00:00: Balanced after 2 trials
+   
+   277:30:00: Balanced after 2 trials
+   
+   278:00:00: Balanced after 2 trials
+   
+   278:15:10: Pump 9 changed by Tank 2 control
+   278:15:10: Balanced after 11 trials
+   278:15:10: Reservoir 9 is emptying
+   278:15:10: Tank 2 is filling at 33.53 m
+   278:15:10: Pump 9 changed from closed to open
+   
+   278:30:00: Balanced after 2 trials
+   
+   279:00:00: Balanced after 2 trials
+   
+   279:23:41: Pump 9 changed by Tank 2 control
+   279:23:41: Balanced after 9 trials
+   279:23:41: Reservoir 9 is closed
+   279:23:41: Tank 2 is emptying at 42.67 m
+   279:23:41: Pump 9 changed from open to closed
+   
+   279:30:00: Balanced after 2 trials
+   
+   280:00:00: Balanced after 2 trials
+   
+   280:30:00: Balanced after 2 trials
+   
+   281:00:00: Balanced after 2 trials
+   
+   281:30:00: Balanced after 2 trials
+   
+   282:00:00: Balanced after 2 trials
+   
+   282:30:00: Balanced after 2 trials
+   
+   283:00:00: Balanced after 2 trials
+   
+   283:30:00: Balanced after 2 trials
+   
+   284:00:00: Balanced after 2 trials
+   
+   284:30:00: Balanced after 2 trials
+   
+   285:00:00: Balanced after 2 trials
+   
+   285:30:00: Balanced after 2 trials
+   
+   285:48:02: Pump 9 changed by Tank 2 control
+   285:48:02: Balanced after 11 trials
+   285:48:02: Reservoir 9 is emptying
+   285:48:02: Tank 2 is filling at 33.53 m
+   285:48:02: Pump 9 changed from closed to open
+   
+   286:00:00: Balanced after 2 trials
+   
+   286:30:00: Balanced after 2 trials
+   
+   286:55:15: Pump 9 changed by Tank 2 control
+   286:55:15: Balanced after 8 trials
+   286:55:15: Reservoir 9 is closed
+   286:55:15: Tank 2 is emptying at 42.67 m
+   286:55:15: Pump 9 changed from open to closed
+   
+   287:00:00: Balanced after 2 trials
+   
+   287:30:00: Balanced after 2 trials
+   
+   288:00:00: Balanced after 2 trials
+   
+   288:30:00: Balanced after 2 trials
+   
+   289:00:00: Balanced after 2 trials
+   
+   289:30:00: Balanced after 2 trials
+   
+   290:00:00: Balanced after 2 trials
+   
+   290:30:00: Balanced after 2 trials
+   
+   291:00:00: Balanced after 2 trials
+   
+   291:30:00: Balanced after 2 trials
+   
+   292:00:00: Balanced after 2 trials
+   
+   292:30:00: Balanced after 2 trials
+   
+   293:00:00: Balanced after 2 trials
+   
+   293:30:00: Balanced after 2 trials
+   
+   294:00:00: Balanced after 2 trials
+   
+   294:30:00: Balanced after 2 trials
+   
+   295:00:00: Balanced after 2 trials
+   
+   295:30:00: Balanced after 2 trials
+   
+   296:00:00: Balanced after 2 trials
+   
+   296:30:00: Balanced after 2 trials
+   
+   297:00:00: Balanced after 2 trials
+   
+   297:04:22: Pump 9 changed by Tank 2 control
+   297:04:22: Balanced after 10 trials
+   297:04:22: Reservoir 9 is emptying
+   297:04:22: Tank 2 is filling at 33.53 m
+   297:04:22: Pump 9 changed from closed to open
+   
+   297:30:00: Balanced after 2 trials
+   
+   298:00:00: Balanced after 2 trials
+   
+   298:14:04: Pump 9 changed by Tank 2 control
+   298:14:04: Balanced after 9 trials
+   298:14:04: Reservoir 9 is closed
+   298:14:04: Tank 2 is emptying at 42.67 m
+   298:14:04: Pump 9 changed from open to closed
+   
+   298:30:00: Balanced after 2 trials
+   
+   299:00:00: Balanced after 2 trials
+   
+   299:30:00: Balanced after 2 trials
+   
+   300:00:00: Balanced after 2 trials
+   
+   300:30:00: Balanced after 2 trials
+   
+   301:00:00: Balanced after 2 trials
+   
+   301:30:00: Balanced after 2 trials
+   
+   302:00:00: Balanced after 2 trials
+   
+   302:30:00: Balanced after 2 trials
+   
+   303:00:00: Balanced after 2 trials
+   
+   303:30:00: Balanced after 2 trials
+   
+   304:00:00: Balanced after 2 trials
+   
+   304:13:15: Pump 9 changed by Tank 2 control
+   304:13:15: Balanced after 11 trials
+   304:13:15: Reservoir 9 is emptying
+   304:13:15: Tank 2 is filling at 33.53 m
+   304:13:15: Pump 9 changed from closed to open
+   
+   304:30:00: Balanced after 2 trials
+   
+   305:00:00: Balanced after 2 trials
+   
+   305:21:55: Pump 9 changed by Tank 2 control
+   305:21:55: Balanced after 9 trials
+   305:21:55: Reservoir 9 is closed
+   305:21:55: Tank 2 is emptying at 42.67 m
+   305:21:55: Pump 9 changed from open to closed
+   
+   305:30:00: Balanced after 2 trials
+   
+   306:00:00: Balanced after 2 trials
+   
+   306:30:00: Balanced after 2 trials
+   
+   307:00:00: Balanced after 2 trials
+   
+   307:30:00: Balanced after 2 trials
+   
+   308:00:00: Balanced after 2 trials
+   
+   308:30:00: Balanced after 2 trials
+   
+   309:00:00: Balanced after 2 trials
+   
+   309:30:00: Balanced after 2 trials
+   
+   310:00:00: Balanced after 2 trials
+   
+   310:30:00: Balanced after 2 trials
+   
+   311:00:00: Balanced after 2 trials
+   
+   311:30:00: Balanced after 2 trials
+   
+   312:00:00: Balanced after 2 trials
+   
+   312:30:00: Balanced after 2 trials
+   
+   312:59:24: Pump 9 changed by Tank 2 control
+   312:59:24: Balanced after 11 trials
+   312:59:24: Reservoir 9 is emptying
+   312:59:24: Tank 2 is filling at 33.53 m
+   312:59:24: Pump 9 changed from closed to open
+   
+   313:00:00: Balanced after 2 trials
+   
+   313:30:00: Balanced after 2 trials
+   
+   314:00:00: Balanced after 2 trials
+   
+   314:02:48: Pump 9 changed by Tank 2 control
+   314:02:48: Balanced after 4 trials
+   314:02:48: Reservoir 9 is closed
+   314:02:48: Tank 2 is emptying at 42.67 m
+   314:02:48: Pump 9 changed from open to closed
+   
+   314:30:00: Balanced after 2 trials
+   
+   315:00:00: Balanced after 2 trials
+   
+   315:30:00: Balanced after 2 trials
+   
+   316:00:00: Balanced after 2 trials
+   
+   316:30:00: Balanced after 2 trials
+   
+   317:00:00: Balanced after 2 trials
+   
+   317:30:00: Balanced after 2 trials
+   
+   318:00:00: Balanced after 2 trials
+   
+   318:30:00: Balanced after 2 trials
+   
+   319:00:00: Balanced after 2 trials
+   
+   319:30:00: Balanced after 2 trials
+   
+   320:00:00: Balanced after 2 trials
+   
+   320:30:00: Balanced after 2 trials
+   
+   321:00:00: Balanced after 2 trials
+   
+   321:30:00: Balanced after 2 trials
+   
+   322:00:00: Balanced after 2 trials
+   
+   322:30:00: Balanced after 2 trials
+   
+   323:00:00: Balanced after 2 trials
+   
+   323:30:00: Balanced after 2 trials
+   
+   323:40:06: Pump 9 changed by Tank 2 control
+   323:40:06: Balanced after 10 trials
+   323:40:06: Reservoir 9 is emptying
+   323:40:06: Tank 2 is filling at 33.53 m
+   323:40:06: Pump 9 changed from closed to open
+   
+   324:00:00: Balanced after 2 trials
+   
+   324:30:00: Balanced after 2 trials
+   
+   324:49:10: Pump 9 changed by Tank 2 control
+   324:49:10: Balanced after 9 trials
+   324:49:10: Reservoir 9 is closed
+   324:49:10: Tank 2 is emptying at 42.67 m
+   324:49:10: Pump 9 changed from open to closed
+   
+   325:00:00: Balanced after 2 trials
+   
+   325:30:00: Balanced after 2 trials
+   
+   326:00:00: Balanced after 2 trials
+   
+   326:30:00: Balanced after 2 trials
+   
+   327:00:00: Balanced after 2 trials
+   
+   327:30:00: Balanced after 2 trials
+   
+   328:00:00: Balanced after 2 trials
+   
+   328:30:00: Balanced after 2 trials
+   
+   329:00:00: Balanced after 2 trials
+   
+   329:30:00: Balanced after 2 trials
+   
+   330:00:00: Balanced after 2 trials
+   
+   330:30:00: Balanced after 2 trials
+   
+   331:00:00: Balanced after 2 trials
+   
+   331:30:00: Balanced after 2 trials
+   
+   331:36:29: Pump 9 changed by Tank 2 control
+   331:36:29: Balanced after 10 trials
+   331:36:29: Reservoir 9 is emptying
+   331:36:29: Tank 2 is filling at 33.53 m
+   331:36:29: Pump 9 changed from closed to open
+   
+   332:00:00: Balanced after 2 trials
+   
+   332:30:00: Balanced after 2 trials
+   
+   332:44:28: Pump 9 changed by Tank 2 control
+   332:44:28: Balanced after 8 trials
+   332:44:28: Reservoir 9 is closed
+   332:44:28: Tank 2 is emptying at 42.67 m
+   332:44:28: Pump 9 changed from open to closed
+   
+   333:00:00: Balanced after 2 trials
+   
+   333:30:00: Balanced after 2 trials
+   
+   334:00:00: Balanced after 2 trials
+   
+   334:30:00: Balanced after 2 trials
+   
+   335:00:00: Balanced after 2 trials
+   
+   335:30:00: Balanced after 2 trials
+   
+   336:00:00: Balanced after 2 trials
+   
+   336:30:00: Balanced after 2 trials
+   
+   337:00:00: Balanced after 2 trials
+   
+   337:30:00: Balanced after 2 trials
+   
+   338:00:00: Balanced after 2 trials
+   
+   338:30:00: Balanced after 2 trials
+   
+   339:00:00: Balanced after 2 trials
+   
+   339:30:00: Balanced after 2 trials
+   
+   340:00:00: Balanced after 2 trials
+   
+   340:30:00: Balanced after 2 trials
+   
+   341:00:00: Balanced after 2 trials
+   
+   341:30:00: Balanced after 2 trials
+   
+   342:00:00: Balanced after 2 trials
+   
+   342:30:00: Balanced after 2 trials
+   
+   343:00:00: Balanced after 2 trials
+   
+   343:06:45: Pump 9 changed by Tank 2 control
+   343:06:45: Balanced after 11 trials
+   343:06:45: Reservoir 9 is emptying
+   343:06:45: Tank 2 is filling at 33.53 m
+   343:06:45: Pump 9 changed from closed to open
+   
+   343:30:00: Balanced after 2 trials
+   
+   344:00:00: Balanced after 2 trials
+   
+   344:15:20: Pump 9 changed by Tank 2 control
+   344:15:20: Balanced after 9 trials
+   344:15:20: Reservoir 9 is closed
+   344:15:20: Tank 2 is emptying at 42.67 m
+   344:15:20: Pump 9 changed from open to closed
+   
+   344:30:00: Balanced after 2 trials
+   
+   345:00:00: Balanced after 2 trials
+   
+   345:30:00: Balanced after 2 trials
+   
+   346:00:00: Balanced after 2 trials
+   
+   346:30:00: Balanced after 2 trials
+   
+   347:00:00: Balanced after 2 trials
+   
+   347:30:00: Balanced after 2 trials
+   
+   348:00:00: Balanced after 2 trials
+   
+   348:30:00: Balanced after 2 trials
+   
+   349:00:00: Balanced after 2 trials
+   
+   349:30:00: Balanced after 2 trials
+   
+   349:37:33: Pump 9 changed by Tank 2 control
+   349:37:33: Balanced after 11 trials
+   349:37:33: Reservoir 9 is emptying
+   349:37:33: Tank 2 is filling at 33.53 m
+   349:37:33: Pump 9 changed from closed to open
+   
+   350:00:00: Balanced after 2 trials
+   
+   350:30:00: Balanced after 2 trials
+   
+   350:45:25: Pump 9 changed by Tank 2 control
+   350:45:25: Balanced after 8 trials
+   350:45:25: Reservoir 9 is closed
+   350:45:25: Tank 2 is emptying at 42.67 m
+   350:45:25: Pump 9 changed from open to closed
+   
+   351:00:00: Balanced after 2 trials
+   
+   351:30:00: Balanced after 2 trials
+   
+   352:00:00: Balanced after 2 trials
+   
+   352:30:00: Balanced after 2 trials
+   
+   353:00:00: Balanced after 2 trials
+   
+   353:30:00: Balanced after 2 trials
+   
+   354:00:00: Balanced after 2 trials
+   
+   354:30:00: Balanced after 2 trials
+   
+   355:00:00: Balanced after 2 trials
+   
+   355:30:00: Balanced after 2 trials
+   
+   356:00:00: Balanced after 2 trials
+   
+   356:30:00: Balanced after 2 trials
+   
+   357:00:00: Balanced after 2 trials
+   
+   357:25:47: Pump 9 changed by Tank 2 control
+   357:25:47: Balanced after 11 trials
+   357:25:47: Reservoir 9 is emptying
+   357:25:47: Tank 2 is filling at 33.53 m
+   357:25:47: Pump 9 changed from closed to open
+   
+   357:30:00: Balanced after 2 trials
+   
+   358:00:00: Balanced after 2 trials
+   
+   358:30:00: Balanced after 2 trials
+   
+   358:33:47: Pump 9 changed by Tank 2 control
+   358:33:47: Balanced after 6 trials
+   358:33:47: Reservoir 9 is closed
+   358:33:47: Tank 2 is emptying at 42.67 m
+   358:33:47: Pump 9 changed from open to closed
+   
+   359:00:00: Balanced after 2 trials
+   
+   359:30:00: Balanced after 2 trials
+   
+   360:00:00: Balanced after 2 trials
+   
+   360:30:00: Balanced after 2 trials
+   
+   361:00:00: Balanced after 2 trials
+   
+   361:30:00: Balanced after 2 trials
+   
+   362:00:00: Balanced after 2 trials
+   
+   362:30:00: Balanced after 2 trials
+   
+   363:00:00: Balanced after 2 trials
+   
+   363:30:00: Balanced after 2 trials
+   
+   364:00:00: Balanced after 2 trials
+   
+   364:30:00: Balanced after 2 trials
+   
+   365:00:00: Balanced after 2 trials
+   
+   365:30:00: Balanced after 2 trials
+   
+   366:00:00: Balanced after 2 trials
+   
+   366:30:00: Balanced after 2 trials
+   
+   367:00:00: Balanced after 2 trials
+   
+   367:30:00: Balanced after 2 trials
+   
+   368:00:00: Balanced after 2 trials
+   
+   368:30:00: Balanced after 2 trials
+   
+   368:34:30: Pump 9 changed by Tank 2 control
+   368:34:30: Balanced after 11 trials
+   368:34:30: Reservoir 9 is emptying
+   368:34:30: Tank 2 is filling at 33.53 m
+   368:34:30: Pump 9 changed from closed to open
+   
+   369:00:00: Balanced after 2 trials
+   
+   369:30:00: Balanced after 2 trials
+   
+   369:44:38: Pump 9 changed by Tank 2 control
+   369:44:38: Balanced after 9 trials
+   369:44:38: Reservoir 9 is closed
+   369:44:38: Tank 2 is emptying at 42.67 m
+   369:44:38: Pump 9 changed from open to closed
+   
+   370:00:00: Balanced after 2 trials
+   
+   370:30:00: Balanced after 2 trials
+   
+   371:00:00: Balanced after 2 trials
+   
+   371:30:00: Balanced after 2 trials
+   
+   372:00:00: Balanced after 2 trials
+   
+   372:30:00: Balanced after 2 trials
+   
+   373:00:00: Balanced after 2 trials
+   
+   373:30:00: Balanced after 2 trials
+   
+   374:00:00: Balanced after 2 trials
+   
+   374:30:00: Balanced after 2 trials
+   
+   375:00:00: Balanced after 2 trials
+   
+   375:30:00: Balanced after 2 trials
+   
+   375:46:30: Pump 9 changed by Tank 2 control
+   375:46:30: Balanced after 11 trials
+   375:46:30: Reservoir 9 is emptying
+   375:46:30: Tank 2 is filling at 33.53 m
+   375:46:30: Pump 9 changed from closed to open
+   
+   376:00:00: Balanced after 2 trials
+   
+   376:30:00: Balanced after 2 trials
+   
+   376:53:55: Pump 9 changed by Tank 2 control
+   376:53:55: Balanced after 9 trials
+   376:53:55: Reservoir 9 is closed
+   376:53:55: Tank 2 is emptying at 42.67 m
+   376:53:55: Pump 9 changed from open to closed
+   
+   377:00:00: Balanced after 2 trials
+   
+   377:30:00: Balanced after 2 trials
+   
+   378:00:00: Balanced after 2 trials
+   
+   378:30:00: Balanced after 2 trials
+   
+   379:00:00: Balanced after 2 trials
+   
+   379:30:00: Balanced after 2 trials
+   
+   380:00:00: Balanced after 2 trials
+   
+   380:30:00: Balanced after 2 trials
+   
+   381:00:00: Balanced after 2 trials
+   
+   381:30:00: Balanced after 2 trials
+   
+   382:00:00: Balanced after 2 trials
+   
+   382:30:00: Balanced after 2 trials
+   
+   383:00:00: Balanced after 2 trials
+   
+   383:17:43: Pump 9 changed by Tank 2 control
+   383:17:43: Balanced after 11 trials
+   383:17:43: Reservoir 9 is emptying
+   383:17:43: Tank 2 is filling at 33.53 m
+   383:17:43: Pump 9 changed from closed to open
+   
+   383:30:00: Balanced after 2 trials
+   
+   384:00:00: Balanced after 2 trials
+   
+   384:22:42: Pump 9 changed by Tank 2 control
+   384:22:42: Balanced after 7 trials
+   384:22:42: Reservoir 9 is closed
+   384:22:42: Tank 2 is emptying at 42.67 m
+   384:22:42: Pump 9 changed from open to closed
+   
+   384:30:00: Balanced after 2 trials
+   
+   385:00:00: Balanced after 2 trials
+   
+   385:30:00: Balanced after 2 trials
+   
+   386:00:00: Balanced after 2 trials
+   
+   386:30:00: Balanced after 2 trials
+   
+   387:00:00: Balanced after 2 trials
+   
+   387:30:00: Balanced after 2 trials
+   
+   388:00:00: Balanced after 2 trials
+   
+   388:30:00: Balanced after 2 trials
+   
+   389:00:00: Balanced after 2 trials
+   
+   389:30:00: Balanced after 2 trials
+   
+   390:00:00: Balanced after 2 trials
+   
+   390:30:00: Balanced after 2 trials
+   
+   391:00:00: Balanced after 2 trials
+   
+   391:30:00: Balanced after 2 trials
+   
+   392:00:00: Balanced after 2 trials
+   
+   392:30:00: Balanced after 2 trials
+   
+   393:00:00: Balanced after 2 trials
+   
+   393:30:00: Balanced after 2 trials
+   
+   393:36:57: Pump 9 changed by Tank 2 control
+   393:36:57: Balanced after 10 trials
+   393:36:57: Reservoir 9 is emptying
+   393:36:57: Tank 2 is filling at 33.53 m
+   393:36:57: Pump 9 changed from closed to open
+   
+   394:00:00: Balanced after 2 trials
+   
+   394:30:00: Balanced after 2 trials
+   
+   394:47:45: Pump 9 changed by Tank 2 control
+   394:47:45: Balanced after 9 trials
+   394:47:45: Reservoir 9 is closed
+   394:47:45: Tank 2 is emptying at 42.67 m
+   394:47:45: Pump 9 changed from open to closed
+   
+   395:00:00: Balanced after 2 trials
+   
+   395:30:00: Balanced after 2 trials
+   
+   396:00:00: Balanced after 2 trials
+   
+   396:30:00: Balanced after 2 trials
+   
+   397:00:00: Balanced after 2 trials
+   
+   397:30:00: Balanced after 2 trials
+   
+   398:00:00: Balanced after 2 trials
+   
+   398:30:00: Balanced after 2 trials
+   
+   399:00:00: Balanced after 2 trials
+   
+   399:30:00: Balanced after 2 trials
+   
+   400:00:00: Balanced after 2 trials
+   
+   400:30:00: Balanced after 2 trials
+   
+   400:49:24: Pump 9 changed by Tank 2 control
+   400:49:24: Balanced after 11 trials
+   400:49:24: Reservoir 9 is emptying
+   400:49:24: Tank 2 is filling at 33.53 m
+   400:49:24: Pump 9 changed from closed to open
+   
+   401:00:00: Balanced after 2 trials
+   
+   401:30:00: Balanced after 2 trials
+   
+   401:57:43: Pump 9 changed by Tank 2 control
+   401:57:43: Balanced after 9 trials
+   401:57:43: Reservoir 9 is closed
+   401:57:43: Tank 2 is emptying at 42.67 m
+   401:57:43: Pump 9 changed from open to closed
+   
+   402:00:00: Balanced after 2 trials
+   
+   402:30:00: Balanced after 2 trials
+   
+   403:00:00: Balanced after 2 trials
+   
+   403:30:00: Balanced after 2 trials
+   
+   404:00:00: Balanced after 2 trials
+   
+   404:30:00: Balanced after 2 trials
+   
+   405:00:00: Balanced after 2 trials
+   
+   405:30:00: Balanced after 2 trials
+   
+   406:00:00: Balanced after 2 trials
+   
+   406:30:00: Balanced after 2 trials
+   
+   407:00:00: Balanced after 2 trials
+   
+   407:30:00: Balanced after 2 trials
+   
+   408:00:00: Balanced after 2 trials
+   
+   408:30:00: Balanced after 2 trials
+   
+   408:58:35: Pump 9 changed by Tank 2 control
+   408:58:35: Balanced after 12 trials
+   408:58:35: Reservoir 9 is emptying
+   408:58:35: Tank 2 is filling at 33.53 m
+   408:58:35: Pump 9 changed from closed to open
+   
+   409:00:00: Balanced after 2 trials
+   
+   409:30:00: Balanced after 2 trials
+   
+   410:00:00: Balanced after 2 trials
+   
+   410:01:34: Pump 9 changed by Tank 2 control
+   410:01:34: Balanced after 4 trials
+   410:01:34: Reservoir 9 is closed
+   410:01:34: Tank 2 is emptying at 42.67 m
+   410:01:34: Pump 9 changed from open to closed
+   
+   410:30:00: Balanced after 2 trials
+   
+   411:00:00: Balanced after 2 trials
+   
+   411:30:00: Balanced after 2 trials
+   
+   412:00:00: Balanced after 2 trials
+   
+   412:30:00: Balanced after 2 trials
+   
+   413:00:00: Balanced after 2 trials
+   
+   413:30:00: Balanced after 2 trials
+   
+   414:00:00: Balanced after 2 trials
+   
+   414:30:00: Balanced after 2 trials
+   
+   415:00:00: Balanced after 2 trials
+   
+   415:30:00: Balanced after 2 trials
+   
+   416:00:00: Balanced after 2 trials
+   
+   416:30:00: Balanced after 2 trials
+   
+   417:00:00: Balanced after 2 trials
+   
+   417:30:00: Balanced after 2 trials
+   
+   418:00:00: Balanced after 2 trials
+   
+   418:16:49: Pump 9 changed by Tank 2 control
+   418:16:49: Balanced after 11 trials
+   418:16:49: Reservoir 9 is emptying
+   418:16:49: Tank 2 is filling at 33.53 m
+   418:16:49: Pump 9 changed from closed to open
+   
+   418:30:00: Balanced after 2 trials
+   
+   419:00:00: Balanced after 2 trials
+   
+   419:27:15: Pump 9 changed by Tank 2 control
+   419:27:15: Balanced after 9 trials
+   419:27:15: Reservoir 9 is closed
+   419:27:15: Tank 2 is emptying at 42.67 m
+   419:27:15: Pump 9 changed from open to closed
+   
+   419:30:00: Balanced after 2 trials
+   
+   420:00:00: Balanced after 2 trials
+   
+   420:30:00: Balanced after 2 trials
+   
+   421:00:00: Balanced after 2 trials
+   
+   421:30:00: Balanced after 2 trials
+   
+   422:00:00: Balanced after 2 trials
+   
+   422:30:00: Balanced after 2 trials
+   
+   423:00:00: Balanced after 2 trials
+   
+   423:30:00: Balanced after 2 trials
+   
+   424:00:00: Balanced after 2 trials
+   
+   424:30:00: Balanced after 2 trials
+   
+   425:00:00: Balanced after 2 trials
+   
+   425:30:00: Balanced after 2 trials
+   
+   425:46:23: Pump 9 changed by Tank 2 control
+   425:46:23: Balanced after 10 trials
+   425:46:23: Reservoir 9 is emptying
+   425:46:23: Tank 2 is filling at 33.53 m
+   425:46:23: Pump 9 changed from closed to open
+   
+   426:00:00: Balanced after 2 trials
+   
+   426:30:00: Balanced after 2 trials
+   
+   426:55:00: Pump 9 changed by Tank 2 control
+   426:55:00: Balanced after 9 trials
+   426:55:00: Reservoir 9 is closed
+   426:55:00: Tank 2 is emptying at 42.67 m
+   426:55:00: Pump 9 changed from open to closed
+   
+   427:00:00: Balanced after 2 trials
+   
+   427:30:00: Balanced after 2 trials
+   
+   428:00:00: Balanced after 2 trials
+   
+   428:30:00: Balanced after 2 trials
+   
+   429:00:00: Balanced after 2 trials
+   
+   429:30:00: Balanced after 2 trials
+   
+   430:00:00: Balanced after 2 trials
+   
+   430:30:00: Balanced after 2 trials
+   
+   431:00:00: Balanced after 2 trials
+   
+   431:30:00: Balanced after 2 trials
+   
+   432:00:00: Balanced after 2 trials
+   
+   432:30:00: Balanced after 2 trials
+   
+   433:00:00: Balanced after 2 trials
+   
+   433:30:00: Balanced after 2 trials
+   
+   434:00:00: Balanced after 2 trials
+   
+   434:30:00: Balanced after 2 trials
+   
+   434:54:53: Pump 9 changed by Tank 2 control
+   434:54:53: Balanced after 12 trials
+   434:54:53: Reservoir 9 is emptying
+   434:54:53: Tank 2 is filling at 33.53 m
+   434:54:53: Pump 9 changed from closed to open
+   
+   435:00:00: Balanced after 2 trials
+   
+   435:30:00: Balanced after 2 trials
+   
+   435:57:31: Pump 9 changed by Tank 2 control
+   435:57:31: Balanced after 4 trials
+   435:57:31: Reservoir 9 is closed
+   435:57:31: Tank 2 is emptying at 42.67 m
+   435:57:31: Pump 9 changed from open to closed
+   
+   436:00:00: Balanced after 2 trials
+   
+   436:30:00: Balanced after 2 trials
+   
+   437:00:00: Balanced after 2 trials
+   
+   437:30:00: Balanced after 2 trials
+   
+   438:00:00: Balanced after 2 trials
+   
+   438:30:00: Balanced after 2 trials
+   
+   439:00:00: Balanced after 2 trials
+   
+   439:30:00: Balanced after 2 trials
+   
+   440:00:00: Balanced after 2 trials
+   
+   440:30:00: Balanced after 2 trials
+   
+   441:00:00: Balanced after 2 trials
+   
+   441:30:00: Balanced after 2 trials
+   
+   442:00:00: Balanced after 2 trials
+   
+   442:19:02: Pump 9 changed by Tank 2 control
+   442:19:02: Balanced after 10 trials
+   442:19:02: Reservoir 9 is emptying
+   442:19:02: Tank 2 is filling at 33.53 m
+   442:19:02: Pump 9 changed from closed to open
+   
+   442:30:00: Balanced after 2 trials
+   
+   443:00:00: Balanced after 2 trials
+   
+   443:30:00: Balanced after 2 trials
+   
+   443:31:25: Pump 9 changed by Tank 2 control
+   443:31:25: Balanced after 8 trials
+   443:31:25: Reservoir 9 is closed
+   443:31:25: Tank 2 is emptying at 42.67 m
+   443:31:25: Pump 9 changed from open to closed
+   
+   444:00:00: Balanced after 2 trials
+   
+   444:30:00: Balanced after 2 trials
+   
+   445:00:00: Balanced after 2 trials
+   
+   445:30:00: Balanced after 2 trials
+   
+   446:00:00: Balanced after 2 trials
+   
+   446:30:00: Balanced after 2 trials
+   
+   447:00:00: Balanced after 2 trials
+   
+   447:30:00: Balanced after 2 trials
+   
+   448:00:00: Balanced after 2 trials
+   
+   448:30:00: Balanced after 2 trials
+   
+   449:00:00: Balanced after 2 trials
+   
+   449:27:48: Pump 9 changed by Tank 2 control
+   449:27:48: Balanced after 11 trials
+   449:27:48: Reservoir 9 is emptying
+   449:27:48: Tank 2 is filling at 33.53 m
+   449:27:48: Pump 9 changed from closed to open
+   
+   449:30:00: Balanced after 2 trials
+   
+   450:00:00: Balanced after 2 trials
+   
+   450:30:00: Balanced after 2 trials
+   
+   450:36:39: Pump 9 changed by Tank 2 control
+   450:36:39: Balanced after 8 trials
+   450:36:39: Reservoir 9 is closed
+   450:36:39: Tank 2 is emptying at 42.67 m
+   450:36:39: Pump 9 changed from open to closed
+   
+   451:00:00: Balanced after 2 trials
+   
+   451:30:00: Balanced after 2 trials
+   
+   452:00:00: Balanced after 2 trials
+   
+   452:30:00: Balanced after 2 trials
+   
+   453:00:00: Balanced after 2 trials
+   
+   453:30:00: Balanced after 2 trials
+   
+   454:00:00: Balanced after 2 trials
+   
+   454:30:00: Balanced after 2 trials
+   
+   455:00:00: Balanced after 2 trials
+   
+   455:30:00: Balanced after 2 trials
+   
+   456:00:00: Balanced after 2 trials
+   
+   456:30:00: Balanced after 2 trials
+   
+   457:00:00: Balanced after 2 trials
+   
+   457:30:00: Balanced after 2 trials
+   
+   458:00:00: Balanced after 2 trials
+   
+   458:13:50: Pump 9 changed by Tank 2 control
+   458:13:50: Balanced after 15 trials
+   458:13:50: Reservoir 9 is emptying
+   458:13:50: Tank 2 is filling at 33.53 m
+   458:13:50: Pump 9 changed from closed to open
+   
+   458:30:00: Balanced after 2 trials
+   
+   459:00:00: Balanced after 2 trials
+   
+   459:16:45: Pump 9 changed by Tank 2 control
+   459:16:45: Balanced after 4 trials
+   459:16:45: Reservoir 9 is closed
+   459:16:45: Tank 2 is emptying at 42.67 m
+   459:16:45: Pump 9 changed from open to closed
+   
+   459:30:00: Balanced after 2 trials
+   
+   460:00:00: Balanced after 2 trials
+   
+   460:30:00: Balanced after 2 trials
+   
+   461:00:00: Balanced after 2 trials
+   
+   461:30:00: Balanced after 2 trials
+   
+   462:00:00: Balanced after 2 trials
+   
+   462:30:00: Balanced after 2 trials
+   
+   463:00:00: Balanced after 2 trials
+   
+   463:30:00: Balanced after 2 trials
+   
+   464:00:00: Balanced after 2 trials
+   
+   464:30:00: Balanced after 2 trials
+   
+   465:00:00: Balanced after 2 trials
+   
+   465:30:00: Balanced after 2 trials
+   
+   466:00:00: Balanced after 2 trials
+   
+   466:30:00: Balanced after 2 trials
+   
+   467:00:00: Balanced after 2 trials
+   
+   467:15:23: Pump 9 changed by Tank 2 control
+   467:15:23: Balanced after 10 trials
+   467:15:23: Reservoir 9 is emptying
+   467:15:23: Tank 2 is filling at 33.53 m
+   467:15:23: Pump 9 changed from closed to open
+   
+   467:30:00: Balanced after 2 trials
+   
+   468:00:00: Balanced after 2 trials
+   
+   468:25:38: Pump 9 changed by Tank 2 control
+   468:25:38: Balanced after 9 trials
+   468:25:38: Reservoir 9 is closed
+   468:25:38: Tank 2 is emptying at 42.67 m
+   468:25:38: Pump 9 changed from open to closed
+   
+   468:30:00: Balanced after 2 trials
+   
+   469:00:00: Balanced after 2 trials
+   
+   469:30:00: Balanced after 2 trials
+   
+   470:00:00: Balanced after 2 trials
+   
+   470:30:00: Balanced after 2 trials
+   
+   471:00:00: Balanced after 2 trials
+   
+   471:30:00: Balanced after 2 trials
+   
+   472:00:00: Balanced after 2 trials
+   
+   472:30:00: Balanced after 2 trials
+   
+   473:00:00: Balanced after 2 trials
+   
+   473:30:00: Balanced after 2 trials
+   
+   474:00:00: Balanced after 2 trials
+   
+   474:29:15: Pump 9 changed by Tank 2 control
+   474:29:15: Balanced after 11 trials
+   474:29:15: Reservoir 9 is emptying
+   474:29:15: Tank 2 is filling at 33.53 m
+   474:29:15: Pump 9 changed from closed to open
+   
+   474:30:00: Balanced after 2 trials
+   
+   475:00:00: Balanced after 2 trials
+   
+   475:30:00: Balanced after 2 trials
+   
+   475:37:39: Pump 9 changed by Tank 2 control
+   475:37:39: Balanced after 7 trials
+   475:37:39: Reservoir 9 is closed
+   475:37:39: Tank 2 is emptying at 42.67 m
+   475:37:39: Pump 9 changed from open to closed
+   
+   476:00:00: Balanced after 2 trials
+   
+   476:30:00: Balanced after 2 trials
+   
+   477:00:00: Balanced after 2 trials
+   
+   477:30:00: Balanced after 2 trials
+   
+   478:00:00: Balanced after 2 trials
+   
+   478:30:00: Balanced after 2 trials
+   
+   479:00:00: Balanced after 2 trials
+   
+   479:30:00: Balanced after 2 trials
+   
+   480:00:00: Balanced after 2 trials
+   
+   480:30:00: Balanced after 2 trials
+   
+   481:00:00: Balanced after 2 trials
+   
+   481:30:00: Balanced after 2 trials
+   
+   482:00:00: Balanced after 2 trials
+   
+   482:30:00: Balanced after 2 trials
+   
+   483:00:00: Balanced after 2 trials
+   
+   483:30:00: Balanced after 2 trials
+   
+   484:00:00: Balanced after 2 trials
+   
+   484:30:00: Balanced after 2 trials
+   
+   485:00:00: Balanced after 2 trials
+   
+   485:30:00: Balanced after 2 trials
+   
+   485:48:07: Pump 9 changed by Tank 2 control
+   485:48:07: Balanced after 15 trials
+   485:48:07: Reservoir 9 is emptying
+   485:48:07: Tank 2 is filling at 33.53 m
+   485:48:07: Pump 9 changed from closed to open
+   
+   486:00:00: Balanced after 2 trials
+   
+   486:30:00: Balanced after 2 trials
+   
+   486:51:54: Pump 9 changed by Tank 2 control
+   486:51:54: Balanced after 5 trials
+   486:51:54: Reservoir 9 is closed
+   486:51:54: Tank 2 is emptying at 42.67 m
+   486:51:54: Pump 9 changed from open to closed
+   
+   487:00:00: Balanced after 2 trials
+   
+   487:30:00: Balanced after 2 trials
+   
+   488:00:00: Balanced after 2 trials
+   
+   488:30:00: Balanced after 2 trials
+   
+   489:00:00: Balanced after 2 trials
+   
+   489:30:00: Balanced after 2 trials
+   
+   490:00:00: Balanced after 2 trials
+   
+   490:30:00: Balanced after 2 trials
+   
+   491:00:00: Balanced after 2 trials
+   
+   491:30:00: Balanced after 2 trials
+   
+   492:00:00: Balanced after 2 trials
+   
+   492:30:00: Balanced after 2 trials
+   
+   493:00:00: Balanced after 2 trials
+   
+   493:30:00: Balanced after 2 trials
+   
+   493:39:34: Pump 9 changed by Tank 2 control
+   493:39:34: Balanced after 11 trials
+   493:39:34: Reservoir 9 is emptying
+   493:39:34: Tank 2 is filling at 33.53 m
+   493:39:34: Pump 9 changed from closed to open
+   
+   494:00:00: Balanced after 2 trials
+   
+   494:30:00: Balanced after 2 trials
+   
+   494:47:57: Pump 9 changed by Tank 2 control
+   494:47:57: Balanced after 8 trials
+   494:47:57: Reservoir 9 is closed
+   494:47:57: Tank 2 is emptying at 42.67 m
+   494:47:57: Pump 9 changed from open to closed
+   
+   495:00:00: Balanced after 2 trials
+   
+   495:30:00: Balanced after 2 trials
+   
+   496:00:00: Balanced after 2 trials
+   
+   496:30:00: Balanced after 2 trials
+   
+   497:00:00: Balanced after 2 trials
+   
+   497:30:00: Balanced after 2 trials
+   
+   498:00:00: Balanced after 2 trials
+   
+   498:30:00: Balanced after 2 trials
+   
+   499:00:00: Balanced after 2 trials
+   
+   499:30:00: Balanced after 2 trials
+   
+   500:00:00: Balanced after 2 trials
+   
+   500:30:00: Balanced after 2 trials
+   
+   501:00:00: Balanced after 2 trials
+   
+   501:30:00: Balanced after 2 trials
+   
+   501:32:15: Pump 9 changed by Tank 2 control
+   501:32:15: Balanced after 11 trials
+   501:32:15: Reservoir 9 is emptying
+   501:32:15: Tank 2 is filling at 33.53 m
+   501:32:15: Pump 9 changed from closed to open
+   
+   502:00:00: Balanced after 2 trials
+   
+   502:30:00: Balanced after 2 trials
+   
+   502:39:24: Pump 9 changed by Tank 2 control
+   502:39:24: Balanced after 7 trials
+   502:39:24: Reservoir 9 is closed
+   502:39:24: Tank 2 is emptying at 42.67 m
+   502:39:24: Pump 9 changed from open to closed
+   
+   503:00:00: Balanced after 2 trials
+   
+   503:30:00: Balanced after 2 trials
+   
+   504:00:00: Balanced after 2 trials
+   
+  Hydraulic Flow Balance (m3/h)
+  ================================
+  Total Inflow:           230.838
+  Consumer Demand:        229.101
+  Demand Deficit:           0.000
+  Emitter Flow:             0.000
+  Leakage Flow:             0.000
+  Total Outflow:          229.101
+  Storage Flow:             1.736
+  Flow Ratio:               1.000
+  ================================
+
+  Water Quality Mass Balance (mg)
+  ================================
+  Initial Mass:       7.49526e+06
+  Mass Inflow:        1.16343e+08
+  Mass Outflow:       3.35497e+07
+  Mass Reacted:       8.64688e+07
+  Final Mass:         3.82027e+06
+  Mass Ratio:         1.00000
+  Total Segments:     111
+  ================================
+
+  Analysis ended Fri Apr 10 11:17:08 2026
