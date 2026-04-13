@@ -189,7 +189,7 @@ class VAEModel(AutoencoderModel):
 
             test_error = torch.cat(test_errors)
             test_reconstruction  = torch.cat(test_reconstructions)
-            anomalies = test_error > threshold
+            anomalies = test_error > threshold*1.5
 
             print(f"threshold: {threshold:.4f}")
             print(f"train_error mean: {train_error.mean():.4f}, std: {train_error.std():.4f}")
@@ -221,6 +221,6 @@ class VAEModel(AutoencoderModel):
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
             # Plot the signal
-            self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
+            # self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
 
         return results

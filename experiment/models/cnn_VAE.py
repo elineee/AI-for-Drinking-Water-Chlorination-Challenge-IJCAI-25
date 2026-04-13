@@ -16,18 +16,31 @@ class CNNVAEModel(CNNModel):
         Returns:
         - vae_model: an instantiated vae model 
         """
+        
+        if self.config.contaminants[0] == ContaminationType.ARSENIC:
+            config_vae = ExperimentConfig(
+                    config_name="VAE_arsenic",
+                    contaminated_files=self.config.contaminated_files,
+                    example_files=self.config.example_files,
+                    nodes=[node],
+                    window_size=100,
+                    model_name="VAE",
+                    model_params={},
+                )
+            k 
+        else :
                 
-        config_vae = ExperimentConfig(
-                config_name="VAE",
-                contaminated_files=self.config.contaminated_files,
-                example_files=self.config.example_files,
-                nodes=[node],
-                window_size=400,
-                model_name="VAE",
-                model_params={},
-                contaminants=[ContaminationType.PATHOGEN]
+            config_vae = ExperimentConfig(
+                    config_name="VAE",
+                    contaminated_files=self.config.contaminated_files,
+                    example_files=self.config.example_files,
+                    nodes=[node],
+                    window_size=400,
+                    model_name="VAE",
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
 
-            )
+                )
                 
         vae_model = VAEModel(config_vae)
         return vae_model

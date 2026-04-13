@@ -3,54 +3,54 @@ from sklearn.model_selection import train_test_split
 import torch
 from torch.utils.data import Dataset, TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm
-from utils import detect_change_point
+from utils import add_noisy_dfs, detect_change_point
 from models.CNN import CNNModel
 
-class TimeSeriesAugmentation:
-    def __init__(self, transforms):
-        self.transforms = transforms
+# class TimeSeriesAugmentation:
+#     def __init__(self, transforms):
+#         self.transforms = transforms
         
-    def __call__(self, data):
-        for transform in self.transforms:
-            data = transform(data)
-        return data
+#     def __call__(self, data):
+#         for transform in self.transforms:
+#             data = transform(data)
+#         return data
 
-class AugmentedTensorDataset(Dataset):
-    def __init__(self, data, labels, augment=None):
-        self.data = data
-        self.labels = labels
-        self.augment = augment
+# class AugmentedTensorDataset(Dataset):
+#     def __init__(self, data, labels, augment=None):
+#         self.data = data
+#         self.labels = labels
+#         self.augment = augment
 
-    def __len__(self):
-        return len(self.data)
+#     def __len__(self):
+#         return len(self.data)
 
-    def __getitem__(self, idx):
-        x = self.data[idx]
-        y = self.labels[idx]
+#     def __getitem__(self, idx):
+#         x = self.data[idx]
+#         y = self.labels[idx]
 
-        if self.augment is not None:
-            x = self.augment(x)
+#         if self.augment is not None:
+#             x = self.augment(x)
             
-        return x, y
+#         return x, y
 
-def gaussian_noise(data, mean=0.0, prob=0.5):
-    if np.random.rand() > prob:
-        return data
-    std_values = [0.01, 0.03, 0.05] 
-    std = np.random.choice(std_values)  
-    noise = np.random.normal(mean, std, data.shape)
-    data = data + noise 
-    data = data.float()
-    return data 
+# def gaussian_noise(data, mean=0.0, prob=0.5):
+#     if np.random.rand() > prob:
+#         return data
+#     std_values = [0.01, 0.03, 0.05] 
+#     std = np.random.choice(std_values)  
+#     noise = np.random.normal(mean, std, data.shape)
+#     data = data + noise 
+#     data = data.float()
+#     return data 
 
-def blank_value(data, percentage=0.025, prob=0.5):
-    if np.random.rand() > prob:
-        return data
-    num_blank = int(percentage * data.numel())
-    indices = np.random.choice(data.numel(), num_blank, replace=False)
-    data[indices] = 0.0
-    data = data.float()
-    return data
+# def blank_value(data, percentage=0.025, prob=0.5):
+#     if np.random.rand() > prob:
+#         return data
+#     num_blank = int(percentage * data.numel())
+#     indices = np.random.choice(data.numel(), num_blank, replace=False)
+#     data[indices] = 0.0
+#     data = data.float()
+#     return data
 
 class CNNUnivariateModel(CNNModel):
     """ Class for CNN model. It takes into account the raw signal (univariate)"""
@@ -60,19 +60,29 @@ class CNNUnivariateModel(CNNModel):
     
 
     def get_results(self):
+        
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
+            
+            
         results = {}
-        all_clean_dfs, all_contaminated_dfs = self.load_datasets_as_dict()
+        _, all_contaminated_dfs = self.load_datasets_as_dict()
         
         for node, contaminated_dfs in all_contaminated_dfs.items():
-            clean_dfs = all_clean_dfs[node]
             
             print(f"Calculating results for node {node}")
+        
+            test_contaminated_df = contaminated_dfs[-1]
+            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
 
             data_train = []
             y_train = []
 
             for df in contaminated_dfs[:-1]:
-                df_clean, features, labels = self._prepare_data(df)
+                _, features, labels = self._prepare_data(df)
                 data_train.extend(features)
                 y_train.extend(labels)
 
@@ -82,16 +92,16 @@ class CNNUnivariateModel(CNNModel):
 
             # turn data and y into tensors
             data_train = np.array(data_train) # shape of (4706, 48)
-            data_train = torch.tensor(data_train, dtype=torch.float32) 
+            data_train = torch.tensor(data_train, dtype=torch.float32, device=device) 
             data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
             
             data_test = np.array(features_test)  # shape of (2401, 48)
-            data_test = torch.tensor(data_test, dtype=torch.float32) 
+            data_test = torch.tensor(data_test, dtype=torch.float32, device=device) 
             data_test = data_test.unsqueeze(2) # shape of (4706, 48, 1)
 
             y_train = np.array(y_train) # shape of (4706, 48)
-            y_train = torch.tensor(y_train, dtype=torch.float32)
-            y_test = torch.tensor(labels_test, dtype=torch.float32)
+            y_train = torch.tensor(y_train, dtype=torch.float32, device=device)
+            y_test = torch.tensor(labels_test, dtype=torch.float32, device=device)
 
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
