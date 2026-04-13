@@ -138,9 +138,9 @@ class LSTMAutoencoderModel(AnomalyModel):
         criterion = nn.MSELoss()
         optimizer = optim.Adam(model.parameters(), lr=0.001, weight_decay= 1e-8)
         
-        # if os.path.exists("lstm_Autoencoder.pth"):
-        if False:
-            model.load_state_dict(torch.load("lstm_Autoencoder.pth", weights_only=True))
+        node = self.config.nodes[0]
+        if os.path.exists(f"lstm_ae_{node}.pth"):
+            model.load_state_dict(torch.load(f"lstm_ae_{node}.pth", weights_only=True))
             
         else: 
             # train the model
@@ -161,7 +161,7 @@ class LSTMAutoencoderModel(AnomalyModel):
                     
                 print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss/len(train_batches):.6f}")
             
-            # torch.save(model.state_dict(), "lstm_Autoencoder.pth")
+            torch.save(model.state_dict(), f"lstm_ae_{node}.pth")
         
         # evaluate the model
         model.eval()
