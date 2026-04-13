@@ -97,12 +97,12 @@ class AutoencoderAlarmModel(AutoencoderModel):
 
             anomalies, cusum_scores = cusum_detection(test_error.cpu().numpy(), train_mean, train_std, k=0.9, threshold=threshold)
 
-            plt.figure(figsize=(18, 4))
-            plt.plot(cusum_scores, label='CUSUM score')
-            plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
-            plt.legend()
-            plt.title("CUSUM score")
-            plt.show()
+            # plt.figure(figsize=(18, 4))
+            # plt.plot(cusum_scores, label='CUSUM score')
+            # plt.axhline(y=threshold, color='r', linestyle='--', label='Threshold')
+            # plt.legend()
+            # plt.title("CUSUM score")
+            # plt.show()
 
             return (anomalies, test_reconstruction.cpu().numpy(), test_error.cpu().numpy())
     

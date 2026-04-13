@@ -42,7 +42,7 @@ def build_timestamps(datasets, window_size):
     return timestamps
 
     
-def cusum_detection(data, reference_mean, reference_std, k, threshold):
+def cusum_detection(data, reference_mean, reference_std, k, threshold, counter=20):
     """
     Detects anomalies using CUSUM applied on reconstruction errors. Since reconstruction errors are always >= 0, only increases are monitored.
     Once the alarm is triggered, it remains active until the end.
@@ -53,11 +53,14 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
     - reference_std: std of the training reconstruction errors (normal behavior)
     - k: parameter controlling sensitivity
     - threshold: alarm threshold
+    - counter: number of consecutive points to consider for anomaly detection
     
     Returns:
     - anomalies: numpy array of 1 (normal) and -1 (anomaly)
     - cusum : CUSUM scores over time
     """    
+    
+    threshold = threshold*25
 
     n = len(data)
     cusum = np.zeros(n)
@@ -67,12 +70,18 @@ def cusum_detection(data, reference_mean, reference_std, k, threshold):
      
     anomalies = []
     alarm = False
+    count = 0
     for c in cusum:
         if c > threshold or alarm:
-            alarm = True
-            anomalies.append(-1)
+            count += 1
+            if count >= counter:
+                alarm = True
+                anomalies.append(-1)
+            else: 
+                anomalies.append(1)
         else:
             anomalies.append(1)
+            count = 0
 
     return np.array(anomalies), cusum
 

@@ -73,6 +73,9 @@ class LSTMAutoencoder(nn.Module):
 class LSTMAutoencoderModel(AnomalyModel):
     """ Class for LSTM Autoencoder model"""
     
+    def _calculate_labels(self, df, contaminant, window_size):
+        return calculate_labels(df, contaminant, window_size)
+    
     def _prepare_data(self, clean_dfs, contaminated_dfs):
         """
         Prepares train/test tensors from dataframes for the LSTM Autoencoder.
@@ -247,7 +250,7 @@ class LSTMAutoencoderModel(AnomalyModel):
             
             mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies = self.run_model(train_batches, test_batches, epochs=20)
             
-            y_true = calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, 0)
+            y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, 0)
             
             true_seq = self._convert_sequence_to_float(mean_true_seq_per_timestep)
             decoded_seq = self._convert_sequence_to_float(mean_decoded_seq_per_timestep)
