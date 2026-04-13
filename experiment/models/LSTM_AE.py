@@ -255,7 +255,7 @@ class LSTMAutoencoderModel(AnomalyModel):
             true_seq = self._convert_sequence_to_float(mean_true_seq_per_timestep)
             decoded_seq = self._convert_sequence_to_float(mean_decoded_seq_per_timestep)
 
-            self._plot_reconstruction(true_seq, decoded_seq)
+            # self._plot_reconstruction(true_seq, decoded_seq)
                         
             y_true = np.array(y_true)
             print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")

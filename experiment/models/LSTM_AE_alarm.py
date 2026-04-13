@@ -134,7 +134,7 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
             anomalies, _ = cusum_detection(mean_scores, train_mean, train_std, k=0.9, threshold=threshold)
         else:
             print('ici')
-            threshold = train_mean + 3 * train_std
+            threshold = train_mean + 0.25 * train_std
             anomalies = np.array([-1 if element > threshold else 1 for element in mean_scores_per_timestep])
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
