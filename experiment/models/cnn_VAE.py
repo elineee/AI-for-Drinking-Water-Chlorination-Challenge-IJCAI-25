@@ -27,7 +27,6 @@ class CNNVAEModel(CNNModel):
                     model_name="VAE",
                     model_params={},
                 )
-            k 
         else :
                 
             config_vae = ExperimentConfig(
