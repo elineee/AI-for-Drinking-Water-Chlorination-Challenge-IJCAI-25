@@ -107,40 +107,20 @@ class CNNWindowsModel(AnomalyModel):
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
-
-        train_loss = []
-        val_loss = []
-        for epoch in range(epochs):
-            n_corrects_train = 0
-            n_corrects_val = 0
-            n_total_train = 0
-            n_total_val = 0
-            losses = []
-            model.train()
-            for _, data in enumerate(train_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
- 
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
-                
-                probs = torch.sigmoid(outputs) # Convert logits to probabilities
-
-                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-                
-                optimizer.zero_grad()
-                loss = criterion(outputs, labels)
-                losses.append(loss.item())
-                loss.backward()
-                optimizer.step()
-                
-                n_total_train += labels.numel()
-                n_corrects_train += (preds == labels).sum().item()
-            train_loss.append(np.mean(losses))
-            losses = []
-            
-            model.eval()
-            with torch.no_grad():
-                for _, data in enumerate(val_dataloader):
+        node = self.config.nodes[0]
+        if os.path.exists(f"cnn_{node}.pth"):
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=device, weights_only=True))
+        else:
+            train_loss = []
+            val_loss = []
+            for epoch in range(epochs):
+                n_corrects_train = 0
+                n_corrects_val = 0
+                n_total_train = 0
+                n_total_val = 0
+                losses = []
+                model.train()
+                for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
     
                     outputs = model(windows) # outputs shape (batch, 1, 48)
@@ -150,25 +130,51 @@ class CNNWindowsModel(AnomalyModel):
 
                     preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                     
+                    optimizer.zero_grad()
                     loss = criterion(outputs, labels)
                     losses.append(loss.item())
-                    n_total_val += labels.numel()
-                    n_corrects_val += (preds == labels).sum().item()
-            val_loss.append(np.mean(losses))
-            losses = []
+                    loss.backward()
+                    optimizer.step()
+                    
+                    n_total_train += labels.numel()
+                    n_corrects_train += (preds == labels).sum().item()
+                train_loss.append(np.mean(losses))
+                losses = []
                 
+                model.eval()
+                with torch.no_grad():
+                    for _, data in enumerate(val_dataloader):
+                        windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+        
+                        outputs = model(windows) # outputs shape (batch, 1, 48)
+                        outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                        
+                        probs = torch.sigmoid(outputs) # Convert logits to probabilities
+
+                        preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                        
+                        loss = criterion(outputs, labels)
+                        losses.append(loss.item())
+                        n_total_val += labels.numel()
+                        n_corrects_val += (preds == labels).sum().item()
+                val_loss.append(np.mean(losses))
+                losses = []
+                    
+                
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+                
+                
+            # plt.figure()
+            # plt.plot(train_loss, label="train")
+            # plt.plot(val_loss, label="validation")
+            # plt.title("Loss evolution over epochs")
+            # plt.xlabel("epoch")
+            # plt.ylabel("loss")
+            # plt.legend()
+            # plt.show()
             
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+            torch.save(model.state_dict(), f"cnn_{node}.pth")
             
-            
-        plt.figure()
-        plt.plot(train_loss, label="train")
-        plt.plot(val_loss, label="validation")
-        plt.title("Loss evolution over epochs")
-        plt.xlabel("epoch")
-        plt.ylabel("loss")
-        plt.legend()
-        plt.show()
         
         model.eval()
         n_corrects = 0
