@@ -183,41 +183,42 @@ class CNNModel(AnomalyModel):
                 train_loss.append(np.mean(losses))
                 losses = []
                 
-            torch.save(model.state_dict(), f"cnn_{node}.pth")
             
-            model.eval()
-            with torch.no_grad():
-                for _, data in enumerate(val_dataloader):
-                    windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
-                    windows = windows.to(device)
-                    labels = labels.to(device)
-    
-                    outputs = model(windows) # outputs shape (batch, 1, window_size)
-                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
-                    
-                    probs = torch.sigmoid(outputs) # Convert logits to probabilities
+                model.eval()
+                with torch.no_grad():
+                    for _, data in enumerate(val_dataloader):
+                        windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
+                        windows = windows.to(device)
+                        labels = labels.to(device)
+        
+                        outputs = model(windows) # outputs shape (batch, 1, window_size)
+                        outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
+                        
+                        probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
-                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                        preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                        
+                        loss = criterion(outputs, labels)
+                        losses.append(loss.item())
+                        n_total_val += labels.numel()
+                        n_corrects_val += (preds == labels).sum().item()
+                val_loss.append(np.mean(losses))
+                losses = []
                     
-                    loss = criterion(outputs, labels)
-                    losses.append(loss.item())
-                    n_total_val += labels.numel()
-                    n_corrects_val += (preds == labels).sum().item()
-            val_loss.append(np.mean(losses))
-            losses = []
+                
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
                 
             
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+            # plt.figure()
+            # plt.plot(train_loss, label="train")
+            # plt.plot(val_loss, label="validation")
+            # plt.title("Loss evolution over epochs")
+            # plt.xlabel("epoch")
+            # plt.ylabel("loss")
+            # plt.legend()
+            # plt.show()
             
-            
-            plt.figure()
-            plt.plot(train_loss, label="train")
-            plt.plot(val_loss, label="validation")
-            plt.title("Loss evolution over epochs")
-            plt.xlabel("epoch")
-            plt.ylabel("loss")
-            plt.legend()
-            plt.show()
+            torch.save(model.state_dict(), f"cnn_{node}.pth")
         
         model.eval()
         n_corrects = 0
@@ -382,8 +383,8 @@ class CNNModel(AnomalyModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=5)
-            y_pred = detect_change_point(y_pred, count_required=20)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)
+            y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
