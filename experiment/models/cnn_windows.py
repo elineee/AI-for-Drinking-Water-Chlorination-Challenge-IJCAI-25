@@ -325,7 +325,7 @@ class CNNWindowsModel(AnomalyModel):
             
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
             
-            y_pred = detect_change_point(y_pred, count_required=10)
+            y_pred = detect_change_point(y_pred, count_required=8)
             
             print(len(y_true))
             print(len(y_pred))
