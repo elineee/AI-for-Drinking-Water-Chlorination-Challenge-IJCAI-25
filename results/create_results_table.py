@@ -27,16 +27,17 @@ def create_results_summary_table(csv_file):
             f1_score_avg = model_df["f1_score"].mean()
             delay = model_df[(model_df["false_alarm"] == 0) & (model_df["event_missed"] == 0)]["delay"]
             delay_avg = delay.mean()
-            total_false_alarms = model_df["false_alarm"].sum()
-            total_events_missed = model_df["event_missed"].sum()
+            total = len(model_df)
+            false_alarm_rate = model_df["false_alarm"].sum() / total
+            event_missed_rate = model_df["event_missed"].sum() / total
 
             rows.append({
                 "Model": model,
                 "Recall": recall_avg,
                 "F1 Score": f1_score_avg,
                 "Delay": delay_avg,
-                "False Alarms": total_false_alarms,
-                "Events Missed": total_events_missed
+                "False Alarms": false_alarm_rate,
+                "Events Missed": event_missed_rate
             })
 
         tables[network] = pd.DataFrame(rows)
