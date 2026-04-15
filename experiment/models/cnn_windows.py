@@ -111,7 +111,7 @@ class CNNWindowsModel(AnomalyModel):
         
         node = self.config.nodes[0]
         if os.path.exists(f"cnn_{node}.pth"):
-            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=device, weights_only=True))
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", weights_only=True))
         else:
             train_loss = []
             val_loss = []
