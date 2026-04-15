@@ -263,7 +263,7 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     
     for i in range(window_size, len(feature)):
         if "arsenic" in contaminant_column.lower():
-             if feature[i] > 0.01: 
+             if feature[i] > 0: 
                 labels.append(-1)
              else:
                 labels.append(1)
@@ -339,7 +339,7 @@ def get_labels(label_array, window=3, anomaly=True):
     for i in range(len(label_array)):
         if anomaly : 
             # à remettre à 0.01 pour l'arsenic, à laisser à 0 pour les pathogènes
-            y[i] = 1 if label_array[i] > 0.01 else 0
+            y[i] = 1 if label_array[i] > 0 else 0
         else :
             if i == 0 and label_array[i] > 0:
                 start = 0
