@@ -9,4 +9,4 @@ class LOFAlarmModel(LOFModel):
         return calculate_labels_alarm(df, contaminant, window_size)
 
     def _post_predictions(self, y_pred):
-        return detect_change_point(y_pred)
+        return detect_change_point(y_pred, count_required=20)

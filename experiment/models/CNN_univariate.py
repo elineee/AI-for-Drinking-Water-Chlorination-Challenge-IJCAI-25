@@ -14,12 +14,6 @@ class CNNUnivariateModel(CNNModel):
     
 
     def get_results(self):
-        
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        if torch.cuda.is_available():
-            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
-        else:
-            print("GPU not available, using CPU")
             
             
         results = {}
@@ -46,16 +40,16 @@ class CNNUnivariateModel(CNNModel):
 
             # turn data and y into tensors
             data_train = np.array(data_train) # shape of (4706, 48)
-            data_train = torch.tensor(data_train, dtype=torch.float32, device=device) 
+            data_train = torch.tensor(data_train, dtype=torch.float32) 
             data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
             
             data_test = np.array(features_test)  # shape of (2401, 48)
-            data_test = torch.tensor(data_test, dtype=torch.float32, device=device) 
+            data_test = torch.tensor(data_test, dtype=torch.float32) 
             data_test = data_test.unsqueeze(2) # shape of (4706, 48, 1)
 
             y_train = np.array(y_train) # shape of (4706, 48)
-            y_train = torch.tensor(y_train, dtype=torch.float32, device=device)
-            y_test = torch.tensor(labels_test, dtype=torch.float32, device=device)
+            y_train = torch.tensor(y_train, dtype=torch.float32)
+            y_test = torch.tensor(labels_test, dtype=torch.float32)
 
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)

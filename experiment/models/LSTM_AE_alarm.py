@@ -17,7 +17,7 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
         use_cusum = self.config.model_params.get("use_cusum", False)
         if use_cusum:
             return y_pred 
-        return detect_change_point(y_pred)
+        return detect_change_point(y_pred, count_required=20)
     
     def run_model(self, train_batches, test_batches, epochs):
         """
@@ -134,7 +134,7 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
             anomalies, _ = cusum_detection(mean_scores, train_mean, train_std, k=0.9, threshold=threshold)
         else:
             print('ici')
-            threshold = train_mean + 0.25 * train_std
+            threshold = train_mean + 5 * train_std
             anomalies = np.array([-1 if element > threshold else 1 for element in mean_scores_per_timestep])
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies

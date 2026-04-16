@@ -17,6 +17,6 @@ class SVRAlarmModel(SVRModel):
     
     def _post_predictions(self, y_pred):
         if self.config.contaminants[0] == ContaminationType.ARSENIC:
-            return detect_change_point(y_pred, 20)
+            return detect_change_point(y_pred, count_required=5)
         else:
             return detect_change_point(y_pred, 5)
