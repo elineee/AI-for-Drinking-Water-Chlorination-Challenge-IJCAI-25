@@ -1,7 +1,5 @@
 
 import os
-
-from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score, recall_score
@@ -70,6 +68,14 @@ class CNN(nn.Module):
 
 class CNNWindowsModel(AnomalyModel):
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print("Using GPU:", torch.cuda.get_device_name(0))
+        else:
+            print("GPU not available, using CPU.")
+                
     def _compute_weight(self, labels):
         """ 
         Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
@@ -88,7 +94,7 @@ class CNNWindowsModel(AnomalyModel):
         
         print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
     
-        weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
+        weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32).to(self.device)
 
         return weights
     
@@ -104,14 +110,14 @@ class CNNWindowsModel(AnomalyModel):
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = CNN(input_size=2, sequence_length=self.config.window_size + 3)
+        model = CNN(input_size=2, sequence_length=self.config.window_size + 3).to(self.device)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
         node = self.config.nodes[0]
         if os.path.exists(f"cnn_{node}.pth"):
-            model.load_state_dict(torch.load(f"cnn_{node}.pth", weights_only=True))
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
         else:
             train_loss = []
             val_loss = []
@@ -124,7 +130,9 @@ class CNNWindowsModel(AnomalyModel):
                 model.train()
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
-    
+                    windows = windows.to(self.device)
+                    labels = labels.to(self.device)
+
                     outputs = model(windows) # outputs shape (batch, 1, 48)
                     outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
                     
@@ -147,7 +155,9 @@ class CNNWindowsModel(AnomalyModel):
                 with torch.no_grad():
                     for _, data in enumerate(val_dataloader):
                         windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
-        
+                        windows = windows.to(self.device)
+                        labels = labels.to(self.device)
+
                         outputs = model(windows) # outputs shape (batch, 1, 48)
                         outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
                         
@@ -188,7 +198,9 @@ class CNNWindowsModel(AnomalyModel):
         with torch.no_grad():
             for _, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
- 
+                windows = windows.to(self.device)
+                labels = labels.to(self.device)
+
                 outputs = model(windows) # outputs shape (batch, 1, 48)
                 outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
                 
@@ -197,9 +209,9 @@ class CNNWindowsModel(AnomalyModel):
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
 
-                labels = labels.flatten()
+                labels = labels.flatten().detach().cpu().numpy()
                 n_total += len(labels)
-                preds = preds.flatten()
+                preds = preds.flatten().detach().cpu().numpy()
                 final_preds.append(preds)
                 
                 n_corrects += (preds == labels).sum().item()
@@ -214,7 +226,7 @@ class CNNWindowsModel(AnomalyModel):
             
             y_pred = []
             for element in final_preds: 
-                if element == 1: 
+                if element.detach().cpu().item() == 1: 
                     y_pred.append(-1)
                 else:
                     y_pred.append(1)
