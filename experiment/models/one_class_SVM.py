@@ -43,19 +43,14 @@ class OneClassSVMModel(AnomalyModel):
 
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
 
-            # Larger gamma if more complex patterns of anomalies
+
             gamma = self.config.model_params.get("gamma", "scale")
-            # Smaller nu if scenarios with a lot of anomalies
+
             nu = self.config.model_params.get("nu", 0.1)
     
             kernel = self.config.model_params.get("kernel", "rbf")
             
-            # Add degree parameter if the kernel is polynomial
-            if kernel == "poly":
-                degree = self.config.model_params.get("degree", 4)
-                ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu, degree=degree)
-            else: 
-                ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu)
+            ocsvm = svm.OneClassSVM(kernel=kernel, gamma=gamma, nu=nu)
 
             ocsvm.fit(X_train)
 
