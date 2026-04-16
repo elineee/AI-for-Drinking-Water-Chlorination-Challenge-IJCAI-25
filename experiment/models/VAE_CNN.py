@@ -169,10 +169,11 @@ class VAECNNModel(CNNModel):
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
                 preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
 
-                labels = labels.flatten()
+
+                labels = labels.flatten().detach().cpu().numpy()
+                preds = preds.flatten().detach().cpu().numpy()
                 n_total += len(labels)
-                preds = preds.flatten()
-                
+
                 j = 0
                 for element in preds:
                     results_per_time_step[i+j][0] += int(element) # add the predicted label (0 or 1) to the first element of the list corresponding to the time step i+j
