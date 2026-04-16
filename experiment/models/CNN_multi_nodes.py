@@ -1,9 +1,5 @@
-
-
 import os
-
 from matplotlib import pyplot as plt
-
 import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score, recall_score
@@ -13,7 +9,6 @@ import torch.nn as nn
 from torch.utils.data import  TensorDataset, DataLoader
 from data_transformation import CONTAMINANT_ID, get_labels
 from utils import detect_change_point
-from experiment_config import ContaminationType, ExperimentConfig
 from models.model import AnomalyModel
 
 
@@ -77,6 +72,14 @@ class CNNMultiNodesModel(AnomalyModel):
     """ Class for CNN multivariate model. It takes into account the raw signal and the signal given by another model (by default, model).
     Note: In the CNN configuration, the last file of contaminated_files si the file for testing."""
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
+
     def _get_input_size(self):
         """
         Returns the number of input channels for the CNN model.
@@ -104,9 +107,9 @@ class CNNMultiNodesModel(AnomalyModel):
         print(f"Number of normal samples: {n_normal}, Number of anomalous samples: {n_anomalous}")
         
         if n_anomalous != 0: 
-            weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32)
+            weights = torch.tensor([n_normal / n_anomalous], dtype=torch.float32, device=self.device)
         else: 
-            weights = torch.tensor([n_normal / 1], dtype=torch.float32) 
+            weights = torch.tensor([n_normal / 1], dtype=torch.float32, device=self.device) 
 
         return weights
     
@@ -127,13 +130,13 @@ class CNNMultiNodesModel(AnomalyModel):
         Returns:
         - results_per_node : a dictionary mapping each node to its corresponding predicted labels (numpy array), where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = CNN(input_size=self._get_input_size())
+        model = CNN(input_size=self._get_input_size()).to(self.device)
 
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
         if os.path.exists("cnn_multi_nodes.pth"):
-            model.load_state_dict(torch.load("cnn_multi_nodes.pth"))
+            model.load_state_dict(torch.load("cnn_multi_nodes.pth", map_location=self.device, weights_only=True))
             print("Model loaded from file.")
         else: 
             train_loss = []
@@ -147,7 +150,9 @@ class CNNMultiNodesModel(AnomalyModel):
                 model.train()
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
-    
+                    windows = windows.to(self.device)
+                    labels = labels.to(self.device)
+
                     outputs = model(windows) # outputs shape (batch, N_nodes, window_size)
                     outputs = outputs.transpose(1, 2) # -> (batch, window_size, N_nodes)
                     
@@ -169,7 +174,9 @@ class CNNMultiNodesModel(AnomalyModel):
                 with torch.no_grad():
                     for _, data in enumerate(val_dataloader):
                         windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
-        
+                        windows = windows.to(self.device)
+                        labels = labels.to(self.device)
+
                         outputs = model(windows) # outputs shape (batch, N_nodes, window_size)
                         outputs = outputs.transpose(1, 2) # -> (batch, window_size, N_nodes)
                         loss = criterion(outputs, labels)
@@ -213,7 +220,9 @@ class CNNMultiNodesModel(AnomalyModel):
         with torch.no_grad():
             for i, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
- 
+                windows = windows.to(self.device)
+                labels = labels.to(self.device)
+
                 outputs = model(windows) 
                 outputs = outputs.transpose(1, 2)
                 
@@ -221,8 +230,8 @@ class CNNMultiNodesModel(AnomalyModel):
 
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
-                preds_np = preds.squeeze(0).numpy() # shape (window_size, number of nodes)
-                labels_np = labels.squeeze(0).numpy()
+                preds_np = preds.squeeze(0).cpu().numpy() # shape (window_size, number of nodes)
+                labels_np = labels.squeeze(0).cpu().numpy()
                 
                 for j in range(preds_np.shape[0]):         # j = position dans la fenêtre
                     timestep = i + j

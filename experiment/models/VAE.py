@@ -128,7 +128,7 @@ class VAEModel(AutoencoderModel):
     
         # If training has already be done 
         if os.path.exists(FILE_PTH):
-            model.load_state_dict(torch.load(FILE_PTH, weights_only=True))
+            model.load_state_dict(torch.load(FILE_PTH, map_location=device, weights_only=True))
 
         else:
             # Training 
@@ -157,7 +157,7 @@ class VAEModel(AutoencoderModel):
                 if (epoch + 1) % 50 == 0:
                     print(f" Epoch {epoch+1}, Loss: {np.mean(epoch_losses):.4f}, MSE: {np.mean(epoch_mse):.4f}, KLD: {np.mean(epoch_kld):.4f}")
 
-                torch.save(model.state_dict(), FILE_PTH)
+            torch.save(model.state_dict(), FILE_PTH)
 
 
         # Evaluation 
@@ -189,7 +189,7 @@ class VAEModel(AutoencoderModel):
 
             test_error = torch.cat(test_errors)
             test_reconstruction  = torch.cat(test_reconstructions)
-            anomalies = test_error > threshold*1.5
+            anomalies = test_error > threshold
 
             print(f"threshold: {threshold:.4f}")
             print(f"train_error mean: {train_error.mean():.4f}, std: {train_error.std():.4f}")

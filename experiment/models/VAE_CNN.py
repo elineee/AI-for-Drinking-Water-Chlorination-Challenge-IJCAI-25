@@ -38,6 +38,14 @@ class VAECNNModel(CNNModel):
     CNN training uses all contaminated files, excepting the last one, which is used for testing.
     """
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs) 
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        if torch.cuda.is_available():
+            print(f"Using GPU: {torch.cuda.get_device_name(0)}")
+        else:
+            print("GPU not available, using CPU")
+
     def _call_vae_model(self, node):
         """
         Calls the VAE model used to generate embeddings used for the CNN.
@@ -80,7 +88,7 @@ class VAECNNModel(CNNModel):
         Returns:
         - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = VAECNN(latent_dim=32, hidden_dim=128, window_size=self.config.window_size)
+        model = VAECNN(latent_dim=32, hidden_dim=128, window_size=self.config.window_size).to(self.device)
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
         
@@ -96,7 +104,9 @@ class VAECNNModel(CNNModel):
             model.train()
             for _, data in enumerate(train_dataloader):
                 windows, labels = data # windows shape (batch, latent_dim), labels shape (batch, window_size)
- 
+                windows = windows.to(self.device)
+                labels = labels.to(self.device)
+
                 outputs = model(windows) # outputs shape (batch, window_size)
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
                 preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
@@ -116,6 +126,9 @@ class VAECNNModel(CNNModel):
             with torch.no_grad():
                 for _, data in enumerate(val_dataloader):
                     windows, labels = data # windows shape (batch, latent_dim), labels shape (batch, window_size)
+                    windows = windows.to(self.device)
+                    labels = labels.to(self.device)
+
                     outputs = model(windows) # outputs shape (batch, window_size)
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
                     preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
@@ -150,6 +163,8 @@ class VAECNNModel(CNNModel):
             i = 0
             for _, data in enumerate(test_dataloader):
                 windows, labels = data # windows shape (batch, latent_dim), labels shape (batch, window_size) 
+                windows = windows.to(self.device)
+                labels = labels.to(self.device)
                 outputs = model(windows) # outputs shape (batch, window_size)              
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
                 preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
@@ -208,12 +223,12 @@ class VAECNNModel(CNNModel):
             # Train data 
             for df in contaminated_dfs[:-1]:
                 _ , z, labels = self._prepare_data(df, clean_dfs, node)
-                data_train.extend(z.numpy())
+                data_train.extend(z.cpu().numpy())
                 y_train.extend(labels)
             
             # Test data (on the last contaminated df)
             prepared_df_test, z, labels_test = self._prepare_data(contaminated_dfs[-1], clean_dfs, node)
-            data_test = z.numpy() 
+            data_test = z.cpu().numpy() 
             y_true = calculate_labels_alarm(prepared_df_test, self.config.contaminants[0].value, 0)
 
             # Turn data and y into tensors
@@ -271,11 +286,13 @@ class VAECNNModel(CNNModel):
         # Generate z with the VAE encoder 
         sample_batch = next(iter(train_batches))
         input_dim = sample_batch.shape[1]
-        encoder = VAE(input_dim, hidden_dim=hidden_dim, latent_dim=latent_dim)
-        encoder.load_state_dict(torch.load(f"VAE_model_{node}.pth"))
+        encoder = VAE(input_dim, hidden_dim=hidden_dim, latent_dim=latent_dim).to(self.device)
+        encoder.load_state_dict(torch.load(f"VAE_model_{node}.pth", map_location=self.device, weights_only=True))
         encoder.eval()  
         with torch.no_grad(): 
+            X_test = X_test.to(self.device)
             z = encoder.encode(X_test)
+            z = z.cpu()
         
         # Generate labels 
         prepared_df = remove_first_x_days(contaminated_df, 3) 
