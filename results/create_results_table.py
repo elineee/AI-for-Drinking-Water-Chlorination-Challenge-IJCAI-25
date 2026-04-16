@@ -32,7 +32,7 @@ def create_results_summary_table(csv_file):
             event_missed_rate = model_df["event_missed"].sum() / total
 
             rows.append({
-                "Model": model,
+                "Model": model.replace("_", " "),
                 "Recall": recall_avg,
                 "F1 Score": f1_score_avg,
                 "Delay": delay_avg,
