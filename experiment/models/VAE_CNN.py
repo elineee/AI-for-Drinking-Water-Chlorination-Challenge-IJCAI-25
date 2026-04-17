@@ -72,7 +72,7 @@ class VAECNNModel(CNNModel):
         return vae_model
 
 
-    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
+    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=50):
         """ 
         Trains the CNN model and evaluates it on the test set.
         The model predicts a label for each point in each window. 
@@ -252,7 +252,7 @@ class VAECNNModel(CNNModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=50)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200)
             y_pred = detect_change_point(y_pred, count_required=8)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
@@ -282,7 +282,7 @@ class VAECNNModel(CNNModel):
         X_train, X_test, _ = vae_encoder._prepare_data(clean_dfs, [contaminated_df])
         train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
         test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
-        vae_encoder.run_model(train_batches, test_batches, epochs=300, hidden_dim= hidden_dim, latent_dim= latent_dim, node = node)
+        vae_encoder.run_model(train_batches, test_batches, epochs=1000, hidden_dim= hidden_dim, latent_dim= latent_dim, node = node)
             
         # Generate z with the VAE encoder 
         sample_batch = next(iter(train_batches))
