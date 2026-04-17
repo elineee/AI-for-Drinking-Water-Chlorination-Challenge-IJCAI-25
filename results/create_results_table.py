@@ -33,11 +33,11 @@ def create_results_summary_table(csv_file):
 
             rows.append({
                 "Model": model.replace("_", " "),
-                "Recall": recall_avg,
                 "F1 Score": f1_score_avg,
+                "Recall": recall_avg,
                 "Delay": delay_avg,
-                "False Alarms": false_alarm_rate,
-                "Events Missed": event_missed_rate
+                "\% False Alarms": f"{false_alarm_rate * 100:.1f}",
+                "\% Event Missed": f"{event_missed_rate * 100:.1f}",
             })
 
         table = pd.DataFrame(rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
@@ -49,7 +49,9 @@ def create_results_summary_table(csv_file):
                 float_format="{:.3f}".format,
                 na_rep="-",
                 caption=f"Results for network {network}",
-                label=f"tab:results-{network}"
+                label=f"tab:results-{network}",
+                column_format="l" + "c" * (len(table.columns) - 1) 
+
             )
 
         with open(f"results/table_{network}.tex", "w") as f:
