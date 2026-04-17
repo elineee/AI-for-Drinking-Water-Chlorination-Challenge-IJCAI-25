@@ -1,0 +1,23 @@
+\begin{table}
+\caption{Results for network Hanoi}
+\label{tab:results-Hanoi}
+\begin{tabular}{lrrrrr}
+\toprule
+Model & Recall & F1 Score & Delay & False Alarms & Events Missed \\
+\midrule
+CNN multi nodes & 0.994 & 0.997 & 3.130 & 0.042 & 0.000 \\
+CNN VAE & 0.993 & 0.996 & 3.708 & 0.000 & 0.000 \\
+CNN SVR & 0.993 & 0.996 & 3.833 & 0.000 & 0.000 \\
+VAE & 0.991 & 0.996 & 4.458 & 0.000 & 0.000 \\
+CNN univariate & 0.991 & 0.995 & 3.917 & 0.000 & 0.000 \\
+SVR & 0.989 & 0.995 & 5.750 & 0.000 & 0.000 \\
+AE & 0.982 & 0.991 & 9.500 & 0.000 & 0.000 \\
+OneClassSVM & 0.973 & 0.986 & 14.167 & 0.000 & 0.000 \\
+LSTM AE & 0.968 & 0.982 & 18.409 & 0.083 & 0.000 \\
+IsolationForest & 0.968 & 0.981 & 19.136 & 0.083 & 0.000 \\
+CNN Windows SVR & 0.958 & 0.978 & 21.833 & 0.000 & 0.000 \\
+VAE CNN & 0.945 & 0.971 & 26.750 & 0.000 & 0.000 \\
+LOF & 0.973 & 0.957 & 18.889 & 0.250 & 0.000 \\
+\bottomrule
+\end{tabular}
+\end{table}

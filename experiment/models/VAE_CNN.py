@@ -72,7 +72,7 @@ class VAECNNModel(CNNModel):
         return vae_model
 
 
-    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=50):
+    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs):
         """ 
         Trains the CNN model and evaluates it on the test set.
         The model predicts a label for each point in each window. 

@@ -40,7 +40,8 @@ def create_results_summary_table(csv_file):
                 "Events Missed": event_missed_rate
             })
 
-        tables[network] = pd.DataFrame(rows)
+        table = pd.DataFrame(rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
+        tables[network] = table
 
         for network, table in tables.items():
             latex_str = table.to_latex(
