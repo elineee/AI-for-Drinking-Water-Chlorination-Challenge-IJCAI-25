@@ -138,63 +138,65 @@ if __name__ == "__main__":
     #     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
     #     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
     
-    # for node in nodes: 
-    #     print(f"Running experiments for node {node}...")
-        
-    #     CLEAN_FILES = [".\\data\\data_hanoi\\scada_data_clean_1.csv", ".\\data\\data_hanoi\\scada_data_clean_2.csv"]
-        
-    #     CONTAMINATED_FILES1 = [".\\data\\data_hanoi\\scada_data_conta_3_test_1.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_hanoi\\scada_data_conta_3_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_hanoi\\scada_data_conta_3_test_3.csv"]
 
-    #     configs = [
 
-    #     ExperimentConfig(
-    #                     config_name="IsoForest1",
-    #                     contaminated_files=CONTAMINATED_FILES1,
-    #                     example_files=CLEAN_FILES,
-    #                     nodes=[node],
-    #                     window_size=20, 
-    #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
-    #                     model_params={}
-    #     ), 
+    for node in nodes: 
+        print(f"Running experiments for node {node}...")
         
-    #     ExperimentConfig(
-    #                     config_name="IsoForest2",
-    #                     contaminated_files=CONTAMINATED_FILES2,
-    #                     example_files=CLEAN_FILES,
-    #                     nodes=[node],
-    #                     window_size=20, 
-    #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
-    #                     model_params={}
-    #     ), 
+        CLEAN_FILES = [".\\data\\data_hanoi\\scada_data_clean_1.csv", ".\\data\\data_hanoi\\scada_data_clean_2.csv"]
         
-    #     ExperimentConfig(
-    #                     config_name="IsoForest3",
-    #                     contaminated_files=CONTAMINATED_FILES3,
-    #                     example_files=CLEAN_FILES,
-    #                     nodes=[node],
-    #                     window_size=20, 
-    #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
-    #                     model_params={}
-    #     )
+        CONTAMINATED_FILES1 = [".\\data\\data_hanoi\\scada_data_conta_3_test_1.csv"]
+        CONTAMINATED_FILES2 = [".\\data\\data_hanoi\\scada_data_conta_3_test_2.csv"]
+        CONTAMINATED_FILES3 = [".\\data\\data_hanoi\\scada_data_conta_3_test_3.csv"]
+
+        configs = [
+
+        ExperimentConfig(
+                        config_name="IsoForest1",
+                        contaminated_files=CONTAMINATED_FILES1,
+                        example_files=CLEAN_FILES,
+                        nodes=[node],
+                        window_size=50, 
+                        model_name=ModelName.ISOLATION_FOREST_ALARM,
+                        model_params={}
+        ), 
+        
+        ExperimentConfig(
+                        config_name="IsoForest2",
+                        contaminated_files=CONTAMINATED_FILES2,
+                        example_files=CLEAN_FILES,
+                        nodes=[node],
+                        window_size=50, 
+                        model_name=ModelName.ISOLATION_FOREST_ALARM,
+                        model_params={}
+        ), 
+        
+        ExperimentConfig(
+                        config_name="IsoForest3",
+                        contaminated_files=CONTAMINATED_FILES3,
+                        example_files=CLEAN_FILES,
+                        nodes=[node],
+                        window_size=50, 
+                        model_name=ModelName.ISOLATION_FOREST_ALARM,
+                        model_params={}
+        )
     
         
-    #     ]
-    #     all_results = []
+        ]
+        all_results = []
 
 
-    #     for cfg in configs:
-    #         runner = ExperimentRunner(cfg)
-    #         res = runner.run()
-    #         all_results.append(res)
-    #         # print(all_results)
+        for cfg in configs:
+            runner = ExperimentRunner(cfg)
+            res = runner.run()
+            all_results.append(res)
+            # print(all_results)
 
-    #     pickle.dump(all_results, open(f"all_results_{node}_ISO_FOREST_ALARM.pkl", "wb"))
+        pickle.dump(all_results, open(f"all_results_{node}_ISO_FOREST_ALARM.pkl", "wb"))
 
-    #     evaluation = Evaluation()
-    #     evaluation_results = evaluation.evaluate(f"all_results_{node}_ISO_FOREST_ALARM.pkl")
-    #     print(evaluation_results)
+        evaluation = Evaluation()
+        evaluation_results = evaluation.evaluate(f"all_results_{node}_ISO_FOREST_ALARM.pkl")
+        print(evaluation_results)
 
     #     print("Evaluation results:")
 
@@ -801,61 +803,61 @@ if __name__ == "__main__":
     
 
 
-    for node in nodes: 
-        print(f"Running experiments for node {node}...")
+    # for node in nodes: 
+    #     print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = ["./data/data_hanoi/scada_data_clean_1.csv", "./data/data_hanoi/scada_data_clean_2.csv"]
+    #     CLEAN_FILES = ["./data/data_hanoi/scada_data_clean_1.csv", "./data/data_hanoi/scada_data_clean_2.csv"]
         
-        CONTAMINATED_FILES1 = ["./data/data_hanoi/scada_data_clean_1.csv", "./data/data_hanoi/scada_data_clean_2.csv", "./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_train_2.csv", "./data/data_hanoi/scada_data_conta_3_train_3.csv", "./data/data_hanoi/scada_data_conta_3_train_4.csv", "./data/data_hanoi/scada_data_conta_3_train_5.csv", "./data/data_hanoi/scada_data_conta_3_train_6.csv", "./data/data_hanoi/scada_data_conta_3_test_1.csv"]
-        CONTAMINATED_FILES2 = ["./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_hanoi/scada_data_clean_1.csv", "./data/data_hanoi/scada_data_clean_2.csv", "./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_train_2.csv", "./data/data_hanoi/scada_data_conta_3_train_3.csv", "./data/data_hanoi/scada_data_conta_3_train_4.csv", "./data/data_hanoi/scada_data_conta_3_train_5.csv", "./data/data_hanoi/scada_data_conta_3_train_6.csv", "./data/data_hanoi/scada_data_conta_3_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_hanoi/scada_data_conta_3_train_1.csv", "./data/data_hanoi/scada_data_conta_3_test_3.csv"]
         
-        configs = [
+    #     configs = [
 
-        ExperimentConfig(
-                        config_name="Embedding_CNN",
-                        contaminated_files=CONTAMINATED_FILES1,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CNN,
-                        model_params={}
-        ), 
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN",
+    #                     contaminated_files=CONTAMINATED_FILES1,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={}
+    #     ), 
         
-        ExperimentConfig(
-                        config_name="Embedding_CNN2",
-                        contaminated_files=CONTAMINATED_FILES2,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CNN,
-                        model_params={}
-        ), 
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN2",
+    #                     contaminated_files=CONTAMINATED_FILES2,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={}
+    #     ), 
         
-        ExperimentConfig(
-                        config_name="Embedding_CNN3",
-                        contaminated_files=CONTAMINATED_FILES3,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CNN,
-                        model_params={}
-        )
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN3",
+    #                     contaminated_files=CONTAMINATED_FILES3,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={}
+    #     )
         
-        ]
-        all_results = []
+    #     ]
+    #     all_results = []
 
 
-        for cfg in configs:
-            runner = ExperimentRunner(cfg)
-            res = runner.run()
-            all_results.append(res)
-            # print(all_results)
+    #     for cfg in configs:
+    #         runner = ExperimentRunner(cfg)
+    #         res = runner.run()
+    #         all_results.append(res)
+    #         # print(all_results)
 
-        pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
+    #     pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
 
-        evaluation = Evaluation()
-        evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
-        print(evaluation_results)
+    #     evaluation = Evaluation()
+    #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
+    #     print(evaluation_results)
 
-        # print("Evaluation results:")
+    #     # print("Evaluation results:")

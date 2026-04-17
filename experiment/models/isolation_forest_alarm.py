@@ -9,5 +9,5 @@ class IsolationForestAlarmModel(IsolationForestModel):
         return calculate_labels_alarm(df, contaminant, window_size)
 
     def _post_predictions(self, y_pred):
-        count_required = self.config.model_params.get("count_required", 20)
+        count_required = self.config.model_params.get("count_required", 15)
         return detect_change_point(y_pred, count_required)
