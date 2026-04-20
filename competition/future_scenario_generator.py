@@ -6,6 +6,7 @@ import random
 import matplotlib.pyplot as plt
 import math
 import numpy as np
+import os
 from epyt_flow.simulation import ScenarioSimulator, EpanetConstants, ScadaData
 from epyt_flow.utils import to_seconds, plot_timeseries_data
 from nrw_model import NRWClass
@@ -87,9 +88,9 @@ class ScenarioGenerator():
     TODO: Docstring
     """
     def __init__(self, f_inp_in: str, f_msx_in: str,
-                 temperature_factor: float,
-                 ageing_factor: float,
-                 urban_growth_factor: float):
+                 temperature_factor: float, # can change,  bteween 0 and 1
+                 ageing_factor: float, # can chan ge,  bteween 0 and 1
+                 urban_growth_factor: float): # can change,  bteween 0 and 1
         self._f_inp_in = f_inp_in
         self._f_msx_in = f_msx_in
         self._s_params = generate_scenario_parameters(temperature_factor, ageing_factor, urban_growth_factor)
@@ -143,7 +144,7 @@ class ScenarioGenerator():
         for junc_id in scenario.epanet_api.get_all_junctions_id():
             node_idx = scenario.epanet_api.get_node_idx(junc_id)
             base_demand = scenario.epanet_api.get_node_base_demand(node_idx) + \
-                random.choice(nrw_dmd_per_junc)
+                np.random.choice(nrw_dmd_per_junc)
             scenario.epanet_api.setbasedemand(node_idx, 1, base_demand)
 
     def _create_random_contamination_event(self, node_id: str, scenario):
@@ -257,21 +258,31 @@ class ScenarioGenerator():
 
 
 if __name__ == "__main__":
-    f_inp_in = "CY-DBP_competition_stream_competition_6days_4.inp"  # 6 days long scenario
-    f_msx_in = "CY-DBP_competition_stream_competition_6days_4.msx"
-    #f_inp_in = "CY-DBP_competition_stream_competition_365days.inp"   # 365 days long scenario
-    #f_msx_in = "CY-DBP_competition_stream_competition_365days.msx"
+    # Get the directory of this script to resolve file paths correctly
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    
+    f_inp_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_6days_0.inp")  # 6 days long scenario
+    f_msx_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_6days_0.msx")
+    #f_inp_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_365days.inp")   # 365 days long scenario
+    #f_msx_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_365days.msx")
 
+    # Verify that the files exist before running
+    if not os.path.exists(f_msx_in):
+        raise FileNotFoundError(f"MSX file not found: {f_msx_in}")
+    if not os.path.exists(f_inp_in):
+        raise FileNotFoundError(f"INP file not found: {f_inp_in}")
+
+    # use that for robustness and create extreme scenario 
     gen = ScenarioGenerator(f_inp_in, f_msx_in,
                             temperature_factor=0.001, ageing_factor=0.005,
-                            urban_growth_factor=0.03)
+                            urban_growth_factor=0.03) # global warming, network not maintained (scenario for robustness)
 
     scada_data_clean, scada_data_contam = gen.run_simulation()
     data_clean = gen.sim_results_to_numpy(scada_data_clean)
     data_contam = gen.sim_results_to_numpy(scada_data_contam)
 
     contam_label, cl2_conc, contam_idx = gen.get_features(data_contam)
-    _, cl2_conc_clean, _ = gen.get_features(data_clean, contam_idx)
+    _, cl2_conc_clean, _ = gen.get_features(data_clean, contam_idx) # get us the label, the chlorine concentration and index that tells where the contamination happened
 
     # TODO
     print(contam_idx, cl2_conc.shape, cl2_conc_clean.shape)
