@@ -23,7 +23,7 @@ class CNNVAEModel(CNNModel):
                     contaminated_files=self.config.contaminated_files,
                     example_files=self.config.example_files,
                     nodes=[node],
-                    window_size=300,
+                    window_size=100,
                     model_name="VAE",
                     model_params={},
                 )
