@@ -437,11 +437,11 @@ class CNNMultiNodesModel(AnomalyModel):
             label = get_labels(label)
     
         if "dist" in node:
-            time_serie = time_serie[288:] # remove first 3 days 
-            label = label[288:]
+            time_serie = time_serie[288*3:] # remove first 3 days 
+            label = label[288*3:]
         else: 
-            time_serie = time_serie[48:] # remove first 3 days 
-            label = label[48:]
+            time_serie = time_serie[48*3:] # remove first 3 days 
+            label = label[48*3:]
         
         features = []
         labels = []
