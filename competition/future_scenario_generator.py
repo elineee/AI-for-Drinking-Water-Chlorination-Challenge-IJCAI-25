@@ -121,7 +121,7 @@ class ScenarioGenerator():
 
             # Adjust peak demands (i.e., 75 percentile)
             threshold = np.percentile(pat_values, 75)
-            for i in range(len(pat_values)):
+            for i in range(len(pat_values)): 
                 if pat_values[i] >= threshold:
                     pat_values[i] *= dmd_pat_factor
 

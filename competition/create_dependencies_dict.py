@@ -11,6 +11,10 @@ from epyt_flow.simulation import ScenarioSimulator, EpanetConstants
 file_path = os.path.join(sys.path[0], "scada_data_clean.csv")
 df_clean = pd.read_csv(file_path)
 
+files = []
+for i in range(10):
+    files.append((f"CY-DBP_competition_stream_competition_6days_{i}.inp", f"CY-DBP_competition_stream_competition_6days_{i}.msx"))
+
 
 f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.inp")
 f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.msx")
@@ -106,79 +110,84 @@ def get_interesting_nodes(df, nodes):
 #                     significant_change_nodes.append(node)
 #         return significant_change_nodes
 
-for node_id in ALL_NODES:
-    f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.inp")
-    f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.msx")
-    #f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.inp")   
-    #f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.msx")
+i = 0
+for f_inp, f_msx in files:
+    f_inp_in = os.path.join(sys.path[0], f_inp)
+    f_msx_in = os.path.join(sys.path[0], f_msx)
+    for node_id in ALL_NODES:
+        # f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.inp")
+        # f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.msx")
+        #f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.inp")   
+        #f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.msx")
 
-    ########################################################################
-    # Parameters of the contamination events
-    duration_interval = (60, 480)    # Duration interval of the contamination event in minutes 
-    n_contamination_events = 1  # Number of contamination events to generate
-    time_window = (2, 5)        # Event can start between day 3 and day 6
-    #n_contamination_events = 5  # Alternative: multiple events over the year
-    #time_window = (5, 350)      # Event can start between day 6 and day 350
-    ########################################################################
+        ########################################################################
+        # Parameters of the contamination events
+        duration_interval = (60, 480)    # Duration interval of the contamination event in minutes 
+        n_contamination_events = 1  # Number of contamination events to generate
+        time_window = (2, 5)        # Event can start between day 3 and day 6
+        #n_contamination_events = 5  # Alternative: multiple events over the year
+        #time_window = (5, 350)      # Event can start between day 6 and day 350
+        ########################################################################
 
-    # Create simulation scenario
-    with ScenarioSimulator(f_inp_in=f_inp_in, f_msx_in=f_msx_in) as scenario:
-        # Setup time intervals
-        hyd_time_step = scenario.get_hydraulic_time_step()  # Usually 5min time steps (so 5*60 seconds )
-        steps_per_day = (24 * 60 * 60) / hyd_time_step
-        time_window = (time_window[0] * steps_per_day, time_window[1] * steps_per_day) 
-        duration_interval = ((duration_interval[0] * 60) / hyd_time_step,
-                                (duration_interval[1] * 60) / hyd_time_step)
-        n_time_steps = int(scenario.get_simulation_duration() / hyd_time_step)
+        # Create simulation scenario
+        with ScenarioSimulator(f_inp_in=f_inp_in, f_msx_in=f_msx_in) as scenario:
+            # Setup time intervals
+            hyd_time_step = scenario.get_hydraulic_time_step()  # Usually 5min time steps (so 5*60 seconds )
+            steps_per_day = (24 * 60 * 60) / hyd_time_step
+            time_window = (time_window[0] * steps_per_day, time_window[1] * steps_per_day) 
+            duration_interval = ((duration_interval[0] * 60) / hyd_time_step,
+                                    (duration_interval[1] * 60) / hyd_time_step)
+            n_time_steps = int(scenario.get_simulation_duration() / hyd_time_step)
 
-        # Add random contamination events
-        all_junctions = scenario.get_topology().get_all_junctions() # get all nodes in the network
-        contamination_patterns = [] 
-        for _ in range(n_contamination_events):
-            # node_id = random.choice(all_junctions) # select a random node
+            # Add random contamination events
+            all_junctions = scenario.get_topology().get_all_junctions() # get all nodes in the network
+            contamination_patterns = [] 
+            for _ in range(n_contamination_events):
+                # node_id = random.choice(all_junctions) # select a random node
 
-            contaminants_profiles = create_random_contamination_event(time_window, duration_interval,
-                                                                        n_time_steps) # get contamination profiles for each species
-            for species_id, pattern in contaminants_profiles:
-                contamination_patterns.append(pattern) # pattern is the list of values at each time step for each species
-                scenario.add_species_injection_source(species_id, node_id, pattern, 
-                                                        EpanetConstants.EN_MASS) # inject contamination into the node following the profile
+                contaminants_profiles = create_random_contamination_event(time_window, duration_interval,
+                                                                            n_time_steps) # get contamination profiles for each species
+                for species_id, pattern in contaminants_profiles:
+                    contamination_patterns.append(pattern) # pattern is the list of values at each time step for each species
+                    scenario.add_species_injection_source(species_id, node_id, pattern, 
+                                                            EpanetConstants.EN_MASS) # inject contamination into the node following the profile
 
-        # Compute labels for each time step
-        # 1 if a contamination present, 0 otherwise
-        y = np.sum(contamination_patterns, axis=0) != 0
-        print(y.shape)  # TODO: Export labels
+            # Compute labels for each time step
+            # 1 if a contamination present, 0 otherwise
+            y = np.sum(contamination_patterns, axis=0) != 0
+            print(y.shape)  # TODO: Export labels
 
-        # TEST: run simulation
-        # Place sensors at all nodes 
-        scenario.place_bulk_species_node_sensors_everywhere(["P", "CL2"]) # Measure of pathogen and chlorine. Chlorine is used as a proxy to detect contamination 
-        # Run hydraulic and water quality simulation
-        scada_data = scenario.run_simulation(verbose=True) 
-        # Plot chlorine concentration at a specific node   
-        # scada_data.plot_bulk_species_node_concentration({"CL2": ["dist71"]}) 
+            # TEST: run simulation
+            # Place sensors at all nodes 
+            scenario.place_bulk_species_node_sensors_everywhere(["P", "CL2"]) # Measure of pathogen and chlorine. Chlorine is used as a proxy to detect contamination 
+            # Run hydraulic and water quality simulation
+            scada_data = scenario.run_simulation(verbose=True) 
+            # Plot chlorine concentration at a specific node   
+            # scada_data.plot_bulk_species_node_concentration({"CL2": ["dist71"]}) 
+            
+            # Export SCADA results 
+            df_contaminated = scada_data.to_pandas_dataframe(export_raw_data=False)
+
+        contaminated_nodes = get_contaminated_nodes(df_contaminated)
+        print(contaminated_nodes)
         
-        # Export SCADA results 
-        df_contaminated = scada_data.to_pandas_dataframe(export_raw_data=False)
+        # interesting_nodes = get_interesting_nodes(df_contaminated, contaminated_nodes)
+        # print(interesting_nodes)
 
-    contaminated_nodes = get_contaminated_nodes(df_contaminated)
-    print(contaminated_nodes)
-    
-    interesting_nodes = get_interesting_nodes(df_contaminated, contaminated_nodes)
-    print(interesting_nodes)
+        # significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
+        # print(significant_change_nodes)
 
-    # significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
-    # print(significant_change_nodes)
+        dict_dependencies[node_id] = contaminated_nodes
 
-    dict_dependencies[node_id] = interesting_nodes
-
-# save using pickle 
-import pickle
-with open('dict_dependencies_all.pkl', 'wb') as f:
-    pickle.dump(dict_dependencies, f)
-# test if can load : 
-with open('dict_dependencies_all.pkl', 'rb') as f:
-    loaded_dict = pickle.load(f)
-print(loaded_dict)
+    # save using pickle 
+    import pickle
+    with open('dict_dependencies_all_' + str(i) + '.pkl', 'wb') as f:
+        pickle.dump(dict_dependencies, f)
+    # test if can load : 
+    # with open('dict_dependencies_all_' + str(i) + '.pkl', 'rb') as f:
+    #     loaded_dict = pickle.load(f)
+    # print(loaded_dict)
+    i += 1
 
 
 
