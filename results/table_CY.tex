@@ -1,0 +1,16 @@
+\begin{table}
+\caption{Results for network CY}
+\label{tab:results-CY}
+\begin{tabular}{lccccc}
+\toprule
+Model & F1 Score & Recall & Delay & \% False Alarms & \% Event Missed \\
+\midrule
+CNN multi nodes & 0.969 & 0.981 & 20.043 & 8.0 & 0.0 \\
+CNN SVR & 0.879 & 0.924 & 22.000 & 22.0 & 6.0 \\
+OneClassSVM & 0.716 & 0.834 & 69.737 & 48.0 & 14.0 \\
+SVR & 0.695 & 0.761 & 40.708 & 30.0 & 22.0 \\
+LOF & 0.538 & 0.619 & 61.000 & 28.0 & 36.0 \\
+IsolationForest & 0.451 & 0.633 & 513.000 & 54.0 & 26.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
