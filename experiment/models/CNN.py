@@ -143,15 +143,16 @@ class CNNModel(AnomalyModel):
         else:
             train_loss = []
             val_loss = []
-            best_val_accuracy = 0
+            best_val_f1 = 0
             patience_counter = 0
             
             for epoch in range(epochs):
-                n_corrects_train = 0
-                n_corrects_val = 0
-                n_total_train = 0
-                n_total_val = 0
                 losses = []
+                train_preds_all = []
+                train_labels_all = []
+                val_preds_all = []
+                val_labels_all = []
+                
                 model.train()
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
@@ -163,7 +164,7 @@ class CNNModel(AnomalyModel):
                     
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
-                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions.
+                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                     
                     optimizer.zero_grad()
                     loss = criterion(outputs, labels)
@@ -171,9 +172,13 @@ class CNNModel(AnomalyModel):
                     loss.backward()
                     optimizer.step()
                     
-                    n_total_train += labels.numel()
-                    n_corrects_train += (preds == labels).sum().item()
+                    train_preds_all.append(preds.flatten().cpu().numpy())
+                    train_labels_all.append(labels.flatten().cpu().numpy())
+                
                 train_loss.append(np.mean(losses))
+                train_preds_all = np.concatenate(train_preds_all)
+                train_labels_all = np.concatenate(train_labels_all)
+                train_f1 = f1_score(train_labels_all, train_preds_all, average="binary", zero_division=1)
                 losses = []
                 
             
@@ -193,19 +198,22 @@ class CNNModel(AnomalyModel):
                         
                         loss = criterion(outputs, labels)
                         losses.append(loss.item())
-                        n_total_val += labels.numel()
-                        n_corrects_val += (preds == labels).sum().item()
+                        val_preds_all.append(preds.flatten().cpu().numpy())
+                        val_labels_all.append(labels.flatten().cpu().numpy())
+                
                 val_loss.append(np.mean(losses))
-                val_accuracy = n_corrects_val / n_total_val
+                val_preds_all = np.concatenate(val_preds_all)
+                val_labels_all = np.concatenate(val_labels_all)
+                val_f1 = f1_score(val_labels_all, val_preds_all, average="binary", zero_division=1)
                 losses = []
                 
-                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {val_accuracy:.4f}")
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training F1: {train_f1:.4f}, Validation F1: {val_f1:.4f}")
                 
-                # Save model with best validation accuracy
-                if val_accuracy > best_val_accuracy:
-                    best_val_accuracy = val_accuracy
+                # Save model with best validation F1 score
+                if val_f1 > best_val_f1:
+                    best_val_f1 = val_f1
                     torch.save(model.state_dict(), f"cnn_{node}.pth")
-                    print(f"  -> Best model saved with validation accuracy: {best_val_accuracy:.4f}")
+                    print(f"  -> Best model saved with validation F1: {best_val_f1:.4f}")
             
             # plt.figure()
             # plt.plot(train_loss, label="train")
@@ -301,9 +309,9 @@ class CNNModel(AnomalyModel):
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
-                window_size=750,
+                window_size=288,
                 model_name="SVR",
-                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                model_params={"gamma": "scale", "epsilon": 0.1, "kernel": "rbf", "C": 5},
                 contaminants=[ContaminationType.PATHOGEN]
             )
         
@@ -375,7 +383,7 @@ class CNNModel(AnomalyModel):
                 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=80)
-            y_pred = detect_change_point(y_pred, count_required=15)
+            y_pred = detect_change_point(y_pred, count_required=20)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
