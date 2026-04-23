@@ -365,13 +365,12 @@ def remove_first_x_days(df: pd.DataFrame, days_to_remove: int):
     Returns:
     - new_df: a pandas DataFrame containing the data with the first x days removed
     """
-    for column in df.columns: 
-        if "dist" in column:
-            # 5 minutes timestep, so 288 timesteps per day 
-            timesteps_to_remove = 288 * days_to_remove
-        else:
-            timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
-        break
+    node = df["node"].iloc[0]
+    if "dist" in node:
+        # 5 minutes timestep, so 288 timesteps per day 
+        timesteps_to_remove = 288 * days_to_remove
+    else:
+        timesteps_to_remove = 48 * days_to_remove # 48 timesteps per day (since one timestep is 30 minutes)
     
     new_df = df[df["timestep"] >= timesteps_to_remove].copy()
 
