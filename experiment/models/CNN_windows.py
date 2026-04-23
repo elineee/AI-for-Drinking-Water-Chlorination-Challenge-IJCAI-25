@@ -99,7 +99,7 @@ class CNNWindowsModel(AnomalyModel):
         return weights
     
 
-    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs=10):
+    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs):
         """ Trains the CNN model and evaluates it on the test set.
         
         Parameters:
@@ -225,14 +225,16 @@ class CNNWindowsModel(AnomalyModel):
             print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
             
             y_pred = []
-            for element in final_preds: 
-                if element.detach().cpu().item() == 1: 
-                    y_pred.append(-1)
-                else:
-                    y_pred.append(1)
+            for batch_preds in final_preds: 
+                for element in batch_preds: 
+                    if element == 1: 
+                        y_pred.append(-1)
+                    else:
+                        y_pred.append(1)
 
             return y_pred
     
+
     def _call_second_model(self, node):
         """
         Calls the second model (a SVR Model) used to generate additional features for the CNN.
@@ -337,7 +339,7 @@ class CNNWindowsModel(AnomalyModel):
             
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
             
-            y_pred = detect_change_point(y_pred, count_required=8)
+            y_pred = detect_change_point(y_pred, count_required=2)
             
             print(len(y_true))
             print(len(y_pred))
