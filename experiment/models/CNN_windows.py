@@ -261,9 +261,9 @@ class CNNWindowsModel(AnomalyModel):
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
-                window_size=288, # 288*5 min = one day
+                window_size=750, 
                 model_name="SVR",
-                model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
+                model_params={"gamma": "scale", "epsilon": 0.05, "kernel": "rbf", "C": 10},
                 contaminants=[ContaminationType.PATHOGEN]
             )
         

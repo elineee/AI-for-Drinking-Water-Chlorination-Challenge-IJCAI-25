@@ -337,12 +337,12 @@ class CNNMultiNodesModel(AnomalyModel):
         val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
         test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
         weights = self._compute_weight(y_train)
-        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=10)
+        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=30)
         
         
         dict_pred = {}
         for key, value in y_pred.items(): 
-            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=10)
+            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=20)
             
         # get the results 
         results = {}
@@ -398,16 +398,16 @@ class CNNMultiNodesModel(AnomalyModel):
              contaminant_id = CONTAMINANT_ID[self.config.contaminants[0]]
              column_label_name = f"bulk_species_node [MG] at {contaminant_id} @ {node}" 
              if column_label_name in df.columns:
-                label = df[column_label_name].values
+                label = df[column_label_name].values.copy()
                 for i in range(len(label)):
                     if label[i] > 0:
                         label[i] = -1
                     else:
                         label[i] = 1
                 if "dist" in node:
-                    label = label[288:] # remove first 3 days 
+                    label = label[288*3:] # remove first 3 days 
                 else: 
-                    label = label[48:] # remove first 3 days 
+                    label = label[48*3:] # remove first 3 days 
                 y_true[node] = label
              else:
                 print(f"Column {column_label_name} not found in DataFrame.")

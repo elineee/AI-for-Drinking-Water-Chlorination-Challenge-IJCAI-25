@@ -20,7 +20,7 @@ class CNN(nn.Module):
         self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm1d(64)
         self.relu1 = nn.ReLU()
-        self.dropout1 = nn.Dropout(0.2)
+        self.dropout1 = nn.Dropout(0.3)
         
         self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, padding=2)
         self.bn2 = nn.BatchNorm1d(128)
@@ -30,7 +30,7 @@ class CNN(nn.Module):
         self.conv3 = nn.Conv1d(in_channels=128, out_channels=128, kernel_size=7, padding=3)
         self.bn3 = nn.BatchNorm1d(128)
         self.relu3 = nn.ReLU()
-        self.dropout3 = nn.Dropout(0.2)
+        self.dropout3 = nn.Dropout(0.3)
         
         self.conv4 = nn.Conv1d(in_channels=128, out_channels=64, kernel_size=3, padding=1)
         self.bn4 = nn.BatchNorm1d(64)
@@ -143,6 +143,9 @@ class CNNModel(AnomalyModel):
         else:
             train_loss = []
             val_loss = []
+            best_val_accuracy = 0
+            patience_counter = 0
+            
             for epoch in range(epochs):
                 n_corrects_train = 0
                 n_corrects_val = 0
@@ -160,7 +163,7 @@ class CNNModel(AnomalyModel):
                     
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
-                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
+                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions.
                     
                     optimizer.zero_grad()
                     loss = criterion(outputs, labels)
@@ -193,11 +196,16 @@ class CNNModel(AnomalyModel):
                         n_total_val += labels.numel()
                         n_corrects_val += (preds == labels).sum().item()
                 val_loss.append(np.mean(losses))
+                val_accuracy = n_corrects_val / n_total_val
                 losses = []
-                    
                 
-                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {val_accuracy:.4f}")
                 
+                # Save model with best validation accuracy
+                if val_accuracy > best_val_accuracy:
+                    best_val_accuracy = val_accuracy
+                    torch.save(model.state_dict(), f"cnn_{node}.pth")
+                    print(f"  -> Best model saved with validation accuracy: {best_val_accuracy:.4f}")
             
             # plt.figure()
             # plt.plot(train_loss, label="train")
@@ -207,8 +215,7 @@ class CNNModel(AnomalyModel):
             # plt.ylabel("loss")
             # plt.legend()
             # plt.show()
-            
-            torch.save(model.state_dict(), f"cnn_{node}.pth")
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
         
         model.eval()
         n_corrects = 0
@@ -294,7 +301,7 @@ class CNNModel(AnomalyModel):
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
-                window_size=288, # 288*5 min = one day
+                window_size=750,
                 model_name="SVR",
                 model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
                 contaminants=[ContaminationType.PATHOGEN]
@@ -312,9 +319,9 @@ class CNNModel(AnomalyModel):
         for node, contaminated_dfs in all_contaminated_dfs.items():
             clean_dfs = all_clean_dfs[node]
             
-            clean_dfs = add_noisy_dfs(clean_dfs)
+            # clean_dfs = add_noisy_dfs(clean_dfs)
             test_contaminated_df = contaminated_dfs[-1]
-            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
+            # contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
             
             
             print(f"Calculating results for node {node}")
@@ -367,8 +374,8 @@ class CNNModel(AnomalyModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)
-            y_pred = detect_change_point(y_pred, count_required=10)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=80)
+            y_pred = detect_change_point(y_pred, count_required=15)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
