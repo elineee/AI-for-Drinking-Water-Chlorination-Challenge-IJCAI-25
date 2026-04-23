@@ -16,7 +16,7 @@ class IsolationForestModel(AnomalyModel):
             
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
 
-            contamination = self.config.model_params.get("contamination", "auto")
+            contamination = self.config.model_params.get("contamination", 0.1)
             model = IsolationForest(contamination=contamination, random_state=42)
             y_pred = model.fit_predict(X)
             y_pred = self._post_predictions(y_pred)
