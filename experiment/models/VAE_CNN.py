@@ -50,7 +50,7 @@ class VAECNNModel(CNNModel):
     def _call_vae_model(self, node):
         """
         Calls the VAE model used to generate embeddings used for the CNN.
-   
+
         Parameters:
         - node: the node id 
         
@@ -73,7 +73,7 @@ class VAECNNModel(CNNModel):
         return vae_model
 
 
-    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs):
+    def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs, patience):
         """ 
         Trains the CNN model and evaluates it on the test set.
         The model predicts a label for each point in each window. 
@@ -84,8 +84,9 @@ class VAECNNModel(CNNModel):
         - val_dataloader: DataLoader for the validation set
         - test_dataloader: DataLoader for the test set
         - weights: tensor containing the weight for the positive class (anomalies)
-        - epochs: number of epochs 
-   
+        - epochs: number of epochs (maximum, may stop earlier if early stopping is triggered)
+        - patience: number of epochs to wait for improvement in validation F1 score before stopping training (early stopping)
+
         Returns:
         - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
@@ -96,6 +97,7 @@ class VAECNNModel(CNNModel):
         train_loss = []
         val_loss = []
         best_val_f1 = 0
+        nb_epochs_without_improvment = 0
         node = self.config.nodes[0]
 
         for epoch in range(epochs):
@@ -165,8 +167,16 @@ class VAECNNModel(CNNModel):
             # Save model with best validation F1 score
             if val_f1 > best_val_f1:
                 best_val_f1 = val_f1
+                nb_epochs_without_improvment = 0
                 torch.save(model.state_dict(), f"vaecnn_{node}.pth")
                 print(f" Best model saved with validation F1: {best_val_f1:.4f}")
+
+            else: 
+                nb_epochs_without_improvment += 1
+                if nb_epochs_without_improvment >= patience:
+                    print(f"Early stopping at epoch {epoch+1}") 
+                    break
+
 
         # Load best model before evaluation
         model.load_state_dict(torch.load(f"vaecnn_{node}.pth", map_location=self.device, weights_only=True))
@@ -250,13 +260,14 @@ class VAECNNModel(CNNModel):
             y_train = []
 
             # Train data 
+            encoder = None
             for df in contaminated_dfs[:-1]:
-                _ , z, labels = self._prepare_data(df, clean_dfs, node)
+                _, z, labels, encoder = self._prepare_data(df, clean_dfs, node, encoder=encoder)
                 data_train.extend(z.cpu().numpy())
                 y_train.extend(labels)
             
             # Test data (on the last contaminated df)
-            prepared_df_test, z, labels_test = self._prepare_data(contaminated_dfs[-1], clean_dfs, node)
+            prepared_df_test, z, labels_test, _ = self._prepare_data(contaminated_dfs[-1], clean_dfs, node, encoder=encoder)
             data_test = z.cpu().numpy() 
             y_true = calculate_labels_alarm(prepared_df_test, self.config.contaminants[0].value, 0)
 
@@ -280,14 +291,14 @@ class VAECNNModel(CNNModel):
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
                 
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200, patience=20)
             y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
             
 
-    def _prepare_data(self, contaminated_df, clean_dfs, node):
+    def _prepare_data(self, contaminated_df, clean_dfs, node, encoder = None):
         """ 
         Prepares data for training and testing the CNN model.
         It trains a VAE on clean data and uses it to produce embeddings z for the contaminated data. 
@@ -296,35 +307,40 @@ class VAECNNModel(CNNModel):
         - contaminated_df : a contaminated dataframe 
         - clean_dfs: a list of clean dataframes 
         - node: the node id used 
+        - encoder: the VAE encoder to use for generating embeddings. By default, a new VAE encoder will be trained on the clean data.
         
         Returns:
         - prepared_df: the contaminated dataframe after removing the first 3 days
         - z : embeddings computed by the encoder (shape (number of windows, latent_dim))
         - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels (shape (number of windows, window_size))
+        - encoder: the VAE encoder used to generate embeddings (trained or reused)
         """
         hidden_dim = 128
         latent_dim = 32
 
-        # Train the VAE and save the weights of the model
         vae_encoder = self._call_vae_model(node)
         X_train, X_test, _ = vae_encoder._prepare_data(clean_dfs, [contaminated_df])
-        train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
-        test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
-        vae_encoder.run_model(train_batches, test_batches, epochs=1000, hidden_dim= hidden_dim, latent_dim= latent_dim, node = node)
-            
-        # Generate z with the VAE encoder 
-        sample_batch = next(iter(train_batches))
-        input_dim = sample_batch.shape[1]
-        encoder = VAE(input_dim, hidden_dim=hidden_dim, latent_dim=latent_dim).to(self.device)
-        encoder.load_state_dict(torch.load(f"VAE_model_{node}.pth", map_location=self.device, weights_only=True))
-        encoder.eval()  
-        with torch.no_grad(): 
+
+        # Train the VAE and save the weights of the model
+        if encoder is None:
+            train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
+            test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
+            vae_encoder.run_model(train_batches, test_batches, epochs=1000, hidden_dim=hidden_dim, latent_dim=latent_dim, node=node)
+
+            sample_batch = next(iter(train_batches))
+            input_dim = sample_batch.shape[1]
+            encoder = VAE(input_dim, hidden_dim=hidden_dim, latent_dim=latent_dim).to(self.device)
+            encoder.load_state_dict(torch.load(f"VAE_model_{node}.pth", map_location=self.device, weights_only=True))
+            encoder.eval()
+
+        # Generate z with the VAE encoder
+        with torch.no_grad():
             X_test = X_test.to(self.device)
             z = encoder.encode(X_test)
             z = z.cpu()
-        
+
         # Generate labels 
         prepared_df = remove_first_x_days(contaminated_df, 3) 
         _ , labels = self.create_labeled_features(prepared_df, self.config.disinfectant.value, self.config.contaminants[0].value, window_size=self.config.window_size)
 
-        return prepared_df, z, labels
+        return prepared_df, z, labels, encoder  
