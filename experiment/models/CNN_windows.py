@@ -17,6 +17,7 @@ from models.model import AnomalyModel
 class CNN(nn.Module):
     def __init__(self, input_size, sequence_length):
         super(CNN, self).__init__()
+        self.sequence_length = sequence_length
         self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
         self.bn1 = nn.BatchNorm1d(64)
         self.relu1 = nn.ReLU()
@@ -32,19 +33,28 @@ class CNN(nn.Module):
         self.relu3 = nn.ReLU()
         self.pool3 = nn.MaxPool1d(kernel_size=2)  # Reduce sequence length by half
         
-        self.fc1 = nn.Linear(128*6, 128) 
+        # Calculate size after pooling operations
+        # After each MaxPool1d with kernel_size=2: length = floor(length / 2)
+        length_after_pool = sequence_length
+        length_after_pool = length_after_pool // 2  # After pool1
+        length_after_pool = length_after_pool // 2  # After pool2
+        length_after_pool = length_after_pool // 2  # After pool3
+        
+        flattened_size = 128 * length_after_pool
+        
+        self.fc1 = nn.Linear(flattened_size, 128) 
         self.fc2 = nn.Linear(128, 64)
         self.fc3 = nn.Linear(64, 1) # binary classification output
         
     
     def forward(self, x):
-        # x shape: (batch, length, channels) = (batch, 48, 2)
+        # x shape: (batch, length, channels)
         # Conv1d expects (batch, channels, length)
-        x = x.transpose(1, 2)  # -> (batch, 2, 48)
+        x = x.transpose(1, 2)  # -> (batch, channels, length)
         
         x = self.conv1(x)
         x = self.relu1(x)
-        x = self.pool1(x)  # -> (batch, 64, 26)
+        x = self.pool1(x)  # Reduce length by half
 
         x = self.conv2(x)
         x = self.relu2(x)
@@ -121,13 +131,16 @@ class CNNWindowsModel(AnomalyModel):
         else:
             train_loss = []
             val_loss = []
+            best_val_f1 = 0
             for epoch in range(epochs):
-                n_corrects_train = 0
-                n_corrects_val = 0
-                n_total_train = 0
-                n_total_val = 0
+                
                 losses = []
+                train_preds_all = []
+                train_labels_all = []
+                val_preds_all = []
+                val_labels_all = []
                 model.train()
+                
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
                     windows = windows.to(self.device)
@@ -146,9 +159,12 @@ class CNNWindowsModel(AnomalyModel):
                     loss.backward()
                     optimizer.step()
                     
-                    n_total_train += labels.numel()
-                    n_corrects_train += (preds == labels).sum().item()
+                    train_preds_all.append(preds.flatten().cpu().numpy())
+                    train_labels_all.append(labels.flatten().cpu().numpy())
                 train_loss.append(np.mean(losses))
+                train_preds_all = np.concatenate(train_preds_all)
+                train_labels_all = np.concatenate(train_labels_all)
+                train_f1 = f1_score(train_labels_all, train_preds_all, average="binary", zero_division=1)
                 losses = []
                 
                 model.eval()
@@ -167,13 +183,23 @@ class CNNWindowsModel(AnomalyModel):
                         
                         loss = criterion(outputs, labels)
                         losses.append(loss.item())
-                        n_total_val += labels.numel()
-                        n_corrects_val += (preds == labels).sum().item()
+                        val_preds_all.append(preds.flatten().cpu().numpy())
+                        val_labels_all.append(labels.flatten().cpu().numpy())
+                        
                 val_loss.append(np.mean(losses))
+                val_preds_all = np.concatenate(val_preds_all)
+                val_labels_all = np.concatenate(val_labels_all)
+                val_f1 = f1_score(val_labels_all, val_preds_all, average="binary", zero_division=1)
                 losses = []
                     
                 
-                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training F1: {train_f1:.4f}, Validation F1: {val_f1:.4f}")
+                
+                # Save model with best validation F1 score
+                if val_f1 > best_val_f1:
+                    best_val_f1 = val_f1
+                    torch.save(model.state_dict(), f"cnn_{node}.pth")
+                    print(f"  -> Best model saved with validation F1: {best_val_f1:.4f}")
                 
                 
             # plt.figure()
@@ -185,7 +211,7 @@ class CNNWindowsModel(AnomalyModel):
             # plt.legend()
             # plt.show()
             
-            torch.save(model.state_dict(), f"cnn_{node}.pth")
+            model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
             
         
         model.eval()
@@ -263,7 +289,7 @@ class CNNWindowsModel(AnomalyModel):
                 contaminated_files=self.config.contaminated_files,
                 example_files=self.config.example_files,
                 nodes=[node],
-                window_size=750, 
+                window_size=288, 
                 model_name="SVR",
                 model_params={"gamma": "scale", "epsilon": 0.05, "kernel": "rbf", "C": 10},
                 contaminants=[ContaminationType.PATHOGEN]
@@ -337,9 +363,9 @@ class CNNWindowsModel(AnomalyModel):
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
             
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=20)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=50)
             
-            y_pred = detect_change_point(y_pred, count_required=2)
+            y_pred = detect_change_point(y_pred, count_required=20)
             
             print(len(y_true))
             print(len(y_pred))
