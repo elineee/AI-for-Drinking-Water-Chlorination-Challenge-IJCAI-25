@@ -19,10 +19,10 @@ class VAECNN(nn.Module):
         self.cnn = nn.Sequential(
             nn.Linear(latent_dim, hidden_dim),
             nn.ReLU(),      
-            nn.Dropout(0.3),
+            nn.Dropout(0.1),
             nn.Linear(hidden_dim, hidden_dim),
             nn.ReLU(), 
-            nn.Dropout(0.3),    
+            nn.Dropout(0.1),    
             nn.Linear(hidden_dim, window_size)  
         )
         
@@ -289,10 +289,10 @@ class VAECNNModel(CNNModel):
             train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size, latent_dim)
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
-                 
+                
             weights = self._compute_weight(y_train)
-            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200, patience=30)
-            y_pred = detect_change_point(y_pred, count_required=20)
+            y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200, patience=20)
+            y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
