@@ -21,7 +21,8 @@ class VAECNN(nn.Module):
             nn.ReLU(),      
             nn.Dropout(0.1),
             nn.Linear(hidden_dim, hidden_dim),
-            nn.ReLU(),     
+            nn.ReLU(), 
+            nn.Dropout(0.1),    
             nn.Linear(hidden_dim, window_size)  
         )
         
@@ -90,7 +91,7 @@ class VAECNNModel(CNNModel):
         """
         model = VAECNN(latent_dim=32, hidden_dim=128, window_size=self.config.window_size).to(self.device)
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
-        optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
+        optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
         
         train_loss = []
         val_loss = []
@@ -109,7 +110,7 @@ class VAECNNModel(CNNModel):
 
                 outputs = model(windows) # outputs shape (batch, window_size)
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
+                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
                 optimizer.zero_grad()
                 loss = criterion(outputs, labels)
@@ -131,7 +132,7 @@ class VAECNNModel(CNNModel):
 
                     outputs = model(windows) # outputs shape (batch, window_size)
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                    preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
+                    preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                     
                     loss = criterion(outputs, labels)
                     losses.append(loss.item())
@@ -167,7 +168,7 @@ class VAECNNModel(CNNModel):
                 labels = labels.to(self.device)
                 outputs = model(windows) # outputs shape (batch, window_size)              
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-                preds = (probs > 0.7).float() # Threshold at 0.7 to get binary predictions 
+                preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
 
 
                 labels = labels.flatten().detach().cpu().numpy()
@@ -253,7 +254,7 @@ class VAECNNModel(CNNModel):
                 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200)
-            y_pred = detect_change_point(y_pred, count_required=8)
+            y_pred = detect_change_point(y_pred, count_required=15)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
