@@ -34,7 +34,7 @@ class CNNVAEModel(CNNModel):
                     contaminated_files=self.config.contaminated_files,
                     example_files=self.config.example_files,
                     nodes=[node],
-                    window_size=400,
+                    window_size=288,
                     model_name="VAE",
                     model_params={},
                     contaminants=[ContaminationType.PATHOGEN]

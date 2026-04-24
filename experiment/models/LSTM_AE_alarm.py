@@ -40,7 +40,7 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
         seq_len = sample_batch.shape[1]
         num_features = sample_batch.shape[2]
         
-        model = LSTMAutoencoder(num_features, 16, 2, 0.2, seq_len)
+        model = LSTMAutoencoder(num_features, 64, 2, 0.2, seq_len)
         device = "cuda" if torch.cuda.is_available() else "cpu"
         model = model.to(device)
         
@@ -134,7 +134,7 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
             anomalies, _ = cusum_detection(mean_scores, train_mean, train_std, k=0.9, threshold=threshold)
         else:
             print('ici')
-            threshold = train_mean + 5 * train_std
+            threshold = train_mean + 2.5 * train_std
             anomalies = np.array([-1 if element > threshold else 1 for element in mean_scores_per_timestep])
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
