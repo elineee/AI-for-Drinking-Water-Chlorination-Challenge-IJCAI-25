@@ -95,12 +95,19 @@ class VAECNNModel(CNNModel):
         
         train_loss = []
         val_loss = []
+        best_val_f1 = 0
+        node = self.config.nodes[0]
+
         for epoch in range(epochs):
             n_corrects_train = 0
             n_corrects_val = 0
             n_total_train = 0
             n_total_val = 0
             losses = []
+            train_preds_all = []
+            train_labels_all = []
+            val_preds_all = []
+            val_labels_all = []
 
             model.train()
             for _, data in enumerate(train_dataloader):
@@ -120,7 +127,13 @@ class VAECNNModel(CNNModel):
                 
                 n_total_train += labels.numel()
                 n_corrects_train += (preds == labels).sum().item()
+                train_preds_all.append(preds.flatten().cpu().numpy())
+                train_labels_all.append(labels.flatten().cpu().numpy())
+
             train_loss.append(np.mean(losses))
+            train_preds_all = np.concatenate(train_preds_all)
+            train_labels_all = np.concatenate(train_labels_all)
+            train_f1 = f1_score(train_labels_all, train_preds_all, average="binary", zero_division=1)
             losses = []
             
             model.eval()
@@ -138,11 +151,25 @@ class VAECNNModel(CNNModel):
                     losses.append(loss.item())
                     n_total_val += labels.numel()
                     n_corrects_val += (preds == labels).sum().item()
+                    val_preds_all.append(preds.flatten().cpu().numpy())
+                    val_labels_all.append(labels.flatten().cpu().numpy())
+
             val_loss.append(np.mean(losses))
+            val_preds_all = np.concatenate(val_preds_all)
+            val_labels_all = np.concatenate(val_labels_all)
+            val_f1 = f1_score(val_labels_all, val_preds_all, average="binary", zero_division=1)
             losses = []
                 
-            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+            print(f"Epoch {epoch+1}/{epochs}, Loss: {loss.item():.4f}, Training F1: {train_f1:.4f}, Validation F1: {val_f1:.4f}")
             
+            # Save model with best validation F1 score
+            if val_f1 > best_val_f1:
+                best_val_f1 = val_f1
+                torch.save(model.state_dict(), f"vaecnn_{node}.pth")
+                print(f" Best model saved with validation F1: {best_val_f1:.4f}")
+
+        # Load best model before evaluation
+        model.load_state_dict(torch.load(f"vaecnn_{node}.pth", map_location=self.device, weights_only=True))
             
         plt.figure()
         plt.plot(train_loss, label="train")
@@ -169,7 +196,6 @@ class VAECNNModel(CNNModel):
                 outputs = model(windows) # outputs shape (batch, window_size)              
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-
 
                 labels = labels.flatten().detach().cpu().numpy()
                 preds = preds.flatten().detach().cpu().numpy()
@@ -203,7 +229,8 @@ class VAECNNModel(CNNModel):
                     mean_results_per_time_step.append(1)
 
             return mean_results_per_time_step
-    
+
+
 
     def get_results(self):
         results = {}
@@ -254,7 +281,7 @@ class VAECNNModel(CNNModel):
                 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200)
-            y_pred = detect_change_point(y_pred, count_required=15)
+            y_pred = detect_change_point(y_pred, count_required=10)
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results

@@ -212,7 +212,7 @@ class CNNModel(AnomalyModel):
                 if val_f1 > best_val_f1:
                     best_val_f1 = val_f1
                     torch.save(model.state_dict(), f"cnn_{node}.pth")
-                    print(f"  -> Best model saved with validation F1: {best_val_f1:.4f}")
+                    print(f" Best model saved with validation F1: {best_val_f1:.4f}")
             
             # plt.figure()
             # plt.plot(train_loss, label="train")
