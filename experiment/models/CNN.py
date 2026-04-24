@@ -144,7 +144,6 @@ class CNNModel(AnomalyModel):
             train_loss = []
             val_loss = []
             best_val_f1 = 0
-            patience_counter = 0
             
             for epoch in range(epochs):
                 losses = []
