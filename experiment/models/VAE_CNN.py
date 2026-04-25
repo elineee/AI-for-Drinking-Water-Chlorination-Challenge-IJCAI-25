@@ -292,11 +292,7 @@ class VAECNNModel(CNNModel):
                 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=200, patience=20)
-<<<<<<< HEAD
             y_pred = detect_change_point(y_pred, count_required=20)
-=======
-            y_pred = detect_change_point(y_pred, count_required=10)
->>>>>>> 73ae07771acab47a2ff711d0e98e2e412e110e3c
             results[node] = {"y_pred": y_pred, "y_true": y_true}
         
         return results
