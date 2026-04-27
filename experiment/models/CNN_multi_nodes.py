@@ -141,12 +141,19 @@ class CNNMultiNodesModel(AnomalyModel):
         else: 
             train_loss = []
             val_loss = []
+            best_val_f1 = 0
             for epoch in range(epochs):
-                n_corrects_train = 0
-                n_corrects_val = 0
-                n_total_train = 0
-                n_total_val = 0
+                # n_corrects_train = 0
+                # n_corrects_val = 0
+                # n_total_train = 0
+                # n_total_val = 0
+                # losses = []
+                
                 losses = []
+                train_preds_all = []
+                train_labels_all = []
+                val_preds_all = []
+                val_labels_all = []
                 model.train()
                 for _, data in enumerate(train_dataloader):
                     windows, labels = data # windows shape (batch, window_size, number of features), labels shape (batch, window_size)
@@ -165,9 +172,12 @@ class CNNMultiNodesModel(AnomalyModel):
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
                     preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
         
-                    n_total_train += labels.numel()
-                    n_corrects_train += (preds == labels).sum().item()
+                    train_preds_all.append(preds.flatten().cpu().numpy())
+                    train_labels_all.append(labels.flatten().cpu().numpy())
                 train_loss.append(np.mean(losses))
+                train_preds_all = np.concatenate(train_preds_all)
+                train_labels_all = np.concatenate(train_labels_all)
+                train_f1 = f1_score(train_labels_all, train_preds_all, average="binary", zero_division=1)
                 losses = []
                 
                 model.eval()
@@ -186,25 +196,34 @@ class CNNMultiNodesModel(AnomalyModel):
 
                         preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                         
-                        n_total_val += labels.numel()
-                        n_corrects_val += (preds == labels).sum().item()
+                        val_preds_all.append(preds.flatten().cpu().numpy())
+                        val_labels_all.append(labels.flatten().cpu().numpy())
                 val_loss.append(np.mean(losses))
+                val_preds_all = np.concatenate(val_preds_all)
+                val_labels_all = np.concatenate(val_labels_all)
+                val_f1 = f1_score(val_labels_all, val_preds_all, average="binary", zero_division=1)
                 losses = []
                     
                 
-                print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss[-1]:.4f}, Training Accuracy: {n_corrects_train/n_total_train:.4f}, Validation Accuracy: {n_corrects_val/n_total_val:.4f}")
+                print(f"Epoch {epoch+1}/{epochs}, Loss: {train_loss[-1]:.4f}, Training F1: {train_f1:.4f}, Validation F1: {val_f1:.4f}")
                 
+                # Save model with best validation F1 score
+                if val_f1 > best_val_f1:
+                    best_val_f1 = val_f1
+                    torch.save(model.state_dict(), f"cnn_multi_nodes.pth")
+                    print(f" Best model saved with validation F1: {best_val_f1:.4f}")
                 
-            plt.figure()
-            plt.plot(train_loss, label="train")
-            plt.plot(val_loss, label="validation")
-            plt.title("Loss evolution over epochs")
-            plt.xlabel("epoch")
-            plt.ylabel("loss")
-            plt.legend()
-            plt.show()
+            # plt.figure()
+            # plt.plot(train_loss, label="train")
+            # plt.plot(val_loss, label="validation")
+            # plt.title("Loss evolution over epochs")
+            # plt.xlabel("epoch")
+            # plt.ylabel("loss")
+            # plt.legend()
+            # plt.show()
             
-            torch.save(model.state_dict(), f"cnn_multi_nodes.pth")
+            model.load_state_dict(torch.load(f"cnn_multi_nodes.pth", map_location=self.device, weights_only=True))
+
         
         model.eval()
         n_corrects = 0
@@ -252,6 +271,7 @@ class CNNMultiNodesModel(AnomalyModel):
         print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
         print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
         
+        # For each time step, we calculate the mean predicted label across all windows and all nodes. If the mean is greater than 0.5, we predict an anomaly (-1), otherwise we predict a normal point (1).
         mean_votes = np.divide(values, counts, where=counts > 0)
         
         results_per_node = {}
@@ -337,12 +357,12 @@ class CNNMultiNodesModel(AnomalyModel):
         val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
         test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
         weights = self._compute_weight(y_train)
-        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=30)
+        y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=50)
         
         
         dict_pred = {}
         for key, value in y_pred.items(): 
-            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=20)
+            dict_pred[self.config.nodes[key]] = detect_change_point(value, count_required=50)
             
         # get the results 
         results = {}
