@@ -5,7 +5,7 @@ from evaluation import Evaluation, Metrics
 import pickle
 
 if __name__ == "__main__":
-    nodes = ["dist356", "dist399", "dist485", "dist606", "dist1028", "dist1332", "dist1363", "dist1459", "dist1464", "dist1915"]
+    nodes = ["dist64", "dist420"]
     
     for node in nodes: 
         print(f"Running experiments for node {node}...")
