@@ -25,7 +25,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=50, 
     #                     model_name=ModelName.LOF_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -36,7 +36,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=50, 
     #                     model_name=ModelName.LOF_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -47,7 +47,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=50, 
     #                     model_name=ModelName.LOF_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -58,7 +58,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=50, 
     #                     model_name=ModelName.LOF_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -69,7 +69,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=50, 
     #                     model_name=ModelName.LOF_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=500, 
     #                     model_name=ModelName.ONE_CLASS_SVM_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -132,7 +132,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=500, 
     #                     model_name=ModelName.ONE_CLASS_SVM_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -143,7 +143,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=500, 
     #                     model_name=ModelName.ONE_CLASS_SVM_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -154,7 +154,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=500, 
     #                     model_name=ModelName.ONE_CLASS_SVM_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -165,7 +165,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=20, 
+    #                     window_size=500, 
     #                     model_name=ModelName.ONE_CLASS_SVM_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -214,7 +214,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=150, 
     #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -225,7 +225,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=150, 
     #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -236,7 +236,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=150, 
     #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -247,7 +247,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=150, 
     #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -258,7 +258,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=150, 
     #                     model_name=ModelName.ISOLATION_FOREST_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -306,7 +306,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=48, 
+    #                     window_size=288, 
     #                     model_name=ModelName.SVR_ALARM,
     #                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -317,7 +317,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=48, 
+    #                     window_size=288, 
     #                     model_name=ModelName.SVR_ALARM,
     #                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -329,7 +329,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=48, 
+    #                     window_size=288, 
     #                     model_name=ModelName.SVR_ALARM,
     #                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -341,7 +341,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=48, 
+    #                     window_size=288, 
     #                     model_name=ModelName.SVR_ALARM,
     #                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -353,7 +353,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=48, 
+    #                     window_size=288, 
     #                     model_name=ModelName.SVR_ALARM,
     #                     model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -401,7 +401,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -412,7 +412,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -424,7 +424,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -434,7 +434,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -444,7 +444,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -490,8 +490,8 @@ if __name__ == "__main__":
     #                 config_name="CNN_multi_nodes1",
     #                 contaminated_files=CONTAMINATED_FILES1,
     #                 example_files=CLEAN_FILES,
-    #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
-    #                 window_size=150, 
+    #                 nodes=nodes,
+    #                 window_size=288, 
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -501,8 +501,8 @@ if __name__ == "__main__":
     #                 config_name="CNN_multi_nodes2",
     #                 contaminated_files=CONTAMINATED_FILES2,
     #                 example_files=CLEAN_FILES,
-    #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
-    #                 window_size=150,
+    #                 nodes=nodes,
+    #                 window_size=288,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -512,8 +512,8 @@ if __name__ == "__main__":
     #                 config_name="CNN_multi_nodes3",
     #                 contaminated_files=CONTAMINATED_FILES3,
     #                 example_files=CLEAN_FILES,
-    #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
-    #                 window_size=150,
+    #                 nodes=nodes,
+    #                 window_size=288,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -522,8 +522,8 @@ if __name__ == "__main__":
     #                 config_name="CNN_multi_nodes4",
     #                 contaminated_files=CONTAMINATED_FILES4,
     #                 example_files=CLEAN_FILES,
-    #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
-    #                 window_size=150,
+    #                 nodes=nodes,
+    #                 window_size=288,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -532,8 +532,8 @@ if __name__ == "__main__":
     #                 config_name="CNN_multi_nodes5",
     #                 contaminated_files=CONTAMINATED_FILES5,
     #                 example_files=CLEAN_FILES,
-    #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
-    #                 window_size=150,
+    #                 nodes=nodes,
+    #                 window_size=288,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -580,7 +580,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=288, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -591,7 +591,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=288, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -602,7 +602,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=288, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -613,7 +613,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=288, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -624,7 +624,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=288, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -673,7 +673,7 @@ if __name__ == "__main__":
     #             example_files=CLEAN_FILES,
     #             contaminated_files=CONTAMINATED_FILES1,
     #             nodes=[node],
-    #             window_size=50,
+    #             window_size=100,
     #             model_name=ModelName.LSTM_AUTOENCODER_ALARM,
     #             model_params={},
     #             contaminants=[ContaminationType.PATHOGEN]
@@ -684,7 +684,7 @@ if __name__ == "__main__":
     #                 contaminated_files=CONTAMINATED_FILES2,
     #                 example_files=CLEAN_FILES,
     #                 nodes=[node],
-    #                 window_size=50,
+    #                 window_size=100,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -695,7 +695,7 @@ if __name__ == "__main__":
     #                 contaminated_files=CONTAMINATED_FILES3,
     #                 example_files=CLEAN_FILES,
     #                 nodes=[node],
-    #                 window_size=50,
+    #                 window_size=100,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -706,7 +706,7 @@ if __name__ == "__main__":
     #                 contaminated_files=CONTAMINATED_FILES4,
     #                 example_files=CLEAN_FILES,
     #                 nodes=[node],
-    #                 window_size=50,
+    #                 window_size=100,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -717,7 +717,7 @@ if __name__ == "__main__":
     #                 contaminated_files=CONTAMINATED_FILES5,
     #                 example_files=CLEAN_FILES,
     #                 nodes=[node],
-    #                 window_size=50,
+    #                 window_size=100,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
@@ -764,7 +764,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.VAE_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -775,7 +775,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.VAE_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -786,7 +786,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.VAE_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -797,7 +797,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.VAE_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -808,7 +808,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.VAE_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -859,7 +859,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN_VAE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -870,7 +870,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN_VAE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -881,7 +881,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN_VAE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -892,7 +892,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN_VAE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -902,7 +902,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=100, 
+    #                     window_size=288, 
     #                     model_name=ModelName.CNN_VAE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -953,7 +953,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_WINDOWS,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -964,7 +964,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_WINDOWS,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -975,7 +975,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_WINDOWS,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -985,7 +985,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_WINDOWS,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -995,7 +995,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=50, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_WINDOWS,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -1141,7 +1141,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_UNIVARIATE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -1152,7 +1152,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_UNIVARIATE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -1163,7 +1163,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_UNIVARIATE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -1173,7 +1173,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_UNIVARIATE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -1183,7 +1183,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=150, 
+    #                     window_size=100, 
     #                     model_name=ModelName.CNN_UNIVARIATE,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
