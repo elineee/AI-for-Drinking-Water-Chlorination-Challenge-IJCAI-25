@@ -5,7 +5,7 @@ from evaluation import Evaluation, Metrics
 import pickle
 
 if __name__ == "__main__":
-    nodes = ["dist64"]
+    nodes = ["dist64", "dist420"]
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
@@ -701,64 +701,65 @@ if __name__ == "__main__":
     
 
 
-#     for node in nodes: 
-#         print(f"Running experiments for node {node}...")
-        
-#         CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+    # for node in nodes: 
+    #     print(f"Running experiments for node {node}...")
 
-#         CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-#         CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+    #     CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+
+    #     CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
     
-#         configs = [
+    
+    #     configs = [
 
         
-#         ExperimentConfig(
-#                         config_name="Embedding_CNN2",
-#                         contaminated_files=CONTAMINATED_FILES2,
-#                         example_files=CLEAN_FILES,
-#                         nodes=[node],
-#                         window_size=100, 
-#                         model_name=ModelName.VAE_CNN,
-#                         model_params={},
-#                         contaminants=[ContaminationType.PATHOGEN]
-#         ), 
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN2",
+    #                     contaminated_files=CONTAMINATED_FILES2,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=100, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={},
+    #                     contaminants=[ContaminationType.PATHOGEN]
+    #     ), 
         
-#         ExperimentConfig(
-#                         config_name="Embedding_CNN3",
-#                         contaminated_files=CONTAMINATED_FILES3,
-#                         example_files=CLEAN_FILES,
-#                         nodes=[node],
-#                         window_size=100, 
-#                         model_name=ModelName.VAE_CNN,
-#                         model_params={},
-#                         contaminants=[ContaminationType.PATHOGEN]
-#         ), 
-#         ExperimentConfig(
-#                         config_name="Embedding_CNN4",
-#                         contaminated_files=CONTAMINATED_FILES4,
-#                         example_files=CLEAN_FILES,
-#                         nodes=[node],
-#                         window_size=100, 
-#                         model_name=ModelName.VAE_CNN,
-#                         model_params={},
-#                         contaminants=[ContaminationType.PATHOGEN]
-#         )
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN3",
+    #                     contaminated_files=CONTAMINATED_FILES3,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=100, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={},
+    #                     contaminants=[ContaminationType.PATHOGEN]
+    #     ), 
+    #     ExperimentConfig(
+    #                     config_name="Embedding_CNN4",
+    #                     contaminated_files=CONTAMINATED_FILES4,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=100, 
+    #                     model_name=ModelName.VAE_CNN,
+    #                     model_params={},
+    #                     contaminants=[ContaminationType.PATHOGEN]
+    #     )
         
-#         ]
-#         all_results = []
+    #     ]
+    #     all_results = []
 
 
-#         for cfg in configs:
-#             runner = ExperimentRunner(cfg)
-#             res = runner.run()
-#             all_results.append(res)
-#             # print(all_results)
+    #     for cfg in configs:
+    #         runner = ExperimentRunner(cfg)
+    #         res = runner.run()
+    #         all_results.append(res)
+    #         # print(all_results)
 
-#         pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
+    #     pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
 
-#         evaluation = Evaluation()
-#         evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
-#         print(evaluation_results)
+    #     evaluation = Evaluation()
+    #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
+    #     print(evaluation_results)
 
-#         # print("Evaluation results:")
+    #     # print("Evaluation results:")
