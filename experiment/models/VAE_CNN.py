@@ -57,17 +57,28 @@ class VAECNNModel(CNNModel):
         Returns:
         - vae_model: an instantiated vae model 
         """
-                
-        config_vae = ExperimentConfig(
-                config_name="VAE_ENCODER",
-                contaminated_files=self.config.contaminated_files,
-                example_files=self.config.example_files,
-                nodes=[node],
-                window_size= self.config.window_size,
-                model_name="VAE",
-                model_params={},
-                contaminants=[ContaminationType.PATHOGEN]
-            )
+        
+        if self.config.contaminants[0] == ContaminationType.ARSENIC:
+            config_vae = ExperimentConfig(
+                    config_name="VAE_ENCODER",
+                    contaminated_files=self.config.contaminated_files,
+                    example_files=self.config.example_files,
+                    nodes=[node],
+                    window_size=self.config.window_size,
+                    model_name="VAE",
+                    model_params={},
+                )
+        else :
+            config_vae = ExperimentConfig(
+                    config_name="VAE_ENCODER",
+                    contaminated_files=self.config.contaminated_files,
+                    example_files=self.config.example_files,
+                    nodes=[node],
+                    window_size= self.config.window_size,
+                    model_name="VAE",
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+                )
                 
         vae_model = VAEModel(config_vae)
         return vae_model
@@ -191,10 +202,8 @@ class VAECNNModel(CNNModel):
         plt.show()
         
         model.eval()
-        n_corrects = 0
-        n_total = 0
-        f1_scores = []
-        recall_scores = []
+        final_preds = []
+        final_labels = []
         
         results_per_time_step = [[0, 0] for _ in range(len(test_dataloader.dataset) + self.config.window_size)]
         with torch.no_grad():
@@ -209,7 +218,6 @@ class VAECNNModel(CNNModel):
 
                 labels = labels.flatten().detach().cpu().numpy()
                 preds = preds.flatten().detach().cpu().numpy()
-                n_total += len(labels)
 
                 j = 0
                 for element in preds:
@@ -219,15 +227,15 @@ class VAECNNModel(CNNModel):
                     
                 i += 1
                 
-                n_corrects += (preds == labels).sum().item()
-                f1 = f1_score(labels, preds, average="binary", zero_division=1)
-                f1_scores.append(f1)
-                recall = recall_score(labels, preds, average="binary", zero_division=1)
-                recall_scores.append(recall)
-            
-            print(f"Final Accuracy: {n_corrects/n_total:.4f}")
-            print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
-            print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
+                final_preds.append(preds)
+                final_labels.append(labels)
+
+            all_preds = np.concatenate(final_preds)
+            all_labels = np.concatenate(final_labels)
+            f1 = f1_score(all_labels, all_preds, average="binary", zero_division=1)
+            recall = recall_score(all_labels, all_preds, average="binary", zero_division=1)
+            print(f"Final F1 score: {f1:.4f}")
+            print(f"Final Recall: {recall:.4f}")
             
             # get the mean predicted label for each time step across all windows, and label as anomaly (-1) if the mean is greater than 0.5 and normal (1) otherwise
             mean_results_per_time_step = []
