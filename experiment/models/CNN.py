@@ -225,10 +225,8 @@ class CNNModel(AnomalyModel):
             model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
         
         model.eval()
-        n_corrects = 0
-        n_total = 0
-        f1_scores = []
-        recall_scores = []
+        final_preds = []
+        final_labels = []
         
         results_per_time_step = [[0, 0] for _ in range(len(test_dataloader.dataset) + self.config.window_size)]
         with torch.no_grad():
@@ -242,12 +240,9 @@ class CNNModel(AnomalyModel):
                 outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, window_size)
                 
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
-                
 
                 labels = labels.flatten()
-                n_total += len(labels)
                 preds = preds.flatten()
                 
                 j = 0
@@ -258,16 +253,18 @@ class CNNModel(AnomalyModel):
                     
                 i += 1
                 
-                n_corrects += (preds == labels).sum().item()
-                f1 = f1_score(labels.cpu(), preds.cpu(), average="binary", zero_division=1)
-                f1_scores.append(f1)
-                recall = recall_score(labels.cpu(), preds.cpu(), average="binary", zero_division=1)
-                recall_scores.append(recall)
+                final_preds.append(preds.cpu().numpy())
+                final_labels.append(labels.cpu().numpy())
             
-            print(f"Final Accuracy: {n_corrects/n_total:.4f}")
-            print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
-            print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
-            
+            all_preds = np.concatenate(final_preds)
+            all_labels = np.concatenate(final_labels)
+
+            f1 = f1_score(all_labels, all_preds, average="binary", zero_division=1)
+            recall = recall_score(all_labels, all_preds, average="binary", zero_division=1)
+
+            print(f"Final F1 score: {f1:.4f}")
+            print(f"Final Recall: {recall:.4f}")
+                 
             # get the mean predicted label for each time step across all windows, and label as anomaly (-1) if the mean is greater than 0.5 and normal (1) otherwise
             mean_results_per_time_step = []
             for element, count in results_per_time_step:

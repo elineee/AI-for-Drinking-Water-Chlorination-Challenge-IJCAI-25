@@ -39,15 +39,15 @@ class CNNUnivariateModel(CNNModel):
             y_true = calculate_labels_alarm(df_clean_test, self.config.contaminants[0].value, 0)
 
             # turn data and y into tensors
-            data_train = np.array(data_train) # shape of (4706, 48)
+            data_train = np.array(data_train) # shape of (n_windows, window_size)
             data_train = torch.tensor(data_train, dtype=torch.float32) 
-            data_train = data_train.unsqueeze(2) # shape of (4706, 48, 1)
+            data_train = data_train.unsqueeze(2) # shape of (n_windows, window_size, 1)
             
-            data_test = np.array(features_test)  # shape of (2401, 48)
+            data_test = np.array(features_test)  # shape of (n_windows, window_size)
             data_test = torch.tensor(data_test, dtype=torch.float32) 
-            data_test = data_test.unsqueeze(2) # shape of (4706, 48, 1)
+            data_test = data_test.unsqueeze(2) # shape of (n_windows, window_size, 1)
 
-            y_train = np.array(y_train) # shape of (4706, 48)
+            y_train = np.array(y_train)  # shape: (n_windows,)
             y_train = torch.tensor(y_train, dtype=torch.float32)
             y_test = torch.tensor(labels_test, dtype=torch.float32)
 
@@ -58,10 +58,9 @@ class CNNUnivariateModel(CNNModel):
             train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
             test_dataset = TensorDataset(data_test, y_test)
-            train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True) # one batch = (32, 48)
+            train_dataloader = DataLoader(train_dataset, batch_size=64, shuffle=True) 
             val_dataloader = DataLoader(val_dataset, batch_size=64, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
-            
 
             weights = self._compute_weight(y_train)
             y_pred = self.run_model(train_dataloader, val_dataloader, test_dataloader, weights, epochs=15)

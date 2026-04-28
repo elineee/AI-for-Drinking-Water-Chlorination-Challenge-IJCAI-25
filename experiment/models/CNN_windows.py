@@ -19,31 +19,30 @@ class CNN(nn.Module):
         super(CNN, self).__init__()
         self.sequence_length = sequence_length
         self.conv1 = nn.Conv1d(in_channels=input_size, out_channels=64, kernel_size=3, padding=1)
-        self.bn1 = nn.BatchNorm1d(64)
         self.relu1 = nn.ReLU()
         self.pool1 = nn.MaxPool1d(kernel_size=2)  # Reduce sequence length by half
         
         self.conv2 = nn.Conv1d(in_channels=64, out_channels=128, kernel_size=5, padding=2)
-        self.bn2 = nn.BatchNorm1d(128)
         self.relu2 = nn.ReLU()
         self.pool2 = nn.MaxPool1d(kernel_size=2)  # Reduce sequence length by half
         
         self.conv3 = nn.Conv1d(in_channels=128, out_channels=128, kernel_size=3, padding=1)
-        self.bn3 = nn.BatchNorm1d(128)
         self.relu3 = nn.ReLU()
         self.pool3 = nn.MaxPool1d(kernel_size=2)  # Reduce sequence length by half
         
         # Calculate size after pooling operations
         # After each MaxPool1d with kernel_size=2: length = floor(length / 2)
         length_after_pool = sequence_length
-        length_after_pool = length_after_pool // 2  # After pool1
-        length_after_pool = length_after_pool // 2  # After pool2
-        length_after_pool = length_after_pool // 2  # After pool3
-        
-        flattened_size = 128 * length_after_pool
+        length_after_pool1 = length_after_pool // 2  
+        length_after_pool2 = length_after_pool1 // 2  
+        length_after_pool3 = length_after_pool2 // 2  
+
+        flattened_size = 128 * length_after_pool3
         
         self.fc1 = nn.Linear(flattened_size, 128) 
+        self.relu4 = nn.ReLU()
         self.fc2 = nn.Linear(128, 64)
+        self.relu5 = nn.ReLU()
         self.fc3 = nn.Linear(64, 1) # binary classification output
         
     
@@ -54,23 +53,22 @@ class CNN(nn.Module):
         
         x = self.conv1(x)
         x = self.relu1(x)
-        x = self.pool1(x)  # Reduce length by half
+        x = self.pool1(x)  
 
         x = self.conv2(x)
         x = self.relu2(x)
-        x = self.pool2(x)  # -> (batch, 128, 13)
+        x = self.pool2(x)  
         
         x = self.conv3(x)
         x = self.relu3(x)
-        x = self.pool3(x)  # -> (batch, 128, 6)
-
+        x = self.pool3(x) 
 
         x = x.flatten(start_dim=1) # Flatten the output for the fully connected layers -> (batch, 128*6)
 
         x = self.fc1(x)
-        x = self.relu3(x)
+        x = self.relu4(x)
         x = self.fc2(x)
-        x = self.relu3(x)
+        x = self.relu5(x)
         x = self.fc3(x)
         
         return x
@@ -85,7 +83,8 @@ class CNNWindowsModel(AnomalyModel):
             print("Using GPU:", torch.cuda.get_device_name(0))
         else:
             print("GPU not available, using CPU.")
-                
+
+
     def _compute_weight(self, labels):
         """ 
         Computes the weight for the positive class (anomalies) based on the imbalance of the dataset. 
@@ -116,6 +115,8 @@ class CNNWindowsModel(AnomalyModel):
         - train_dataloader: DataLoader for the training set
         - val_dataloader: DataLoader for the validation set
         - test_dataloader: DataLoader for the test set
+        - weights: tensor containing the weight for the positive class
+        - epochs: number of training epochs
         
         Returns:
         - a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
@@ -142,12 +143,12 @@ class CNNWindowsModel(AnomalyModel):
                 model.train()
                 
                 for _, data in enumerate(train_dataloader):
-                    windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                    windows, labels = data  # windows shape of (batch, window_size+3, 2), labels shape (batch, 1)
                     windows = windows.to(self.device)
                     labels = labels.to(self.device)
 
-                    outputs = model(windows) # outputs shape (batch, 1, 48)
-                    outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                    outputs = model(windows) # outputs shape of (batch, 1)
+                    outputs = outputs.squeeze(1) # (batch,)
                     
                     probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
@@ -170,12 +171,12 @@ class CNNWindowsModel(AnomalyModel):
                 model.eval()
                 with torch.no_grad():
                     for _, data in enumerate(val_dataloader):
-                        windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                        windows, labels = data # windows shape (batch, window_size+3, 2), labels shape : (batch, 1)
                         windows = windows.to(self.device)
                         labels = labels.to(self.device)
 
-                        outputs = model(windows) # outputs shape (batch, 1, 48)
-                        outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                        outputs = model(windows)  # outputs shape (batch, 1)
+                        outputs = outputs.squeeze(1)   # (batch,)
                         
                         probs = torch.sigmoid(outputs) # Convert logits to probabilities
 
@@ -215,41 +216,36 @@ class CNNWindowsModel(AnomalyModel):
             
         
         model.eval()
-        n_corrects = 0
-        n_total = 0
-        f1_scores = []
-        recall_scores = []
-        
         final_preds = []
+        final_labels = []
+        
         with torch.no_grad():
             for _, data in enumerate(test_dataloader):
-                windows, labels = data # windows shape (batch, 48, 2), labels shape (batch, 48)
+                windows, labels = data # windows shape (batch, window_size+3, 2), labels shape : (batch, 1)
                 windows = windows.to(self.device)
                 labels = labels.to(self.device)
 
-                outputs = model(windows) # outputs shape (batch, 1, 48)
-                outputs = outputs.squeeze(1)  # Remove the channel dimension -> (batch, 48)
+                outputs = model(windows) # outputs shape (batch, 1)
+                outputs = outputs.squeeze(1)   # (batch,)
                 
                 probs = torch.sigmoid(outputs) # Convert logits to probabilities
-
                 preds = (probs > 0.5).float() # Threshold at 0.5 to get binary predictions 
                 
-
                 labels = labels.flatten().detach().cpu().numpy()
-                n_total += len(labels)
                 preds = preds.flatten().detach().cpu().numpy()
+
                 final_preds.append(preds)
+                final_labels.append(labels)
                 
-                n_corrects += (preds == labels).sum().item()
-                f1 = f1_score(labels, preds, average="binary", zero_division=1)
-                f1_scores.append(f1)
-                recall = recall_score(labels, preds, average="binary", zero_division=1)
-                recall_scores.append(recall)
-            
-            print(f"Final Accuracy: {n_corrects/n_total:.4f}")
-            print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
-            print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
-            
+            all_preds = np.concatenate(final_preds)
+            all_labels = np.concatenate(final_labels)
+
+            f1 = f1_score(all_labels, all_preds, average="binary", zero_division=1)
+            recall = recall_score(all_labels, all_preds, average="binary", zero_division=1)
+
+            print(f"Final F1 score: {f1:.4f}")
+            print(f"Final Recall: {recall:.4f}")
+        
             y_pred = []
             for batch_preds in final_preds: 
                 for element in batch_preds: 
@@ -332,22 +328,22 @@ class CNNWindowsModel(AnomalyModel):
             y_true = calculate_labels_alarm(prepared_df_test, self.config.contaminants[0].value, self.config.window_size+3)
 
             # turn data and y into tensors
-            data_train = np.array(data_train) # shape of (4706, 48)
-            data_train = torch.tensor(data_train, dtype=torch.float32) # shape of (4706, 48)
-            data_test = np.array(features_test) # shape of (2401, 48)
-            data_test = torch.tensor(data_test, dtype=torch.float32) # shape of (2401, 48)
+            data_train = np.array(data_train) # shape of (n_windows, window_size+3)
+            data_train = torch.tensor(data_train, dtype=torch.float32) 
+            data_test = np.array(features_test) # shape of (n_windows, window_size+3)
+            data_test = torch.tensor(data_test, dtype=torch.float32) 
             
-            data_svr_train = np.array(data_svr_train) # shape of (4706, 48)
-            data_svr_train = torch.tensor(data_svr_train, dtype=torch.float32) # shape of (4706, 48)
-            data_svr_test = np.array(y_svr_test) # shape of (2401, 48)
-            data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) # shape of (2401, 48)
+            data_svr_train = np.array(data_svr_train) # shape of (n_windows, window_size+3)
+            data_svr_train = torch.tensor(data_svr_train, dtype=torch.float32)
+            data_svr_test = np.array(y_svr_test)
+            data_svr_test = torch.tensor(data_svr_test, dtype=torch.float32) 
             
             # turn into multivarite 
-            data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (4706, 48, 2)
-            y_train = np.array(y_train) # shape of (4706, 1)
-            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (4706, 1)
-            data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (2401, 48, 2)
-            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (2401, 1)
+            data_train = torch.stack((data_train, data_svr_train), dim=2) # shape of (n_windows, window_size+3, 2)
+            y_train = np.array(y_train) 
+            y_train = torch.tensor(y_train, dtype=torch.float32) # shape of (n_windows, 1)
+            data_test = torch.stack((data_test, data_svr_test), dim=2) # shape of (n_windows, window_size+3, 2)
+            y_test = torch.tensor(labels_test, dtype=torch.float32) # shape of (n_windows, 1)
             
             # split into train, val and test sets
             X_train, X_val, y_train, y_val = train_test_split(data_train, y_train, test_size=0.15, random_state=42)
@@ -359,7 +355,7 @@ class CNNWindowsModel(AnomalyModel):
             train_dataset = TensorDataset(X_train, y_train)
             val_dataset = TensorDataset(X_val, y_val)
             test_dataset = TensorDataset(data_test, y_test)
-            train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (32, 48)
+            train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) 
             val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
             test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
             
@@ -383,7 +379,8 @@ class CNNWindowsModel(AnomalyModel):
         - df: a pandas DataFrame containing the data
         - feature_column: the name of the column to use as feature
         - label_column: the name of the column to use as label
-        - window_size: the size of the sliding window
+        - window_left: the size of the window to the left of the current time step
+        - window_right: the size of the window to the right of the current time step
         
         Returns:
         - a numpy array containing the features for each time step (shape (number of windows, window_left + window_right))

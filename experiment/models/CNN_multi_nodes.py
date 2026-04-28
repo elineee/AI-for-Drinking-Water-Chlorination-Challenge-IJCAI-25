@@ -41,7 +41,6 @@ class CNN(nn.Module):
     def forward(self, x):
         x = x.transpose(1, 2)  # -> (batch, number_of_features, window_size)
         
-        
         x = self.conv1(x)
         x = self.bn1(x)
         x = self.relu1(x)
@@ -63,7 +62,6 @@ class CNN(nn.Module):
         x = self.dropout4(x)
 
         x = self.conv_out(x)
-
         
         return x
 
@@ -143,12 +141,7 @@ class CNNMultiNodesModel(AnomalyModel):
             val_loss = []
             best_val_f1 = 0
             for epoch in range(epochs):
-                # n_corrects_train = 0
-                # n_corrects_val = 0
-                # n_total_train = 0
-                # n_total_val = 0
-                # losses = []
-                
+        
                 losses = []
                 train_preds_all = []
                 train_labels_all = []
@@ -226,10 +219,8 @@ class CNNMultiNodesModel(AnomalyModel):
 
         
         model.eval()
-        n_corrects = 0
-        n_total = 0
-        f1_scores = []
-        recall_scores = []
+        all_preds = []
+        all_labels = []
         
         n_nodes = len(self.config.nodes)
         n_test_timesteps = len(test_dataloader.dataset) + self.config.window_size # number of time steps in the test set
@@ -257,19 +248,18 @@ class CNNMultiNodesModel(AnomalyModel):
                     values[:, timestep]  += preds_np[j, :]  # vote de chaque nœud
                     counts[:, timestep] += 1
 
-                # Métriques fenêtre par fenêtre (tous nœuds confondus)
                 flat_preds  = preds_np.flatten()
                 flat_labels = labels_np.flatten()
-                n_corrects += (flat_preds == flat_labels).sum()
-                n_total    += len(flat_labels)
-                f1_scores.append(f1_score(flat_labels, flat_preds, average="binary", zero_division=1))
-                recall_scores.append(recall_score(flat_labels, flat_preds, average="binary", zero_division=1))
-
+                all_preds.append(flat_preds)
+                all_labels.append(flat_labels)
                 
-            
-        print(f"Final Accuracy: {n_corrects/n_total:.4f}")
-        print(f"Final F1 Score: {np.mean(f1_scores):.4f}")
-        print(f"Final Recall Score: {np.mean(recall_scores):.4f}")
+            all_preds = np.concatenate(all_preds)  
+            all_labels = np.concatenate(all_labels) 
+            f1 = f1_score(all_labels, all_preds, average="binary", zero_division=1)
+            recall = recall_score(all_labels, all_preds, average="binary", zero_division=1)
+
+        print(f"Final F1 score: {f1:.4f}")
+        print(f"Final Recall: {recall:.4f}")
         
         # For each time step, we calculate the mean predicted label across all windows and all nodes. If the mean is greater than 0.5, we predict an anomaly (-1), otherwise we predict a normal point (1).
         mean_votes = np.divide(values, counts, where=counts > 0)
@@ -304,8 +294,6 @@ class CNNMultiNodesModel(AnomalyModel):
         
         dfs.append(pd.read_csv(self.config.contaminated_files[-1])) 
 
-        
-            
 
         # init dictionaries to store the time series and labels for each node for the train set 
         dict_time_series = {}
@@ -353,7 +341,7 @@ class CNNMultiNodesModel(AnomalyModel):
         train_dataset = TensorDataset(X_train, y_train)
         val_dataset = TensorDataset(X_val, y_val)
         test_dataset = TensorDataset(data_test, y_test)
-        train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size, window_size, number of features)
+        train_dataloader = DataLoader(train_dataset, batch_size=32, shuffle=True) # one batch = (batch_size=32, window_size, number of features)
         val_dataloader = DataLoader(val_dataset, batch_size=32, shuffle=False)
         test_dataloader = DataLoader(test_dataset, batch_size=1, shuffle=False)
         weights = self._compute_weight(y_train)
