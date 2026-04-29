@@ -871,196 +871,196 @@ if __name__ == "__main__":
 
 
  
-    # node = "dist606"
-    # print(f"Running experiments for node {node}...")
+    node = "dist606"
+    print(f"Running experiments for node {node}...")
     
-    # CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_train_dist1332_93.csv", "./data/data_global_warming/scada_data_train_dist1915_48.csv","./data/data_global_warming/scada_data_train_dist1915_53.csv"]
+    CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_train_dist1332_93.csv", "./data/data_global_warming/scada_data_train_dist1915_48.csv","./data/data_global_warming/scada_data_train_dist1915_53.csv"]
 
-    # CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_14.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv", "./data/data_global_warming/scada_data_test_dist606_15.csv"]
-    # CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist606_16.csv"]
-    # CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"]
-
-
-
-    # configs = [
-
-    
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate2",
-    #                 contaminated_files=CONTAMINATED_FILES2,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ), 
-    
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate3",
-    #                 contaminated_files=CONTAMINATED_FILES3,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ),
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate4",
-    #                 contaminated_files=CONTAMINATED_FILES4,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # )
-    
-    # ]
-    # all_results = []
+    CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_14.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv", "./data/data_global_warming/scada_data_test_dist606_15.csv"]
+    CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist606_16.csv"]
+    CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"]
 
 
-    # for cfg in configs:
-    #     runner = ExperimentRunner(cfg)
-    #     res = runner.run()
-    #     all_results.append(res)
-    #     #print(all_results)
 
-    # pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
-
-    # evaluation = Evaluation()
-    # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
-    # print(evaluation_results)
-
-
+    configs = [
 
     
-    # node = "dist1332"
-    # print(f"Running experiments for node {node}...")
+    ExperimentConfig(
+                    config_name="CNN_Univariate2",
+                    contaminated_files=CONTAMINATED_FILES2,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ), 
     
-    # CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv"]
+    ExperimentConfig(
+                    config_name="CNN_Univariate3",
+                    contaminated_files=CONTAMINATED_FILES3,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ),
+    ExperimentConfig(
+                    config_name="CNN_Univariate4",
+                    contaminated_files=CONTAMINATED_FILES4,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    )
+    
+    ]
+    all_results = []
 
-    # CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_train_dist1332_9.csv", "./data/data_global_warming/scada_data_train_dist1332_13.csv", "./data/data_global_warming/scada_data_train_dist1332_20.csv", "./data/data_global_warming/scada_data_train_dist1332_24.csv", "./data/data_global_warming/scada_data_train_dist1332_65.csv", "./data/data_global_warming/scada_data_train_dist1332_82.csv", "./data/data_global_warming/scada_data_train_dist1332_93.csv", "./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_test_dist1332_37.csv"]
-    # CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1332_46.csv"]
-    # CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
+
+    for cfg in configs:
+        runner = ExperimentRunner(cfg)
+        res = runner.run()
+        all_results.append(res)
+        #print(all_results)
+
+    pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
+
+    evaluation = Evaluation()
+    evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
+    print(evaluation_results)
 
 
-    # configs = [
 
     
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate2",
-    #                 contaminated_files=CONTAMINATED_FILES2,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ), 
+    node = "dist1332"
+    print(f"Running experiments for node {node}...")
     
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate3",
-    #                 contaminated_files=CONTAMINATED_FILES3,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ),
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate4",
-    #                 contaminated_files=CONTAMINATED_FILES4,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # )
+    CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv"]
+
+    CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_train_dist1332_9.csv", "./data/data_global_warming/scada_data_train_dist1332_13.csv", "./data/data_global_warming/scada_data_train_dist1332_20.csv", "./data/data_global_warming/scada_data_train_dist1332_24.csv", "./data/data_global_warming/scada_data_train_dist1332_65.csv", "./data/data_global_warming/scada_data_train_dist1332_82.csv", "./data/data_global_warming/scada_data_train_dist1332_93.csv", "./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_test_dist1332_37.csv"]
+    CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1332_46.csv"]
+    CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
+
+
+    configs = [
+
     
-    # ]
-    # all_results = []
+    ExperimentConfig(
+                    config_name="CNN_Univariate2",
+                    contaminated_files=CONTAMINATED_FILES2,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ), 
+    
+    ExperimentConfig(
+                    config_name="CNN_Univariate3",
+                    contaminated_files=CONTAMINATED_FILES3,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ),
+    ExperimentConfig(
+                    config_name="CNN_Univariate4",
+                    contaminated_files=CONTAMINATED_FILES4,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    )
+    
+    ]
+    all_results = []
 
 
-    # for cfg in configs:
-    #     runner = ExperimentRunner(cfg)
-    #     res = runner.run()
-    #     all_results.append(res)
-    #     #print(all_results)
+    for cfg in configs:
+        runner = ExperimentRunner(cfg)
+        res = runner.run()
+        all_results.append(res)
+        #print(all_results)
 
-    # pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
+    pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
 
-    # evaluation = Evaluation()
-    # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
-    # print(evaluation_results)
+    evaluation = Evaluation()
+    evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
+    print(evaluation_results)
 
  
 
     
-    # node = "dist1915"
-    # print(f"Running experiments for node {node}...")
+    node = "dist1915"
+    print(f"Running experiments for node {node}...")
     
-    # CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv"]
+    CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv"]
 
-    # CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_19.csv", "./data/data_global_warming/scada_data_train_dist1915_21.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_train_dist1915_44.csv", "./data/data_global_warming/scada_data_train_dist1915_48.csv", "./data/data_global_warming/scada_data_train_dist1915_53.csv", "./data/data_global_warming/scada_data_train_dist1915_107.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
-    # CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_72.csv"]
-    # CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"
+    CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_19.csv", "./data/data_global_warming/scada_data_train_dist1915_21.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_train_dist1915_44.csv", "./data/data_global_warming/scada_data_train_dist1915_48.csv", "./data/data_global_warming/scada_data_train_dist1915_53.csv", "./data/data_global_warming/scada_data_train_dist1915_107.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
+    CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_72.csv"]
+    CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"
 
 
 
-    # configs = [
+    configs = [
 
     
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate2",
-    #                 contaminated_files=CONTAMINATED_FILES2,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ), 
+    ExperimentConfig(
+                    config_name="CNN_Univariate2",
+                    contaminated_files=CONTAMINATED_FILES2,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ), 
     
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate3",
-    #                 contaminated_files=CONTAMINATED_FILES3,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # ),
-    # ExperimentConfig(
-    #                 config_name="CNN_Univariate4",
-    #                 contaminated_files=CONTAMINATED_FILES4,
-    #                 example_files=CLEAN_FILES,
-    #                 nodes=[node],
-    #                 window_size=400, 
-    #                 model_name=ModelName.CNN_UNIVARIATE,
-    #                 model_params={},
-    #                 contaminants=[ContaminationType.PATHOGEN]
-    # )
+    ExperimentConfig(
+                    config_name="CNN_Univariate3",
+                    contaminated_files=CONTAMINATED_FILES3,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    ),
+    ExperimentConfig(
+                    config_name="CNN_Univariate4",
+                    contaminated_files=CONTAMINATED_FILES4,
+                    example_files=CLEAN_FILES,
+                    nodes=[node],
+                    window_size=400, 
+                    model_name=ModelName.CNN_UNIVARIATE,
+                    model_params={},
+                    contaminants=[ContaminationType.PATHOGEN]
+    )
     
-    # ]
-    # all_results = []
+    ]
+    all_results = []
 
 
-    # for cfg in configs:
-    #     runner = ExperimentRunner(cfg)
-    #     res = runner.run()
-    #     all_results.append(res)
-    #     #print(all_results)
+    for cfg in configs:
+        runner = ExperimentRunner(cfg)
+        res = runner.run()
+        all_results.append(res)
+        #print(all_results)
 
-    # pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
+    pickle.dump(all_results, open(f"all_results_{node}_CNN_Univariate.pkl", "wb"))
 
-    # evaluation = Evaluation()
-    # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
-    # print(evaluation_results)
+    evaluation = Evaluation()
+    evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
+    print(evaluation_results)
 
 
 
