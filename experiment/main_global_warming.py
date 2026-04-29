@@ -1199,11 +1199,11 @@ if __name__ == "__main__":
     # node = "dist1915"
     # print(f"Running experiments for node {node}...")
     
-    # CLEAN_FILES = [".\\data\\data_global_warming\\scada_data_train_dist606_8.csv", ".\\data\\data_global_warming\\scada_data_train_dist606_10.csv", ".\\data\\data_global_warming\\scada_data_train_dist606_11.csv", ".\\data\\data_global_warming\\scada_data_train_dist606_17.csv", ".\\data\\data_global_warming\\scada_data_train_dist606_32.csv", ".\\data\\data_global_warming\\scada_data_train_dist606_36.csv"]
+    # CLEAN_FILES = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_train_dist606_10.csv", "./data/data_global_warming/scada_data_train_dist606_11.csv", "./data/data_global_warming/scada_data_train_dist606_17.csv", "./data/data_global_warming/scada_data_train_dist606_32.csv", "./data/data_global_warming/scada_data_train_dist606_36.csv"]
 
-    # CONTAMINATED_FILES2 = [".\\data\\data_global_warming\\scada_data_train_dist1915_15.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_19.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_21.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_25.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_44.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_48.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_53.csv", ".\\data\\data_global_warming\\scada_data_train_dist1915_107.csv", ".\\data\\data_global_warming\\scada_data_test_dist1915_1.csv"]
-    # CONTAMINATED_FILES3 = [".\\data\\data_global_warming\\scada_data_train_dist1332_5.csv", ".\\data\\data_global_warming\\scada_data_test_dist1915_72.csv"]
-    # CONTAMINATED_FILES4 = [".\\data\\data_global_warming\\scada_data_train_dist1332_5.csv", ".\\data\\data_global_warming\\scada_data_test_dist1915_606_62.csv"]
+    # CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_19.csv", "./data/data_global_warming/scada_data_train_dist1915_21.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_train_dist1915_44.csv", "./data/data_global_warming/scada_data_train_dist1915_48.csv", "./data/data_global_warming/scada_data_train_dist1915_53.csv", "./data/data_global_warming/scada_data_train_dist1915_107.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
+    # CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_72.csv"]
+    # CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"]
 
 
     # configs = [
