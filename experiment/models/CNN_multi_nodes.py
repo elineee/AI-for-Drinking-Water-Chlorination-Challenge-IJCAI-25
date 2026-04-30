@@ -288,9 +288,7 @@ class CNNMultiNodesModel(AnomalyModel):
             df = pd.read_csv(file)
             dfs.append(df)
         
-        print(len(dfs))
         dfs = self.add_noisy_dfs(dfs, nodes)
-        print(len(dfs))
         
         dfs.append(pd.read_csv(self.config.contaminated_files[-1])) 
 
