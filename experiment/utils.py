@@ -194,7 +194,7 @@ def blank_values(x):
     Returns:
     - x with added blank values
     """
-    percentage = [0.01, 0.03, 0.05]
+    percentage = [0.01, 0.03]
     x_noised = x.copy()
     num_defects = int(np.random.choice(percentage) * len(x))
     defect_indices = np.random.choice(len(x), num_defects, replace=False)
