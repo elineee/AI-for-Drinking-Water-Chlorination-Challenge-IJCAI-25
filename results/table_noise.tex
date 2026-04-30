@@ -1,0 +1,17 @@
+\begin{table}
+\caption{Results for network noise}
+\label{tab:results-noise}
+\begin{tabular}{lccccc}
+\toprule
+Model & F1 Score & Recall & Delay & \% False Alarms & \% Event Missed \\
+\midrule
+CNN multi nodes & 0.985 & 0.987 & 13.393 & 6.7 & 0.0 \\
+CNN SVR & 0.978 & 0.956 & 42.111 & 0.0 & 0.0 \\
+CNN VAE & 0.977 & 0.980 & 21.750 & 11.1 & 0.0 \\
+CNN Windows VAE & 0.975 & 0.952 & 46.111 & 0.0 & 0.0 \\
+CNN Windows SVR & 0.974 & 0.977 & 25.125 & 11.1 & 0.0 \\
+VAE CNN & 0.767 & 0.757 & 26.143 & 0.0 & 22.2 \\
+CNN univariate & 0.756 & 0.736 & 51.286 & 0.0 & 22.2 \\
+\bottomrule
+\end{tabular}
+\end{table}

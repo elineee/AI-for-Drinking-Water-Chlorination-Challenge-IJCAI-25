@@ -36,8 +36,8 @@ def create_results_summary_table(csv_file):
                 "F1 Score": f1_score_avg,
                 "Recall": recall_avg,
                 "Delay": delay_avg,
-                "\% False Alarms": f"{false_alarm_rate * 100:.1f}",
-                "\% Event Missed": f"{event_missed_rate * 100:.1f}",
+                "\\% False Alarms": f"{false_alarm_rate * 100:.1f}",
+                "\\% Event Missed": f"{event_missed_rate * 100:.1f}",
             })
 
         table = pd.DataFrame(rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
