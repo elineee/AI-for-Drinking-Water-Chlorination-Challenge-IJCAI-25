@@ -182,6 +182,7 @@ def gaussian_noise(x):
     std = [0.01, 0.03, 0.05, 0.07]
     noise = np.random.normal(mu, np.random.choice(std), size = x.shape)
     x_noisy = x + noise
+    x_noisy = np.clip(x_noisy, a_min=0, a_max=None) 
     return x_noisy 
 
 def blank_values(x):
