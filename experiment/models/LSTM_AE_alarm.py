@@ -3,7 +3,7 @@ import torch.nn as nn
 import torch.optim as optim
 import numpy as np
 from models.LSTM_AE import LSTMAutoencoder, LSTMAutoencoderModel
-from utils import detect_change_point, cusum_detection
+from utils import detect_change_point
 from data_transformation import calculate_labels_alarm
 
 
@@ -14,9 +14,6 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
         return calculate_labels_alarm(df, contaminant, window_size)
 
     def _post_predictions(self, y_pred):
-        use_cusum = self.config.model_params.get("use_cusum", False)
-        if use_cusum:
-            return y_pred 
         return detect_change_point(y_pred, count_required=20)
     
     def run_model(self, train_batches, test_batches, epochs):
@@ -125,16 +122,9 @@ class LSTMAutoencoderAlarmModel(LSTMAutoencoderModel):
         for total_decoded, count_decoded in seq_decoded:
             mean_decoded_seq_per_timestep.append(total_decoded / count_decoded if count_decoded > 0 else 0)
         
-        use_cusum = self.config.model_params.get("use_cusum", False)
 
-        if use_cusum:
-            mean_scores = np.array(mean_scores_per_timestep)
-            _, cusum_train = cusum_detection(training_errors_per_window, train_mean, train_std, k=0.6, threshold=float('inf'))
-            threshold = cusum_train.max() * 1.2
-            anomalies, _ = cusum_detection(mean_scores, train_mean, train_std, k=0.9, threshold=threshold)
-        else:
-            print('ici')
-            threshold = train_mean + 2.5 * train_std
-            anomalies = np.array([-1 if element > threshold else 1 for element in mean_scores_per_timestep])
+
+        threshold = train_mean + 2.5 * train_std
+        anomalies = np.array([-1 if element > threshold else 1 for element in mean_scores_per_timestep])
 
         return mean_true_seq_per_timestep, mean_decoded_seq_per_timestep, anomalies
