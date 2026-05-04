@@ -243,9 +243,13 @@ class CNNMultiNodesModel(AnomalyModel):
                 preds_np = preds.squeeze(0).cpu().numpy() # shape (window_size, number of nodes)
                 labels_np = labels.squeeze(0).cpu().numpy()
                 
-                for j in range(preds_np.shape[0]):         # j = position dans la fenêtre
+                # for each time step
+                for j in range(preds_np.shape[0]):  
+                    # calculte the real time step in the original time series corresponding to the j-th time step in the window
                     timestep = i + j
-                    values[:, timestep]  += preds_np[j, :]  # vote de chaque nœud
+                    # add the values to the corresponding time step
+                    values[:, timestep]  += preds_np[j, :] 
+                    # count the number of predictions for each time step
                     counts[:, timestep] += 1
 
                 flat_preds  = preds_np.flatten()
@@ -299,8 +303,7 @@ class CNNMultiNodesModel(AnomalyModel):
         for node in nodes:
             dict_time_series[node] = []
             dict_labels[node] = []
-            
-        # TODO : add noise later
+        
         # get the features and labels for the training set 
         for df in dfs[:-1]: 
             for node in nodes: 
