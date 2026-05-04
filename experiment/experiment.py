@@ -14,8 +14,6 @@ from models.LSTM_AE_alarm import LSTMAutoencoderAlarmModel
 from models.VAE import VAEModel
 from models.VAE_alarm import VAEAlarmModel
 from models.VAE_CNN import VAECNNModel
-from models.LSTM_VAE import LSTMVAEModel
-from models.LSTM_VAE_alarm import LSTMVAEAlarmModel
 from models.CNN import CNNModel
 from models.CNN_univariate import CNNUnivariateModel
 from models.CNN_windows import CNNWindowsModel
@@ -40,8 +38,6 @@ AVAILABLE_MODELS = {
     ModelName.VAE : VAEModel, 
     ModelName.VAE_ALARM : VAEAlarmModel, 
     ModelName.VAE_CNN : VAECNNModel, 
-    ModelName.LSTM_VAE : LSTMVAEModel, 
-    ModelName.LSTM_VAE_ALARM : LSTMVAEAlarmModel,
     ModelName.CNN: CNNModel,
     ModelName.CNN_UNIVARIATE: CNNUnivariateModel, 
     ModelName.CNN_WINDOWS: CNNWindowsModel,

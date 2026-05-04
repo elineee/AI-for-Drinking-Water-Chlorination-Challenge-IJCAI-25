@@ -25,8 +25,6 @@ class ModelName(Enum):
     VAE = "VAE"
     VAE_ALARM = "VAE_ALARM"
     VAE_CNN = "VAE_CNN"
-    LSTM_VAE = "LSTM_VAE"
-    LSTM_VAE_ALARM = "LSTM_VAE_ALARM"
     CNN = "CNN"
     CNN_UNIVARIATE = "CNN_univariate"
     CNN_WINDOWS = "CNN_windows"
