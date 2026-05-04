@@ -1,7 +1,5 @@
 import pandas as pd
 
-# https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.to_latex.html
-
 def create_results_summary_table(csv_file):
     """
     Create a summary table from the results csv file per network with the average metrics per model.
@@ -43,16 +41,16 @@ def create_results_summary_table(csv_file):
         table = pd.DataFrame(rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
         tables[network] = table
 
-        for network, table in tables.items():
-            latex_str = table.to_latex(
-                index=False,
-                float_format="{:.3f}".format,
-                na_rep="-",
-                caption=f"Results for network {network}",
-                label=f"tab:results-{network}",
-                column_format="l" + "c" * (len(table.columns) - 1) 
+    for network, table in tables.items():
+        latex_str = table.to_latex(
+            index=False,
+            float_format="{:.3f}".format,
+            na_rep="-",
+            caption=f"Results for network {network}",
+            label=f"tab:results-{network}",
+            column_format="l" + "c" * (len(table.columns) - 1) 
 
-            )
+        )
 
         with open(f"results/table_{network}.tex", "w") as f:
             f.write(latex_str)
