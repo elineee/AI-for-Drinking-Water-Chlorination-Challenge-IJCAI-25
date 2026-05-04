@@ -201,7 +201,8 @@ class AutoencoderModel(AnomalyModel):
             test_batches = DataLoader(X_test, batch_size=128, shuffle=False)
 
             anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=300, latent_dim=4)
-            y_pred = self._post_predictions(anomalies)
+            y_pred = np.where(anomalies, -1, 1) 
+            y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
             # Plot the signal
