@@ -24,7 +24,6 @@ from models.CNN_univariate import CNNUnivariateModel
 from models.CNN_windows import CNNWindowsModel
 from models.CNN_windows_VAE import CNNWindowsVAEModel
 from models.CNN_VAE import CNNVAEModel
-from models.GPR import GPRModel
 from models.CNN_multi_nodes import CNNMultiNodesModel
 
 
@@ -54,7 +53,6 @@ AVAILABLE_MODELS = {
     ModelName.CNN_WINDOWS: CNNWindowsModel,
     ModelName.CNN_WINDOWS_VAE: CNNWindowsVAEModel,
     ModelName.CNN_VAE: CNNVAEModel,
-    ModelName.GPR : GPRModel,
     ModelName.CNN_MULTI_NODES: CNNMultiNodesModel
 }
 
