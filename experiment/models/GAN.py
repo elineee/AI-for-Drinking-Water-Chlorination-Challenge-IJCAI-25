@@ -119,7 +119,6 @@ class GANModel(AnomalyModel):
             X_train = torch.tensor(X_train, dtype=torch.float32)
             X_test = torch.tensor(X_test, dtype=torch.float32)
 
-            # # TODO : handle multiple contaminants, for now only one contaminant is handled
             # y_true = calculate_labels(contaminated_df, self.config.contaminants[0].value, self.config.window_size-1)
             # y_true = y_true[:len(X_test)]   
             self.run_model(X_train, X_test, 100)

@@ -195,15 +195,12 @@ class AutoencoderModel(AnomalyModel):
             X_train, X_test, prepared_contaminated_dfs = self._prepare_data(clean_dfs, contaminated_dfs)
             prepared_contaminated_df = pd.concat(prepared_contaminated_dfs)
 
-            # Anomaly detection
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)            
 
             train_batches = DataLoader(X_train, batch_size=128, shuffle=True)
             test_batches = DataLoader(X_test, batch_size=128, shuffle=False)
 
             anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=300, latent_dim=4)
-            # y_pred = np.where(anomalies, -1, 1)  
             y_pred = self._post_predictions(anomalies)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             

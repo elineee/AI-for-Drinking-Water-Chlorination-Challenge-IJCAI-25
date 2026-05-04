@@ -141,7 +141,7 @@ def aggregate_data_for_several_nodes(data: str | pd.DataFrame, node_numbers: lis
     elif method == "separated":
         df_aggregated = df[df["node"].isin(node_numbers)].copy()
     else:
-        raise ValueError("`method` must be either 'mean' or 'sum'")
+        raise ValueError("`method` must be either 'mean' or 'sum' or 'separated'")
 
     # replace node column values by the list of node numbers aggregated
     df_aggregated["node"] = str(node_numbers)
@@ -236,14 +236,16 @@ def create_extended_features(df: pd.DataFrame, feature_column: str, window_size:
     return np.array(features)
     
 
-# TODO Handles one contaminant at a time, see if it's relevant to handle multiple contaminants at the same time or if we just make different calls for each contaminant
 def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int): 
     """ 
     Calculates labels for anomaly detection. For each time step, the label is -1 if the value of the contaminant column is an anomaly (> 0) and 1 otherwise.
 
+    Note: It only handles one contaminant at a time. Multiple contaminants require separate calls. 
+
     Parameters:
     - df: a pandas DataFrame containing the data
     - contaminant_column: the name of the contaminant column to use as feature
+    - window_size: the size of the sliding window
     
     Returns:
     - labels: a np.array containing the labels for each time step (-1 if anomaly, 1 if normal)
@@ -262,16 +264,10 @@ def calculate_labels(df: pd.DataFrame, contaminant_column: str, window_size: int
     labels = []
     
     for i in range(window_size, len(feature)):
-        if "arsenic" in contaminant_column.lower():
-             if feature[i] > 0: 
-                labels.append(-1)
-             else:
-                labels.append(1)
-        else: 
-            if feature[i] > 0: 
-                labels.append(-1)
-            else:
-                labels.append(1)
+        if feature[i] > 0: 
+            labels.append(-1)
+        else:
+            labels.append(1)
 
     labels = np.array(labels)
     
@@ -285,6 +281,7 @@ def calculate_labels_alarm(df: pd.DataFrame, contaminant_column: str, window_siz
     Parameters:
     - df: a pandas DataFrame containing the data
     - contaminant_column: the name of the contaminant column to use as feature
+    - window_size: the size of the sliding window
     
     Returns:
     - labels: a np.array containing the labels for each time step (-1 if anomaly, 1 if normal)
@@ -326,7 +323,7 @@ def get_labels(label_array, window=3, anomaly=True):
     - anomaly=False: detects change points from 0 to >0.  A window is created around each change point to account for detection delays (the window size is two times longer after than before the change point).
     
     Parameters:
-    - label_array: a numpy array containing the original labels 
+    - label_array: a numpy array containing the original labels (-1 for anomaly, 1 for normal)
     - window: the size of the window around each change point (default is 3, which means that 3 points before and 6 points after the change point will be labeled as 1)
     - anomaly : whether we want to detect anomalies (True) or change points (False) 
     
@@ -338,8 +335,8 @@ def get_labels(label_array, window=3, anomaly=True):
     
     for i in range(len(label_array)):
         if anomaly : 
-            # à remettre à 0.01 pour l'arsenic, à laisser à 0 pour les pathogènes
-            y[i] = 1 if label_array[i] > 0 else 0
+            if label_array[i] > 0:
+                y[i] = 1 
         else :
             if i == 0 and label_array[i] > 0:
                 start = 0

@@ -211,8 +211,6 @@ class VAEModel(AutoencoderModel):
             train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
 
-            # Anomaly detection
-            # TODO : handle multiple contaminants, for now only one contaminant is handled
             anomalies, reconstructions, test_error = self.run_model(train_batches, test_batches, epochs=300, hidden_dim=64, latent_dim=4, node=node )
             y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
             
