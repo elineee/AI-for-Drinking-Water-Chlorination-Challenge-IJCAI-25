@@ -580,7 +580,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES1,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=288, 
+    #                     window_size=200, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -591,7 +591,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES2,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=288, 
+    #                     window_size=200, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -602,7 +602,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES3,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=288, 
+    #                     window_size=200, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -613,7 +613,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES4,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=288, 
+    #                     window_size=200, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
@@ -624,7 +624,7 @@ if __name__ == "__main__":
     #                     contaminated_files=CONTAMINATED_FILES5,
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
-    #                     window_size=288, 
+    #                     window_size=200, 
     #                     model_name=ModelName.AUTOENCODER_ALARM,
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
