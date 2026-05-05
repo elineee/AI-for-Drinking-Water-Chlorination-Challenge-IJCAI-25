@@ -10,10 +10,16 @@ Notes:
 - In the CY-DBP network, some nodes never receive chlorine, making anomaly detection impossible on these nodes.
 
 
-
 # Running experiments 
 
-Experiments are launched by defining configurations in the corresponding `main_...` files.
+Several `main_...` files are already provided with all experiments conducted in this work.
+
+To reproduce the experiments:
+- Open the corresponding `main_...` file.
+- Uncomment the desired experiment configurations.
+- Run the file.
+
+
 Each configuration needs: 
 
 - `config_name`: name of the experiment configuration.
@@ -29,7 +35,6 @@ Each configuration needs:
     By default, it is arsenic (for `data_net1` and `data_hanoi`). For `data_cy`, it must be set to `pathogen`.
 
 
-
 # Example of a configuration
 '''
     ExperimentConfig(
@@ -43,15 +48,4 @@ Each configuration needs:
     contaminants=[ContaminationType.PATHOGEN]
 )
 '''
-
-
-
-# Experiments 
-
-Several `main_...` files are already provided with all experiments conducted in this work.
-
-To reproduce the experiments:
-- Open the corresponding `main_...` file.
-- Uncomment the desired experiment configurations.
-- Run the file.
 
