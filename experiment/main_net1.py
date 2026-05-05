@@ -6,7 +6,6 @@ import pickle
 
 if __name__ == "__main__":
     nodes = ["11", "12", "13", "21", "22", "23", "31", "32"] 
-#     nodes = ["21"]
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
@@ -871,61 +870,61 @@ if __name__ == "__main__":
 
 
 
-    for node in nodes: 
-        print(f"Running experiments for node {node}...")
+    # for node in nodes: 
+    #     print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = ["./data/data_arsenic/scada_data_clean_1.csv", "./data/data_arsenic/scada_data_clean_2.csv"]
+    #     CLEAN_FILES = ["./data/data_arsenic/scada_data_clean_1.csv", "./data/data_arsenic/scada_data_clean_2.csv"]
         
-        CONTAMINATED_FILES1 = ["./data/data_arsenic/scada_data_clean_1.csv", "./data/data_arsenic/scada_data_clean_2.csv", "./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_train_2.csv", "./data/data_arsenic/scada_data_conta_22_train_3.csv", "./data/data_arsenic/scada_data_conta_22_train_4.csv", "./data/data_arsenic/scada_data_conta_22_train_5.csv", "./data/data_arsenic/scada_data_conta_22_train_6.csv", "./data/data_arsenic/scada_data_conta_22_train_7.csv", "./data/data_arsenic/scada_data_conta_22_train_8.csv", "./data/data_arsenic/scada_data_conta_22_test_1.csv"]
-        CONTAMINATED_FILES2 = ["./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_arsenic/scada_data_clean_1.csv", "./data/data_arsenic/scada_data_clean_2.csv", "./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_train_2.csv", "./data/data_arsenic/scada_data_conta_22_train_3.csv", "./data/data_arsenic/scada_data_conta_22_train_4.csv", "./data/data_arsenic/scada_data_conta_22_train_5.csv", "./data/data_arsenic/scada_data_conta_22_train_6.csv", "./data/data_arsenic/scada_data_conta_22_train_7.csv", "./data/data_arsenic/scada_data_conta_22_train_8.csv", "./data/data_arsenic/scada_data_conta_22_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_arsenic/scada_data_conta_22_train_1.csv", "./data/data_arsenic/scada_data_conta_22_test_3.csv"]
 
-        configs = [
+    #     configs = [
 
-        ExperimentConfig(
-                        config_name="VAE_CLASSIFIER",
-                        contaminated_files=CONTAMINATED_FILES1,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CLASSIFIER,
-                        model_params={}
-        ), 
+    #     ExperimentConfig(
+    #                     config_name="VAE_CLASSIFIER",
+    #                     contaminated_files=CONTAMINATED_FILES1,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CLASSIFIER,
+    #                     model_params={}
+    #     ), 
         
-        ExperimentConfig(
-                        config_name="VAE_CLASSIFIER2",
-                        contaminated_files=CONTAMINATED_FILES2,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CLASSIFIER,
-                        model_params={}
-        ), 
+    #     ExperimentConfig(
+    #                     config_name="VAE_CLASSIFIER2",
+    #                     contaminated_files=CONTAMINATED_FILES2,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CLASSIFIER,
+    #                     model_params={}
+    #     ), 
         
-        ExperimentConfig(
-                        config_name="VAE_CLASSIFIER3",
-                        contaminated_files=CONTAMINATED_FILES3,
-                        example_files=CLEAN_FILES,
-                        nodes=[node],
-                        window_size=150, 
-                        model_name=ModelName.VAE_CLASSIFIER,
-                        model_params={}
-        )
+    #     ExperimentConfig(
+    #                     config_name="VAE_CLASSIFIER3",
+    #                     contaminated_files=CONTAMINATED_FILES3,
+    #                     example_files=CLEAN_FILES,
+    #                     nodes=[node],
+    #                     window_size=150, 
+    #                     model_name=ModelName.VAE_CLASSIFIER,
+    #                     model_params={}
+    #     )
     
         
-        ]
-        all_results = []
+    #     ]
+    #     all_results = []
 
 
-        for cfg in configs:
-            runner = ExperimentRunner(cfg)
-            res = runner.run()
-            all_results.append(res)
-            # print(all_results)
+    #     for cfg in configs:
+    #         runner = ExperimentRunner(cfg)
+    #         res = runner.run()
+    #         all_results.append(res)
+    #         # print(all_results)
 
-        pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
+    #     pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
 
-        evaluation = Evaluation()
-        evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
-        print(evaluation_results)
+    #     evaluation = Evaluation()
+    #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
+    #     print(evaluation_results)
 
