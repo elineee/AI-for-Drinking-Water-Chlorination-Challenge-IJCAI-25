@@ -883,32 +883,32 @@ if __name__ == "__main__":
         configs = [
 
         ExperimentConfig(
-                        config_name="VAE_CNN",
+                        config_name="VAE_CLASSIFIER",
                         contaminated_files=CONTAMINATED_FILES1,
                         example_files=CLEAN_FILES,
                         nodes=[node],
                         window_size=150, 
-                        model_name=ModelName.VAE_CNN,
+                        model_name=ModelName.VAE_CLASSIFIER,
                         model_params={}
         ), 
         
         ExperimentConfig(
-                        config_name="VAE_CNN2",
+                        config_name="VAE_CLASSIFIER2",
                         contaminated_files=CONTAMINATED_FILES2,
                         example_files=CLEAN_FILES,
                         nodes=[node],
                         window_size=150, 
-                        model_name=ModelName.VAE_CNN,
+                        model_name=ModelName.VAE_CLASSIFIER,
                         model_params={}
         ), 
         
         ExperimentConfig(
-                        config_name="VAE_CNN3",
+                        config_name="VAE_CLASSIFIER3",
                         contaminated_files=CONTAMINATED_FILES3,
                         example_files=CLEAN_FILES,
                         nodes=[node],
                         window_size=150, 
-                        model_name=ModelName.VAE_CNN,
+                        model_name=ModelName.VAE_CLASSIFIER,
                         model_params={}
         )
     

@@ -1007,7 +1007,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1018,7 +1018,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1028,7 +1028,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )
@@ -1070,7 +1070,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1081,7 +1081,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1091,7 +1091,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )
@@ -1133,7 +1133,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1144,7 +1144,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
@@ -1154,7 +1154,7 @@ if __name__ == "__main__":
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
 #                     window_size=100, 
-#                     model_name=ModelName.VAE_CNN,
+#                     model_name=ModelName.VAE_CLASSIFIER,
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )

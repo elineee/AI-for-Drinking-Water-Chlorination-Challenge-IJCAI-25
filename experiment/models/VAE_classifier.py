@@ -11,12 +11,12 @@ from experiment_config import ContaminationType, ExperimentConfig
 from models.VAE import VAE, VAEModel
 from models.CNN import CNNModel
 
-class VAECNN(nn.Module):
-    """ The CNN takes the embedding space and predicts for each point of the initial time series if it's an anomaly or not. """
+class VAEClassifier(nn.Module):
+    """ The classifier takes a VAE embedding as input and predicts for each point of the window if it's an anomaly or not. """
     def __init__(self, latent_dim, hidden_dim, window_size):
         super().__init__()
 
-        self.cnn = nn.Sequential(
+        self.classifier = nn.Sequential(
             nn.Linear(latent_dim, hidden_dim),
             nn.ReLU(),      
             nn.Dropout(0.1),
@@ -27,16 +27,16 @@ class VAECNN(nn.Module):
         )
         
     def forward(self, x):
-        return self.cnn(x)
+        return self.classifier(x)
 
     
-class VAECNNModel(CNNModel):
+class VAEClassifierModel(CNNModel):
     """ 
-    Class for VAE CNN model. It combines the VAE Encoder and the VAE CNN: 
-    - the VAE Encoder built a embedding of a time series in the latent space with the encoder part.
-    - the VAE CNN takes the embedding and predicts for each point of the time series if it's an anomaly or not.  
+    Class for VAE Classifier model. It combines the VAE encoder with a fully-connected classifier:  
+    - the VAE encoder built an embedding of a time series in the latent space with the encoder part.
+    - the classifier takes the embedding and predicts for each point of the window if it's an anomaly or not.  
 
-    CNN training uses all contaminated files, excepting the last one, which is used for testing.
+    Training uses all contaminated files, excepting the last one, which is used for testing.
     """
 
     def __init__(self, *args, **kwargs):
@@ -49,7 +49,7 @@ class VAECNNModel(CNNModel):
 
     def _call_vae_model(self, node):
         """
-        Calls the VAE model used to generate embeddings used for the CNN.
+        Calls the VAE model used to generate embeddings used for the classifier.
 
         Parameters:
         - node: the node id 
@@ -86,7 +86,7 @@ class VAECNNModel(CNNModel):
 
     def run_model(self, train_dataloader, val_dataloader, test_dataloader, weights, epochs, patience):
         """ 
-        Trains the CNN model and evaluates it on the test set.
+        Trains the classifier model and evaluates it on the test set.
         The model predicts a label for each point in each window. 
         For each time step, labels are given by majority vote: it is an anomaly (-1) if more than 50% of the windows covering it predict an anomaly.
 
@@ -101,7 +101,7 @@ class VAECNNModel(CNNModel):
         Returns:
         - mean_results_per_time_step : a list containing the predicted labels for each time step in the test set, where -1 corresponds to an anomaly and 1 to a normal point
         """
-        model = VAECNN(latent_dim=32, hidden_dim=128, window_size=self.config.window_size).to(self.device)
+        model = VAEClassifier(latent_dim=32, hidden_dim=128, window_size=self.config.window_size).to(self.device)
         criterion = nn.BCEWithLogitsLoss(pos_weight=weights) # loss for binary classification
         optimizer = torch.optim.Adam(model.parameters(), lr=0.001, weight_decay=1e-4)
         
@@ -179,7 +179,7 @@ class VAECNNModel(CNNModel):
             if val_f1 > best_val_f1:
                 best_val_f1 = val_f1
                 nb_epochs_without_improvment = 0
-                torch.save(model.state_dict(), f"vaecnn_{node}.pth")
+                torch.save(model.state_dict(), f"vaeclassifier_{node}.pth")
                 print(f" Best model saved with validation F1: {best_val_f1:.4f}")
 
             else: 
@@ -190,7 +190,7 @@ class VAECNNModel(CNNModel):
 
 
         # Load best model before evaluation
-        model.load_state_dict(torch.load(f"vaecnn_{node}.pth", map_location=self.device, weights_only=True))
+        model.load_state_dict(torch.load(f"vaeclassifier_{node}.pth", map_location=self.device, weights_only=True))
             
         plt.figure()
         plt.plot(train_loss, label="train")
@@ -308,7 +308,7 @@ class VAECNNModel(CNNModel):
 
     def _prepare_data(self, contaminated_df, clean_dfs, node, encoder = None):
         """ 
-        Prepares data for training and testing the CNN model.
+        Prepares data for training and testing the classifier model.
         It trains a VAE on clean data and uses it to produce embeddings z for the contaminated data. 
 
         Parameters:
@@ -320,7 +320,7 @@ class VAECNNModel(CNNModel):
         Returns:
         - prepared_df: the contaminated dataframe after removing the first 3 days
         - z : embeddings computed by the encoder (shape (number of windows, latent_dim))
-        - labels: the labels for training/testing the CNN model, where each label is a sliding window of the original labels (shape (number of windows, window_size))
+        - labels: the labels for training/testing the classifier model, where each label is a sliding window of the original labels (shape (number of windows, window_size))
         - encoder: the VAE encoder used to generate embeddings (trained or reused)
         """
         hidden_dim = 128
