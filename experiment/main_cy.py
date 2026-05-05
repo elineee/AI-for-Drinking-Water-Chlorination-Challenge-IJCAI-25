@@ -10,13 +10,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -106,13 +106,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -199,13 +199,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -291,13 +291,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -386,13 +386,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_train_1_2.csv", ".\\data\\data_compet\\scada_data_train_1_3.csv", ".\\data\\data_compet\\scada_data_train_1_4.csv", ".\\data\\data_compet\\scada_data_train_3_1.csv", ".\\data\\data_compet\\scada_data_train_3_2.csv", ".\\data\\data_compet\\scada_data_train_3_3.csv", ".\\data\\data_compet\\scada_data_train_3_4.csv", ".\\data\\data_compet\\scada_data_train_4_1.csv", ".\\data\\data_compet\\scada_data_train_4_2.csv", ".\\data\\data_compet\\scada_data_train_4_3.csv", ".\\data\\data_compet\\scada_data_train_4_4.csv", ".\\data\\data_compet\\scada_data_train_7_1.csv", ".\\data\\data_compet\\scada_data_train_7_2.csv", ".\\data\\data_compet\\scada_data_train_7_3.csv", ".\\data\\data_compet\\scada_data_train_7_4.csv", ".\\data\\data_compet\\scada_data_train_9_1.csv", ".\\data\\data_compet\\scada_data_train_9_2.csv", ".\\data\\data_compet\\scada_data_train_9_3.csv", ".\\data\\data_compet\\scada_data_train_9_4.csv", ".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_train_1_2.csv", ".\\data\\data_cy\\scada_data_train_1_3.csv", ".\\data\\data_cy\\scada_data_train_1_4.csv", ".\\data\\data_cy\\scada_data_train_3_1.csv", ".\\data\\data_cy\\scada_data_train_3_2.csv", ".\\data\\data_cy\\scada_data_train_3_3.csv", ".\\data\\data_cy\\scada_data_train_3_4.csv", ".\\data\\data_cy\\scada_data_train_4_1.csv", ".\\data\\data_cy\\scada_data_train_4_2.csv", ".\\data\\data_cy\\scada_data_train_4_3.csv", ".\\data\\data_cy\\scada_data_train_4_4.csv", ".\\data\\data_cy\\scada_data_train_7_1.csv", ".\\data\\data_cy\\scada_data_train_7_2.csv", ".\\data\\data_cy\\scada_data_train_7_3.csv", ".\\data\\data_cy\\scada_data_train_7_4.csv", ".\\data\\data_cy\\scada_data_train_9_1.csv", ".\\data\\data_cy\\scada_data_train_9_2.csv", ".\\data\\data_cy\\scada_data_train_9_3.csv", ".\\data\\data_cy\\scada_data_train_9_4.csv", ".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_8.csv"]
     
     #     configs = [
 
@@ -476,13 +476,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_train_1_2.csv", ".\\data\\data_compet\\scada_data_train_1_3.csv", ".\\data\\data_compet\\scada_data_train_1_4.csv", ".\\data\\data_compet\\scada_data_train_3_1.csv", ".\\data\\data_compet\\scada_data_train_3_2.csv", ".\\data\\data_compet\\scada_data_train_3_3.csv", ".\\data\\data_compet\\scada_data_train_3_4.csv", ".\\data\\data_compet\\scada_data_train_4_1.csv", ".\\data\\data_compet\\scada_data_train_4_2.csv", ".\\data\\data_compet\\scada_data_train_4_3.csv", ".\\data\\data_compet\\scada_data_train_4_4.csv", ".\\data\\data_compet\\scada_data_train_7_1.csv", ".\\data\\data_compet\\scada_data_train_7_2.csv", ".\\data\\data_compet\\scada_data_train_7_3.csv", ".\\data\\data_compet\\scada_data_train_7_4.csv", ".\\data\\data_compet\\scada_data_train_9_1.csv", ".\\data\\data_compet\\scada_data_train_9_2.csv", ".\\data\\data_compet\\scada_data_train_9_3.csv", ".\\data\\data_compet\\scada_data_train_9_4.csv", ".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_train_1_2.csv", ".\\data\\data_cy\\scada_data_train_1_3.csv", ".\\data\\data_cy\\scada_data_train_1_4.csv", ".\\data\\data_cy\\scada_data_train_3_1.csv", ".\\data\\data_cy\\scada_data_train_3_2.csv", ".\\data\\data_cy\\scada_data_train_3_3.csv", ".\\data\\data_cy\\scada_data_train_3_4.csv", ".\\data\\data_cy\\scada_data_train_4_1.csv", ".\\data\\data_cy\\scada_data_train_4_2.csv", ".\\data\\data_cy\\scada_data_train_4_3.csv", ".\\data\\data_cy\\scada_data_train_4_4.csv", ".\\data\\data_cy\\scada_data_train_7_1.csv", ".\\data\\data_cy\\scada_data_train_7_2.csv", ".\\data\\data_cy\\scada_data_train_7_3.csv", ".\\data\\data_cy\\scada_data_train_7_4.csv", ".\\data\\data_cy\\scada_data_train_9_1.csv", ".\\data\\data_cy\\scada_data_train_9_2.csv", ".\\data\\data_cy\\scada_data_train_9_3.csv", ".\\data\\data_cy\\scada_data_train_9_4.csv", ".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_8.csv"]
     
     #     configs = [
             
@@ -565,13 +565,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -658,13 +658,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
             
@@ -749,13 +749,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_test_8.csv"]
 
     #     configs = [
 
@@ -844,13 +844,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_compet\\scada_data_clean_1.csv", ".\\data\\data_compet\\scada_data_clean_3.csv", ".\\data\\data_compet\\scada_data_clean_4.csv", ".\\data\\data_compet\\scada_data_clean_7.csv", ".\\data\\data_compet\\scada_data_clean_9.csv"]
+    #     CLEAN_FILES = [".\\data\\data_cy\\scada_data_clean_1.csv", ".\\data\\data_cy\\scada_data_clean_3.csv", ".\\data\\data_cy\\scada_data_clean_4.csv", ".\\data\\data_cy\\scada_data_clean_7.csv", ".\\data\\data_cy\\scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_train_1_2.csv", ".\\data\\data_compet\\scada_data_train_1_3.csv", ".\\data\\data_compet\\scada_data_train_1_4.csv", ".\\data\\data_compet\\scada_data_train_3_1.csv", ".\\data\\data_compet\\scada_data_train_3_2.csv", ".\\data\\data_compet\\scada_data_train_3_3.csv", ".\\data\\data_compet\\scada_data_train_3_4.csv", ".\\data\\data_compet\\scada_data_train_4_1.csv", ".\\data\\data_compet\\scada_data_train_4_2.csv", ".\\data\\data_compet\\scada_data_train_4_3.csv", ".\\data\\data_compet\\scada_data_train_4_4.csv", ".\\data\\data_compet\\scada_data_train_7_1.csv", ".\\data\\data_compet\\scada_data_train_7_2.csv", ".\\data\\data_compet\\scada_data_train_7_3.csv", ".\\data\\data_compet\\scada_data_train_7_4.csv", ".\\data\\data_compet\\scada_data_train_9_1.csv", ".\\data\\data_compet\\scada_data_train_9_2.csv", ".\\data\\data_compet\\scada_data_train_9_3.csv", ".\\data\\data_compet\\scada_data_train_9_4.csv", ".\\data\\data_compet\\scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = [".\\data\\data_compet\\scada_data_train_1_1.csv", ".\\data\\data_compet\\scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_train_1_2.csv", ".\\data\\data_cy\\scada_data_train_1_3.csv", ".\\data\\data_cy\\scada_data_train_1_4.csv", ".\\data\\data_cy\\scada_data_train_3_1.csv", ".\\data\\data_cy\\scada_data_train_3_2.csv", ".\\data\\data_cy\\scada_data_train_3_3.csv", ".\\data\\data_cy\\scada_data_train_3_4.csv", ".\\data\\data_cy\\scada_data_train_4_1.csv", ".\\data\\data_cy\\scada_data_train_4_2.csv", ".\\data\\data_cy\\scada_data_train_4_3.csv", ".\\data\\data_cy\\scada_data_train_4_4.csv", ".\\data\\data_cy\\scada_data_train_7_1.csv", ".\\data\\data_cy\\scada_data_train_7_2.csv", ".\\data\\data_cy\\scada_data_train_7_3.csv", ".\\data\\data_cy\\scada_data_train_7_4.csv", ".\\data\\data_cy\\scada_data_train_9_1.csv", ".\\data\\data_cy\\scada_data_train_9_2.csv", ".\\data\\data_cy\\scada_data_train_9_3.csv", ".\\data\\data_cy\\scada_data_train_9_4.csv", ".\\data\\data_cy\\scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = [".\\data\\data_cy\\scada_data_train_1_1.csv", ".\\data\\data_cy\\scada_data_test_8.csv"]
     
     #     configs = [
 
@@ -937,13 +937,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
 
-    #     CLEAN_FILES = ["./data/data_compet/scada_data_clean_1.csv", "./data/data_compet/scada_data_clean_3.csv", "./data/data_compet/scada_data_clean_4.csv", "./data/data_compet/scada_data_clean_7.csv", "./data/data_compet/scada_data_clean_9.csv"]
+    #     CLEAN_FILES = ["./data/data_cy/scada_data_clean_1.csv", "./data/data_cy/scada_data_clean_3.csv", "./data/data_cy/scada_data_clean_4.csv", "./data/data_cy/scada_data_clean_7.csv", "./data/data_cy/scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_train_1_2.csv", "./data/data_compet/scada_data_train_1_3.csv", "./data/data_compet/scada_data_train_1_4.csv", "./data/data_compet/scada_data_train_3_1.csv", "./data/data_compet/scada_data_train_3_2.csv", "./data/data_compet/scada_data_train_3_3.csv", "./data/data_compet/scada_data_train_3_4.csv", "./data/data_compet/scada_data_train_4_1.csv", "./data/data_compet/scada_data_train_4_2.csv", "./data/data_compet/scada_data_train_4_3.csv", "./data/data_compet/scada_data_train_4_4.csv", "./data/data_compet/scada_data_train_7_1.csv", "./data/data_compet/scada_data_train_7_2.csv", "./data/data_compet/scada_data_train_7_3.csv", "./data/data_compet/scada_data_train_7_4.csv", "./data/data_compet/scada_data_train_9_1.csv", "./data/data_compet/scada_data_train_9_2.csv", "./data/data_compet/scada_data_train_9_3.csv", "./data/data_compet/scada_data_train_9_4.csv", "./data/data_compet/scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_train_1_2.csv", "./data/data_cy/scada_data_train_1_3.csv", "./data/data_cy/scada_data_train_1_4.csv", "./data/data_cy/scada_data_train_3_1.csv", "./data/data_cy/scada_data_train_3_2.csv", "./data/data_cy/scada_data_train_3_3.csv", "./data/data_cy/scada_data_train_3_4.csv", "./data/data_cy/scada_data_train_4_1.csv", "./data/data_cy/scada_data_train_4_2.csv", "./data/data_cy/scada_data_train_4_3.csv", "./data/data_cy/scada_data_train_4_4.csv", "./data/data_cy/scada_data_train_7_1.csv", "./data/data_cy/scada_data_train_7_2.csv", "./data/data_cy/scada_data_train_7_3.csv", "./data/data_cy/scada_data_train_7_4.csv", "./data/data_cy/scada_data_train_9_1.csv", "./data/data_cy/scada_data_train_9_2.csv", "./data/data_cy/scada_data_train_9_3.csv", "./data/data_cy/scada_data_train_9_4.csv", "./data/data_cy/scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_8.csv"]
     #       
 
     #     configs = [
@@ -1031,13 +1031,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = ["./data/data_compet/scada_data_clean_1.csv", "./data/data_compet/scada_data_clean_3.csv", "./data/data_compet/scada_data_clean_4.csv", "./data/data_compet/scada_data_clean_7.csv", "./data/data_compet/scada_data_clean_9.csv"]
+    #     CLEAN_FILES = ["./data/data_cy/scada_data_clean_1.csv", "./data/data_cy/scada_data_clean_3.csv", "./data/data_cy/scada_data_clean_4.csv", "./data/data_cy/scada_data_clean_7.csv", "./data/data_cy/scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_train_1_2.csv", "./data/data_compet/scada_data_train_1_3.csv", "./data/data_compet/scada_data_train_1_4.csv", "./data/data_compet/scada_data_train_3_1.csv", "./data/data_compet/scada_data_train_3_2.csv", "./data/data_compet/scada_data_train_3_3.csv", "./data/data_compet/scada_data_train_3_4.csv", "./data/data_compet/scada_data_train_4_1.csv", "./data/data_compet/scada_data_train_4_2.csv", "./data/data_compet/scada_data_train_4_3.csv", "./data/data_compet/scada_data_train_4_4.csv", "./data/data_compet/scada_data_train_7_1.csv", "./data/data_compet/scada_data_train_7_2.csv", "./data/data_compet/scada_data_train_7_3.csv", "./data/data_compet/scada_data_train_7_4.csv", "./data/data_compet/scada_data_train_9_1.csv", "./data/data_compet/scada_data_train_9_2.csv", "./data/data_compet/scada_data_train_9_3.csv", "./data/data_compet/scada_data_train_9_4.csv", "./data/data_compet/scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_train_1_2.csv", "./data/data_cy/scada_data_train_1_3.csv", "./data/data_cy/scada_data_train_1_4.csv", "./data/data_cy/scada_data_train_3_1.csv", "./data/data_cy/scada_data_train_3_2.csv", "./data/data_cy/scada_data_train_3_3.csv", "./data/data_cy/scada_data_train_3_4.csv", "./data/data_cy/scada_data_train_4_1.csv", "./data/data_cy/scada_data_train_4_2.csv", "./data/data_cy/scada_data_train_4_3.csv", "./data/data_cy/scada_data_train_4_4.csv", "./data/data_cy/scada_data_train_7_1.csv", "./data/data_cy/scada_data_train_7_2.csv", "./data/data_cy/scada_data_train_7_3.csv", "./data/data_cy/scada_data_train_7_4.csv", "./data/data_cy/scada_data_train_9_1.csv", "./data/data_cy/scada_data_train_9_2.csv", "./data/data_cy/scada_data_train_9_3.csv", "./data/data_cy/scada_data_train_9_4.csv", "./data/data_cy/scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_8.csv"]
     
     #     configs = [
 
@@ -1125,13 +1125,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = ["./data/data_compet/scada_data_clean_1.csv", "./data/data_compet/scada_data_clean_3.csv", "./data/data_compet/scada_data_clean_4.csv", "./data/data_compet/scada_data_clean_7.csv", "./data/data_compet/scada_data_clean_9.csv"]
+    #     CLEAN_FILES = ["./data/data_cy/scada_data_clean_1.csv", "./data/data_cy/scada_data_clean_3.csv", "./data/data_cy/scada_data_clean_4.csv", "./data/data_cy/scada_data_clean_7.csv", "./data/data_cy/scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_train_1_2.csv", "./data/data_compet/scada_data_train_1_3.csv", "./data/data_compet/scada_data_train_1_4.csv", "./data/data_compet/scada_data_train_3_1.csv", "./data/data_compet/scada_data_train_3_2.csv", "./data/data_compet/scada_data_train_3_3.csv", "./data/data_compet/scada_data_train_3_4.csv", "./data/data_compet/scada_data_train_4_1.csv", "./data/data_compet/scada_data_train_4_2.csv", "./data/data_compet/scada_data_train_4_3.csv", "./data/data_compet/scada_data_train_4_4.csv", "./data/data_compet/scada_data_train_7_1.csv", "./data/data_compet/scada_data_train_7_2.csv", "./data/data_compet/scada_data_train_7_3.csv", "./data/data_compet/scada_data_train_7_4.csv", "./data/data_compet/scada_data_train_9_1.csv", "./data/data_compet/scada_data_train_9_2.csv", "./data/data_compet/scada_data_train_9_3.csv", "./data/data_compet/scada_data_train_9_4.csv", "./data/data_compet/scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_train_1_2.csv", "./data/data_cy/scada_data_train_1_3.csv", "./data/data_cy/scada_data_train_1_4.csv", "./data/data_cy/scada_data_train_3_1.csv", "./data/data_cy/scada_data_train_3_2.csv", "./data/data_cy/scada_data_train_3_3.csv", "./data/data_cy/scada_data_train_3_4.csv", "./data/data_cy/scada_data_train_4_1.csv", "./data/data_cy/scada_data_train_4_2.csv", "./data/data_cy/scada_data_train_4_3.csv", "./data/data_cy/scada_data_train_4_4.csv", "./data/data_cy/scada_data_train_7_1.csv", "./data/data_cy/scada_data_train_7_2.csv", "./data/data_cy/scada_data_train_7_3.csv", "./data/data_cy/scada_data_train_7_4.csv", "./data/data_cy/scada_data_train_9_1.csv", "./data/data_cy/scada_data_train_9_2.csv", "./data/data_cy/scada_data_train_9_3.csv", "./data/data_cy/scada_data_train_9_4.csv", "./data/data_cy/scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_8.csv"]
 
 
     #     configs = [
@@ -1216,13 +1216,13 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = ["./data/data_compet/scada_data_clean_1.csv", "./data/data_compet/scada_data_clean_3.csv", "./data/data_compet/scada_data_clean_4.csv", "./data/data_compet/scada_data_clean_7.csv", "./data/data_compet/scada_data_clean_9.csv"]
+    #     CLEAN_FILES = ["./data/data_cy/scada_data_clean_1.csv", "./data/data_cy/scada_data_clean_3.csv", "./data/data_cy/scada_data_clean_4.csv", "./data/data_cy/scada_data_clean_7.csv", "./data/data_cy/scada_data_clean_9.csv"]
     
-    #     CONTAMINATED_FILES1 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_train_1_2.csv", "./data/data_compet/scada_data_train_1_3.csv", "./data/data_compet/scada_data_train_1_4.csv", "./data/data_compet/scada_data_train_3_1.csv", "./data/data_compet/scada_data_train_3_2.csv", "./data/data_compet/scada_data_train_3_3.csv", "./data/data_compet/scada_data_train_3_4.csv", "./data/data_compet/scada_data_train_4_1.csv", "./data/data_compet/scada_data_train_4_2.csv", "./data/data_compet/scada_data_train_4_3.csv", "./data/data_compet/scada_data_train_4_4.csv", "./data/data_compet/scada_data_train_7_1.csv", "./data/data_compet/scada_data_train_7_2.csv", "./data/data_compet/scada_data_train_7_3.csv", "./data/data_compet/scada_data_train_7_4.csv", "./data/data_compet/scada_data_train_9_1.csv", "./data/data_compet/scada_data_train_9_2.csv", "./data/data_compet/scada_data_train_9_3.csv", "./data/data_compet/scada_data_train_9_4.csv", "./data/data_compet/scada_data_test_0.csv"]
-    #     CONTAMINATED_FILES2 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_6.csv"]
-    #     CONTAMINATED_FILES5 = ["./data/data_compet/scada_data_train_1_1.csv", "./data/data_compet/scada_data_test_8.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_train_1_2.csv", "./data/data_cy/scada_data_train_1_3.csv", "./data/data_cy/scada_data_train_1_4.csv", "./data/data_cy/scada_data_train_3_1.csv", "./data/data_cy/scada_data_train_3_2.csv", "./data/data_cy/scada_data_train_3_3.csv", "./data/data_cy/scada_data_train_3_4.csv", "./data/data_cy/scada_data_train_4_1.csv", "./data/data_cy/scada_data_train_4_2.csv", "./data/data_cy/scada_data_train_4_3.csv", "./data/data_cy/scada_data_train_4_4.csv", "./data/data_cy/scada_data_train_7_1.csv", "./data/data_cy/scada_data_train_7_2.csv", "./data/data_cy/scada_data_train_7_3.csv", "./data/data_cy/scada_data_train_7_4.csv", "./data/data_cy/scada_data_train_9_1.csv", "./data/data_cy/scada_data_train_9_2.csv", "./data/data_cy/scada_data_train_9_3.csv", "./data/data_cy/scada_data_train_9_4.csv", "./data/data_cy/scada_data_test_0.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES5 = ["./data/data_cy/scada_data_train_1_1.csv", "./data/data_cy/scada_data_test_8.csv"]
     #     configs = [
 
     #     ExperimentConfig(
