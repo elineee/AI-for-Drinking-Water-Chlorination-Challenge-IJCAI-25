@@ -1002,7 +1002,7 @@ if __name__ == "__main__":
 #     configs = [
 
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN2",
+#                     config_name="Embedding_Classifier2",
 #                     contaminated_files=CONTAMINATED_FILES2,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1013,7 +1013,7 @@ if __name__ == "__main__":
 #     ), 
     
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN3",
+#                     config_name="Embedding_Classifier3",
 #                     contaminated_files=CONTAMINATED_FILES3,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1023,7 +1023,7 @@ if __name__ == "__main__":
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN4",
+#                     config_name="Embedding_Classifier4",
 #                     contaminated_files=CONTAMINATED_FILES4,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1043,10 +1043,10 @@ if __name__ == "__main__":
 #         all_results.append(res)
 #         # print(all_results)
 
-#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
+#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
 
 #     evaluation = Evaluation()
-#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
+#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
 #     print(evaluation_results)
 
 
@@ -1065,7 +1065,7 @@ if __name__ == "__main__":
 
     
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN2",
+#                     config_name="Embedding_Classifier2",
 #                     contaminated_files=CONTAMINATED_FILES2,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1076,7 +1076,7 @@ if __name__ == "__main__":
 #     ), 
     
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN3",
+#                     config_name="Embedding_Classifier3",
 #                     contaminated_files=CONTAMINATED_FILES3,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1086,7 +1086,7 @@ if __name__ == "__main__":
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN4",
+#                     config_name="Embedding_Classifier4",
 #                     contaminated_files=CONTAMINATED_FILES4,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1106,10 +1106,10 @@ if __name__ == "__main__":
 #         all_results.append(res)
 #         # print(all_results)
 
-#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
+#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
 
 #     evaluation = Evaluation()
-#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
+#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
 #     print(evaluation_results)
 
 
@@ -1128,7 +1128,7 @@ if __name__ == "__main__":
 
     
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN2",
+#                     config_name="Embedding_Classifier2",
 #                     contaminated_files=CONTAMINATED_FILES2,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1139,7 +1139,7 @@ if __name__ == "__main__":
 #     ), 
     
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN3",
+#                     config_name="Embedding_Classifier3",
 #                     contaminated_files=CONTAMINATED_FILES3,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1149,7 +1149,7 @@ if __name__ == "__main__":
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     ), 
 #     ExperimentConfig(
-#                     config_name="Embedding_CNN4",
+#                     config_name="Embedding_Classifier4",
 #                     contaminated_files=CONTAMINATED_FILES4,
 #                     example_files=CLEAN_FILES,
 #                     nodes=[node],
@@ -1169,10 +1169,10 @@ if __name__ == "__main__":
 #         all_results.append(res)
 #         # print(all_results)
 
-#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_CNN.pkl", "wb"))
+#     pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
 
 #     evaluation = Evaluation()
-#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_CNN.pkl")
+#     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
 #     print(evaluation_results)
 
 #     # print("Evaluation results:")

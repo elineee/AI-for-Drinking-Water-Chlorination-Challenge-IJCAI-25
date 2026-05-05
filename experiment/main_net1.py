@@ -923,9 +923,9 @@ if __name__ == "__main__":
             all_results.append(res)
             # print(all_results)
 
-        pickle.dump(all_results, open(f"all_results_{node}_Embeddings_CNN.pkl", "wb"))
+        pickle.dump(all_results, open(f"all_results_{node}_Embedding_Classifier.pkl", "wb"))
 
         evaluation = Evaluation()
-        evaluation_results = evaluation.evaluate(f"all_results_{node}_Embeddings_CNN.pkl")
+        evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
         print(evaluation_results)
 
