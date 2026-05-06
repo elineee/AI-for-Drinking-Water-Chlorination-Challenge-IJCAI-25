@@ -54,7 +54,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
     
-    
     ]
     all_results = []
 
@@ -117,7 +116,6 @@ if __name__ == "__main__":
                     model_params={},
                     contaminants=[ContaminationType.PATHOGEN]
     )
-    
     
     ]
     all_results = []
@@ -182,7 +180,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
     
-    
     ]
     all_results = []
 
@@ -198,12 +195,6 @@ if __name__ == "__main__":
     evaluation = Evaluation()
     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN.pkl")
     print(evaluation_results)
-
-
-    
-############################################################################################################################################################################################################
-
-    
 
 
 #############################################################################################################################################################################################################
@@ -252,9 +243,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
     
-
-    
-    
     ]
     all_results = []
 
@@ -273,9 +261,7 @@ if __name__ == "__main__":
 
     print("Evaluation results:")
 
-    # evaluation.plot_confusion_matrices("CNN", evaluation_results)
-    # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+
     
     node = "dist1332"
     print(f"Running experiments for node {node}...")
@@ -320,9 +306,6 @@ if __name__ == "__main__":
                     model_params={},
                     contaminants=[ContaminationType.PATHOGEN]
     )
-    
-
-    
     
     ]
     all_results = []
@@ -389,7 +372,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
 
-    
     ]
     all_results = []
 
@@ -421,7 +403,6 @@ if __name__ == "__main__":
     CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist606_16.csv"]
     CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist606_8.csv", "./data/data_global_warming/scada_data_test_dist1915_606_62.csv"]
 
-        
 
     configs = [
     
@@ -484,8 +465,6 @@ if __name__ == "__main__":
     CONTAMINATED_FILES2 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_train_dist1332_9.csv", "./data/data_global_warming/scada_data_train_dist1332_13.csv", "./data/data_global_warming/scada_data_train_dist1332_20.csv", "./data/data_global_warming/scada_data_train_dist1332_24.csv", "./data/data_global_warming/scada_data_train_dist1332_65.csv", "./data/data_global_warming/scada_data_train_dist1332_82.csv", "./data/data_global_warming/scada_data_train_dist1332_93.csv", "./data/data_global_warming/scada_data_train_dist1915_15.csv", "./data/data_global_warming/scada_data_train_dist1915_25.csv", "./data/data_global_warming/scada_data_test_dist1332_37.csv"]
     CONTAMINATED_FILES3 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1332_46.csv"]
     CONTAMINATED_FILES4 = ["./data/data_global_warming/scada_data_train_dist1332_5.csv", "./data/data_global_warming/scada_data_test_dist1915_1.csv"]
-
-        
 
     configs = [
     
@@ -651,9 +630,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
     
-
-    
-    
     ]
     all_results = []
 
@@ -718,9 +694,6 @@ if __name__ == "__main__":
                     contaminants=[ContaminationType.PATHOGEN]
     )
     
-
-    
-    
     ]
     all_results = []
 
@@ -784,9 +757,6 @@ if __name__ == "__main__":
                     model_params={},
                     contaminants=[ContaminationType.PATHOGEN]
     )
-    
-
-    
     
     ]
     all_results = []

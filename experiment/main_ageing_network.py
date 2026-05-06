@@ -200,10 +200,8 @@ if __name__ == "__main__":
     # print(evaluation_results)
 
 
-
-
-
 # #############################################################################################################################################################################################################
+
 
     # node = "dist606"
     # print(f"Running experiments for node {node}...")
@@ -266,8 +264,6 @@ if __name__ == "__main__":
     # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
     # print(evaluation_results)
 
-    # print("Evaluation results:")
-
 
 
     
@@ -313,10 +309,7 @@ if __name__ == "__main__":
     #                 model_params={},
     #                 contaminants=[ContaminationType.PATHOGEN]
     # )
-    
 
-    
-    
     # ]
     # all_results = []
 
@@ -332,8 +325,6 @@ if __name__ == "__main__":
     # evaluation = Evaluation()
     # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
     # print(evaluation_results)
-
-    # print("Evaluation results:")
 
 
     
@@ -398,8 +389,6 @@ if __name__ == "__main__":
     # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
     # print(evaluation_results)
 
-    # print("Evaluation results:")
-
 
 # ############################################################################################################################################################################################################
 
@@ -590,9 +579,7 @@ if __name__ == "__main__":
 #     print(evaluation_results)
 
 
-
 # ############################################################################################################################################################################################################
-
 
 
 #     node = "dist606"
@@ -605,7 +592,6 @@ if __name__ == "__main__":
 #     CONTAMINATED_FILES4 = ["./data/data_ageing_network/scada_data_train_dist606_8.csv", "./data/data_ageing_network/scada_data_test_dist606_114.csv"]
 
 #     configs = [
-
     
 #     ExperimentConfig(
 #                     config_name="CNN_Window_VAE2",
@@ -638,9 +624,6 @@ if __name__ == "__main__":
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )
-    
-
-    
     
 #     ]
 #     all_results = []
@@ -705,9 +688,6 @@ if __name__ == "__main__":
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )
     
-
-    
-    
 #     ]
 #     all_results = []
 
@@ -771,9 +751,6 @@ if __name__ == "__main__":
 #                     contaminants=[ContaminationType.PATHOGEN]
 #     )
     
-
-    
-    
 #     ]
 #     all_results = []
 
@@ -790,12 +767,10 @@ if __name__ == "__main__":
 #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_WINDOWS_VAE.pkl")
 #     print(evaluation_results)
 
-    
-        
+            
 # ############################################################################################################################################################################################################
 
 
- 
 #     node = "dist606"
 #     print(f"Running experiments for node {node}...")
     
@@ -808,7 +783,6 @@ if __name__ == "__main__":
 
 #     configs = [
 
-    
 #     ExperimentConfig(
 #                     config_name="CNN_Univariate2",
 #                     contaminated_files=CONTAMINATED_FILES2,
@@ -871,7 +845,6 @@ if __name__ == "__main__":
 
 #     configs = [
 
-    
 #     ExperimentConfig(
 #                     config_name="CNN_Univariate2",
 #                     contaminated_files=CONTAMINATED_FILES2,
@@ -934,7 +907,6 @@ if __name__ == "__main__":
 
 
 #     configs = [
-
     
 #     ExperimentConfig(
 #                     config_name="CNN_Univariate2",
@@ -988,7 +960,6 @@ if __name__ == "__main__":
 
 # ############################################################################################################################################################################################################
     
-
 
 #     node = "dist606"
 #     print(f"Running experiments for node {node}...")
@@ -1174,5 +1145,3 @@ if __name__ == "__main__":
 #     evaluation = Evaluation()
 #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
 #     print(evaluation_results)
-
-#     # print("Evaluation results:")

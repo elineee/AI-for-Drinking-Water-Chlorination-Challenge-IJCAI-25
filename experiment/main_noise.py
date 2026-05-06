@@ -53,7 +53,6 @@ if __name__ == "__main__":
     #                     contaminants=[ContaminationType.PATHOGEN]
     #     )
         
-        
     #     ]
     #     all_results = []
 
@@ -180,9 +179,6 @@ if __name__ == "__main__":
     #                     model_params={},
     #                     contaminants=[ContaminationType.PATHOGEN]
     #     )
-        
-
-        
         
     #     ]
     #     all_results = []

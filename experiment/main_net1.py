@@ -6,15 +6,16 @@ import pickle
 
 if __name__ == "__main__":
     nodes = ["11", "12", "13", "21", "22", "23", "31", "32"] 
+
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_no_conta_53_days_1.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_2.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_3.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_4.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_no_conta_53_days_1.csv", "./data/data_net1/scada_data_no_conta_53_days_2.csv", "./data/data_net1/scada_data_no_conta_53_days_3.csv", "./data/data_net1/scada_data_no_conta_53_days_4.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -48,9 +49,6 @@ if __name__ == "__main__":
 #                         model_params={}
 #         )
         
-
-        
-        
 #         ]
 #         all_results = []
 
@@ -67,21 +65,18 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_LOF_ALARM.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("LOF_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
     
-    
+
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_no_conta_53_days_1.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_2.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_3.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_4.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_no_conta_53_days_1.csv", "./data/data_net1/scada_data_no_conta_53_days_2.csv", "./data/data_net1/scada_data_no_conta_53_days_3.csv", "./data/data_net1/scada_data_no_conta_53_days_4.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -114,7 +109,6 @@ if __name__ == "__main__":
 #                         model_name=ModelName.ONE_CLASS_SVM_ALARM,
 #                         model_params={}
 #         )
-    
         
 #         ]
 #         all_results = []
@@ -132,22 +126,19 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_ONE_CLASS_SVM_ALARM.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
-
-#         #evaluation.plot_confusion_matrices("ONE_CLASS_SVM_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+    
+#############################################################################################################################################################################################################
     
 
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_net1\\scada_data_no_conta_53_days_1.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_2.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_3.csv", ".\\data\\data_net1\\scada_data_no_conta_53_days_4.csv"]
+    #     CLEAN_FILES = ["./data/data_net1/scada_data_no_conta_53_days_1.csv", "./data/data_net1/scada_data_no_conta_53_days_2.csv", "./data/data_net1/scada_data_no_conta_53_days_3.csv", "./data/data_net1/scada_data_no_conta_53_days_4.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_conta_22_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_test_3.csv"]
 
     #     configs = [
 
@@ -198,21 +189,18 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_ISO_FOREST_ALARM.pkl")
     #     print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("ISO_FOREST_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
     
-    
+
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -246,7 +234,6 @@ if __name__ == "__main__":
 #                         model_params={"gamma": "scale", "epsilon": 0.01, "kernel": "rbf", "C": 10}
 #         )
     
-        
 #         ]
 #         all_results = []
 
@@ -263,20 +250,18 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_SVR_ALARM.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("SVR_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
+#############################################################################################################################################################################################################
+
+
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_train_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_3.csv", ".\\data\\data_net1\\scada_data_conta_22_train_4.csv", ".\\data\\data_net1\\scada_data_conta_22_train_5.csv", ".\\data\\data_net1\\scada_data_conta_22_train_6.csv", ".\\data\\data_net1\\scada_data_conta_22_train_7.csv", ".\\data\\data_net1\\scada_data_conta_22_train_8.csv", ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv", "./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_train_2.csv", "./data/data_net1/scada_data_conta_22_train_3.csv", "./data/data_net1/scada_data_conta_22_train_4.csv", "./data/data_net1/scada_data_conta_22_train_5.csv", "./data/data_net1/scada_data_conta_22_train_6.csv", "./data/data_net1/scada_data_conta_22_train_7.csv", "./data/data_net1/scada_data_conta_22_train_8.csv", "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -308,10 +293,7 @@ if __name__ == "__main__":
 #                         window_size=225, 
 #                         model_name=ModelName.CNN,
 #                         model_params={}
-#         )
-        
-
-        
+#         )    
         
 #         ]
 #         all_results = []
@@ -329,87 +311,81 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
-#     for node in nodes: 
-#         print(f"Running experiments for node {node}...")
+#############################################################################################################################################################################################################
+
+
+    # for node in nodes: 
+    #     print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+    #     CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_train_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_3.csv", ".\\data\\data_net1\\scada_data_conta_22_train_4.csv", ".\\data\\data_net1\\scada_data_conta_22_train_5.csv", ".\\data\\data_net1\\scada_data_conta_22_train_6.csv", ".\\data\\data_net1\\scada_data_conta_22_train_7.csv", ".\\data\\data_net1\\scada_data_conta_22_train_8.csv", ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv", "./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_train_2.csv", "./data/data_net1/scada_data_conta_22_train_3.csv", "./data/data_net1/scada_data_conta_22_train_4.csv", "./data/data_net1/scada_data_conta_22_train_5.csv", "./data/data_net1/scada_data_conta_22_train_6.csv", "./data/data_net1/scada_data_conta_22_train_7.csv", "./data/data_net1/scada_data_conta_22_train_8.csv", "./data/data_net1/scada_data_conta_22_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_3.csv"]
         
-#         configs = [
+    #     configs = [
             
-#             ExperimentConfig(
-#                     config_name="CNN_multi_nodes1",
-#                     contaminated_files=CONTAMINATED_FILES1,
-#                     example_files=CLEAN_FILES,
-#                     nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
-#                     window_size=225, 
-#                     model_name=ModelName.CNN_MULTI_NODES,
-#                     model_params={},
-#                     # contaminants=[ContaminationType.PATHOGEN]
-#             ),
+    #         ExperimentConfig(
+    #                 config_name="CNN_multi_nodes1",
+    #                 contaminated_files=CONTAMINATED_FILES1,
+    #                 example_files=CLEAN_FILES,
+    #                 nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
+    #                 window_size=225, 
+    #                 model_name=ModelName.CNN_MULTI_NODES,
+    #                 model_params={}
+    #         ),
             
-#             ExperimentConfig(
-#                     config_name="CNN_multi_nodes2",
-#                     contaminated_files=CONTAMINATED_FILES2,
-#                     example_files=CLEAN_FILES,
-#                     nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
-#                     window_size=225,
-#                     model_name=ModelName.CNN_MULTI_NODES,
-#                     model_params={},
-#                     # contaminants=[ContaminationType.PATHOGEN]
-#             ),
+    #         ExperimentConfig(
+    #                 config_name="CNN_multi_nodes2",
+    #                 contaminated_files=CONTAMINATED_FILES2,
+    #                 example_files=CLEAN_FILES,
+    #                 nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
+    #                 window_size=225,
+    #                 model_name=ModelName.CNN_MULTI_NODES,
+    #                 model_params={}
+    #         ),
             
-#             ExperimentConfig(
-#                     config_name="CNN_multi_nodes3",
-#                     contaminated_files=CONTAMINATED_FILES3,
-#                     example_files=CLEAN_FILES,
-#                     nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
-#                     window_size=225,
-#                     model_name=ModelName.CNN_MULTI_NODES,
-#                     model_params={},
-#                     # contaminants=[ContaminationType.PATHOGEN]
-#             ),
+    #         ExperimentConfig(
+    #                 config_name="CNN_multi_nodes3",
+    #                 contaminated_files=CONTAMINATED_FILES3,
+    #                 example_files=CLEAN_FILES,
+    #                 nodes=["11", "12", "13", "21", "22", "23", "31", "32"],
+    #                 window_size=225,
+    #                 model_name=ModelName.CNN_MULTI_NODES,
+    #                 model_params={}
+    #         ),
     
         
-#         ]
-#         all_results = []
+    #     ]
+    #     all_results = []
 
 
-#         for cfg in configs:
-#             runner = ExperimentRunner(cfg)
-#             res = runner.run()
-#             all_results.append(res)
-#             print(all_results)
+    #     for cfg in configs:
+    #         runner = ExperimentRunner(cfg)
+    #         res = runner.run()
+    #         all_results.append(res)
+    #         print(all_results)
 
-#         pickle.dump(all_results, open(f"all_results_CNN_MULTI_NODES_NET1.pkl", "wb"))
+    #     pickle.dump(all_results, open(f"all_results_CNN_multi_nodes_net1.pkl", "wb"))
 
-#         evaluation = Evaluation()
-#         evaluation_results = evaluation.evaluate(f"all_results_CNN_MULTI_NODES_NET1.pkl")
-#         print(evaluation_results)
+    #     evaluation = Evaluation()
+    #     evaluation_results = evaluation.evaluate(f"all_results_CNN_multi_nodes_net1.pkl")
+    #     print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("LOF_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
+
+
         
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [ ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [ ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = [ "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = [ "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -443,9 +419,6 @@ if __name__ == "__main__":
 #                         model_params={}
 #         )
         
-
-        
-        
 #         ]
 #         all_results = []
 
@@ -462,20 +435,18 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_AUTOENCODER.pkl")
 #         print(evaluation_results)
 
-#         # print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("AUTOENCODER", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
+
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [ ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [ ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = [ "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = [ "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
             
@@ -485,7 +456,6 @@ if __name__ == "__main__":
 #                 contaminated_files=CONTAMINATED_FILES1,
 #                 nodes=[node],
 #                 window_size=50,
-#                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
 #                 model_params={}
 #         ),
             
@@ -497,7 +467,6 @@ if __name__ == "__main__":
 #                     window_size=50,
 #                     model_name=ModelName.LSTM_AUTOENCODER_ALARM,
 #                     model_params={},
-#                     # contaminants=[ContaminationType.PATHOGEN]
 #             ),
             
 #             ExperimentConfig(
@@ -508,7 +477,6 @@ if __name__ == "__main__":
 #                     window_size=50,
 #                     model_name=ModelName.LSTM_AUTOENCODER_ALARM,
 #                     model_params={},
-#                     # contaminants=[ContaminationType.PATHOGEN]
 #             ),
     
         
@@ -528,20 +496,18 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_LSTM_AUTOENCODER.pkl")
 #         print(evaluation_results)
 
-#         # print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("AUTOENCODER", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
+#############################################################################################################################################################################################################
+
+
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [ ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [ ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = [ "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = [ "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -574,10 +540,7 @@ if __name__ == "__main__":
 #                         model_name=ModelName.VAE_ALARM,
 #                         model_params={}
 #         )
-        
-
-        
-        
+         
 #         ]
 #         all_results = []
 
@@ -594,20 +557,20 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_VAE.pkl")
 #         print(evaluation_results)
 
-#         # print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("AUTOENCODER", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+
+#############################################################################################################################################################################################################
+
+
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_train_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_3.csv", ".\\data\\data_net1\\scada_data_conta_22_train_4.csv", ".\\data\\data_net1\\scada_data_conta_22_train_5.csv", ".\\data\\data_net1\\scada_data_conta_22_train_6.csv", ".\\data\\data_net1\\scada_data_conta_22_train_7.csv", ".\\data\\data_net1\\scada_data_conta_22_train_8.csv", ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv", "./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_train_2.csv", "./data/data_net1/scada_data_conta_22_train_3.csv", "./data/data_net1/scada_data_conta_22_train_4.csv", "./data/data_net1/scada_data_conta_22_train_5.csv", "./data/data_net1/scada_data_conta_22_train_6.csv", "./data/data_net1/scada_data_conta_22_train_7.csv", "./data/data_net1/scada_data_conta_22_train_8.csv", "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -639,10 +602,7 @@ if __name__ == "__main__":
 #                         window_size=225, 
 #                         model_name=ModelName.CNN_VAE,
 #                         model_params={}
-#         )
-        
-
-        
+#         )    
         
 #         ]
 #         all_results = []
@@ -660,21 +620,19 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+
+#############################################################################################################################################################################################################
         
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+#         CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-#         CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_train_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_3.csv", ".\\data\\data_net1\\scada_data_conta_22_train_4.csv", ".\\data\\data_net1\\scada_data_conta_22_train_5.csv", ".\\data\\data_net1\\scada_data_conta_22_train_6.csv", ".\\data\\data_net1\\scada_data_conta_22_train_7.csv", ".\\data\\data_net1\\scada_data_conta_22_train_8.csv", ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-#         CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+#         CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv", "./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_train_2.csv", "./data/data_net1/scada_data_conta_22_train_3.csv", "./data/data_net1/scada_data_conta_22_train_4.csv", "./data/data_net1/scada_data_conta_22_train_5.csv", "./data/data_net1/scada_data_conta_22_train_6.csv", "./data/data_net1/scada_data_conta_22_train_7.csv", "./data/data_net1/scada_data_conta_22_train_8.csv", "./data/data_net1/scada_data_conta_22_test_1.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_3.csv"]
 
 #         configs = [
 
@@ -707,10 +665,7 @@ if __name__ == "__main__":
 #                         model_name=ModelName.CNN_WINDOWS,
 #                         model_params={}
 #         )
-        
-
-        
-        
+         
 #         ]
 #         all_results = []
 
@@ -727,14 +682,8 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_WINDOWS.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-
-
-
+#############################################################################################################################################################################################################
 
 
     # for node in nodes: 
@@ -775,10 +724,9 @@ if __name__ == "__main__":
     #                     example_files=CLEAN_FILES,
     #                     nodes=[node],
     #                     window_size=50, 
-    #                     model_name=ModelName.CNN_WINDOWS,
+    #                     model_name=ModelName.CNN_WINDOWS_VAE,
     #                     model_params={}
     #     )
-        
         
     #     ]
     #     all_results = []
@@ -798,17 +746,17 @@ if __name__ == "__main__":
 
 
 
-
+#############################################################################################################################################################################################################
 
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv"]
+    #     CLEAN_FILES = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv"]
         
-    #     CONTAMINATED_FILES1 = [".\\data\\data_net1\\scada_data_clean_1.csv", ".\\data\\data_net1\\scada_data_clean_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_train_2.csv", ".\\data\\data_net1\\scada_data_conta_22_train_3.csv", ".\\data\\data_net1\\scada_data_conta_22_train_4.csv", ".\\data\\data_net1\\scada_data_conta_22_train_5.csv", ".\\data\\data_net1\\scada_data_conta_22_train_6.csv", ".\\data\\data_net1\\scada_data_conta_22_train_7.csv", ".\\data\\data_net1\\scada_data_conta_22_train_8.csv", ".\\data\\data_net1\\scada_data_conta_22_test_1.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_net1\\scada_data_conta_22_train_1.csv", ".\\data\\data_net1\\scada_data_conta_22_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_net1/scada_data_clean_1.csv", "./data/data_net1/scada_data_clean_2.csv", "./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_train_2.csv", "./data/data_net1/scada_data_conta_22_train_3.csv", "./data/data_net1/scada_data_conta_22_train_4.csv", "./data/data_net1/scada_data_conta_22_train_5.csv", "./data/data_net1/scada_data_conta_22_train_6.csv", "./data/data_net1/scada_data_conta_22_train_7.csv", "./data/data_net1/scada_data_conta_22_train_8.csv", "./data/data_net1/scada_data_conta_22_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_net1/scada_data_conta_22_train_1.csv", "./data/data_net1/scada_data_conta_22_test_3.csv"]
         
     #     configs = [
 
@@ -844,7 +792,6 @@ if __name__ == "__main__":
         
 
         
-        
     #     ]
     #     all_results = []
 
@@ -861,13 +808,8 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
     #     print(evaluation_results)
 
-    #     print("Evaluation results:")
 
-        #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-        # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-        # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
-
+#############################################################################################################################################################################################################
 
 
     # for node in nodes: 
@@ -927,4 +869,3 @@ if __name__ == "__main__":
     #     evaluation = Evaluation()
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
     #     print(evaluation_results)
-

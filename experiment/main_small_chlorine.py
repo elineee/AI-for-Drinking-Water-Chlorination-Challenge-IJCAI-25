@@ -10,11 +10,11 @@ if __name__ == "__main__":
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+    #     CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
 
-    #     CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-    #     CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
+    #     CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
     
     #     configs = [
 
@@ -68,20 +68,18 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
+
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+#         CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
 
-#         CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-#         CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
+#         CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
     
     
 #         configs = [
@@ -117,7 +115,6 @@ if __name__ == "__main__":
 #                     model_params={},
 #                     contaminants=[ContaminationType.PATHOGEN]
 #             )
-    
         
 #         ]
 #         all_results = []
@@ -135,22 +132,17 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_CNN_MULTI_NODES.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
-
-#         #evaluation.plot_confusion_matrices("LOF_ALARM", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
+#############################################################################################################################################################################################################
 
 
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
         
-#         CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+#         CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
 
-#         CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-#         CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
+#         CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
     
 #         configs = [
         
@@ -186,10 +178,7 @@ if __name__ == "__main__":
 #                         model_params={},
 #                         contaminants=[ContaminationType.PATHOGEN]
 #         )
-        
 
-        
-        
 #         ]
 #         all_results = []
 
@@ -206,24 +195,19 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-        
+#############################################################################################################################################################################################################
+
     
 #     for node in nodes: 
 #         print(f"Running experiments for node {node}...")
 
-#         CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+#         CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
 
-#         CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-#         CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-#         CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+#         CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
+#         CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
+#         CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
     
-          
-
 #         configs = [
         
 #         ExperimentConfig(
@@ -274,13 +258,7 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_WINDOWS.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
-
-#         #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-
-
+#############################################################################################################################################################################################################
 
 
     # for node in nodes: 
@@ -294,7 +272,6 @@ if __name__ == "__main__":
     
     
     #     configs = [
-
         
     #     ExperimentConfig(
     #                     config_name="CNN_Window_VAE2",
@@ -328,9 +305,6 @@ if __name__ == "__main__":
     #                     contaminants=[ContaminationType.PATHOGEN]
     #     )
         
-
-        
-        
     #     ]
     #     all_results = []
 
@@ -347,13 +321,8 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_WINDOWS_VAE.pkl")
     #     print(evaluation_results)
 
-    #     print("Evaluation results:")
 
-    #     #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-    #     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    #     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-        
-
+#############################################################################################################################################################################################################
 
 
 #     for node in nodes: 
@@ -366,9 +335,7 @@ if __name__ == "__main__":
 #         CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
     
 
-
 #         configs = [
-
         
 #         ExperimentConfig(
 #                         config_name="CNN_Univariate2",
@@ -418,13 +385,8 @@ if __name__ == "__main__":
 #         evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
 #         print(evaluation_results)
 
-#         print("Evaluation results:")
 
-#         evaluation.plot_confusion_matrices("CNN", evaluation_results)
-#         evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-#         evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-    
-
+#############################################################################################################################################################################################################
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
@@ -486,5 +448,3 @@ if __name__ == "__main__":
     #     evaluation = Evaluation()
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
     #     print(evaluation_results)
-
-    #     # print("Evaluation results:")

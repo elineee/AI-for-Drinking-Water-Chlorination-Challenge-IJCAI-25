@@ -48,9 +48,6 @@ if __name__ == "__main__":
     #                     model_params={}
     #     )
         
-
-        
-        
     #     ]
     #     all_results = []
 
@@ -68,8 +65,9 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
+#############################################################################################################################################################################################################
     
-    
+
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -128,6 +126,10 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_ONE_CLASS_SVM_ALARM.pkl")
     #     print(evaluation_results)
 
+
+
+#############################################################################################################################################################################################################
+    
 
 
 
@@ -190,7 +192,10 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
+
+#############################################################################################################################################################################################################
     
+
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -251,6 +256,8 @@ if __name__ == "__main__":
 
 
 
+#############################################################################################################################################################################################################
+    
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
@@ -294,8 +301,6 @@ if __name__ == "__main__":
     #     )
         
 
-        
-        
     #     ]
     #     all_results = []
 
@@ -312,12 +317,11 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN.pkl")
     #     print(evaluation_results)
 
-    #     print("Evaluation results:")
 
-    #     #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-    #     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    #     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
     
+
+
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -336,8 +340,6 @@ if __name__ == "__main__":
     #                 nodes=["5", "9", "16", "18", "20", "22", "25", "31"],
     #                 window_size=150, 
     #                 model_name=ModelName.CNN_MULTI_NODES,
-    #                 model_params={},
-    #                 # contaminants=[ContaminationType.PATHOGEN]
     #         ),
             
     #         ExperimentConfig(
@@ -348,7 +350,6 @@ if __name__ == "__main__":
     #                 window_size=150,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
-    #                 # contaminants=[ContaminationType.PATHOGEN]
     #         ),
             
     #         ExperimentConfig(
@@ -359,10 +360,8 @@ if __name__ == "__main__":
     #                 window_size=150,
     #                 model_name=ModelName.CNN_MULTI_NODES,
     #                 model_params={},
-    #                 # contaminants=[ContaminationType.PATHOGEN]
     #         ),
     
-        
     #     ]
     #     all_results = []
 
@@ -380,7 +379,8 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
-
+#############################################################################################################################################################################################################
+    
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -422,7 +422,6 @@ if __name__ == "__main__":
     #                     model_params={}
     #     )
         
-        
     #     ]
     #     all_results = []
 
@@ -439,12 +438,8 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_AUTOENCODER.pkl")
     #     print(evaluation_results)
 
-    #     # print("Evaluation results:")
 
-    #     #evaluation.plot_confusion_matrices("AUTOENCODER", evaluation_results)
-    #     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    #     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-
+#############################################################################################################################################################################################################
 
     
     # for node in nodes: 
@@ -475,8 +470,7 @@ if __name__ == "__main__":
     #                 nodes=[node],
     #                 window_size=50,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
-    #                 model_params={},
-    #                 # contaminants=[ContaminationType.PATHOGEN]
+    #                 model_params={}
     #         ),
             
     #         ExperimentConfig(
@@ -486,8 +480,7 @@ if __name__ == "__main__":
     #                 nodes=[node],
     #                 window_size=50,
     #                 model_name=ModelName.LSTM_AUTOENCODER_ALARM,
-    #                 model_params={},
-    #                 # contaminants=[ContaminationType.PATHOGEN]
+    #                 model_params={}
     #         ),
     
         
@@ -508,16 +501,17 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
-
+#############################################################################################################################################################################################################
     
+
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
-    #     CLEAN_FILES = [".\\data\\data_hanoi\\scada_data_clean_1.csv", ".\\data\\data_hanoi\\scada_data_clean_2.csv"]
+    #     CLEAN_FILES = ["./data/data_hanoi/scada_data_clean_1.csv", "./data/data_hanoi/scada_data_clean_2.csv"]
         
-    #     CONTAMINATED_FILES1 = [ ".\\data\\data_hanoi\\scada_data_conta_3_test_1.csv"]
-    #     CONTAMINATED_FILES2 = [".\\data\\data_hanoi\\scada_data_conta_3_test_2.csv"]
-    #     CONTAMINATED_FILES3 = [ ".\\data\\data_hanoi\\scada_data_conta_3_test_3.csv"]
+    #     CONTAMINATED_FILES1 = ["./data/data_hanoi/scada_data_conta_3_test_1.csv"]
+    #     CONTAMINATED_FILES2 = ["./data/data_hanoi/scada_data_conta_3_test_2.csv"]
+    #     CONTAMINATED_FILES3 = ["./data/data_hanoi/scada_data_conta_3_test_3.csv"]
 
     #     configs = [
 
@@ -569,8 +563,8 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
-
-
+#############################################################################################################################################################################################################
+    
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -613,9 +607,6 @@ if __name__ == "__main__":
     #                     model_params={}
     #     )
         
-
-        
-        
     #     ]
     #     all_results = []
 
@@ -632,12 +623,8 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_VAE.pkl")
     #     print(evaluation_results)
 
-    #     print("Evaluation results:")
-
-    #     evaluation.plot_confusion_matrices("CNN", evaluation_results)
-    #     evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    #     evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
         
+#############################################################################################################################################################################################################
     
 
     # for node in nodes: 
@@ -681,9 +668,6 @@ if __name__ == "__main__":
     #                     model_params={}
     #     )
         
-
-        
-        
     #     ]
     #     all_results = []
 
@@ -700,15 +684,10 @@ if __name__ == "__main__":
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_WINDOWS.pkl")
     #     print(evaluation_results)
 
-    #     print("Evaluation results:")
 
-    #     #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-    #     # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-    #     # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
-        
-
-   
+#############################################################################################################################################################################################################
     
+
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
         
@@ -749,7 +728,6 @@ if __name__ == "__main__":
     #                     model_name=ModelName.CNN_WINDOWS_VAE,
     #                     model_params={}
     #     )
-        
 
     #     ]
     #     all_results = []
@@ -768,8 +746,8 @@ if __name__ == "__main__":
     #     print(evaluation_results)
 
 
-
-
+#############################################################################################################################################################################################################
+    
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
@@ -830,13 +808,9 @@ if __name__ == "__main__":
         # evaluation_results = evaluation.evaluate(f"all_results_{node}_CNN_Univariate.pkl")
         # print(evaluation_results)
 
-        # print("Evaluation results:")
 
-        #evaluation.plot_confusion_matrices("CNN", evaluation_results)
-        # evaluation.plot_results_nodes_within_configurations(Metrics.ACCURACY, evaluation_results)
-        # evaluation.plot_mean_configuration(Metrics.ACCURACY, evaluation_results)
+#############################################################################################################################################################################################################
     
-
 
     # for node in nodes: 
     #     print(f"Running experiments for node {node}...")
@@ -894,5 +868,3 @@ if __name__ == "__main__":
     #     evaluation = Evaluation()
     #     evaluation_results = evaluation.evaluate(f"all_results_{node}_Embedding_Classifier.pkl")
     #     print(evaluation_results)
-
-    #     # print("Evaluation results:")
