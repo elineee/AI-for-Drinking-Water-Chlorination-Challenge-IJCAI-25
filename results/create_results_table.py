@@ -26,16 +26,19 @@ def create_results_summary_table(csv_file):
             delay = model_df[(model_df["false_alarm"] == 0) & (model_df["event_missed"] == 0)]["delay"]
             delay_avg = delay.mean()
             total = len(model_df)
-            false_alarm_rate = model_df["false_alarm"].sum() / total
-            event_missed_rate = model_df["event_missed"].sum() / total
+            total_false_alarm = model_df["false_alarm"].sum()
+            total_event_missed= model_df["event_missed"].sum()
+
+            false_alarm_rate = total_false_alarm / total
+            event_missed_rate = total_event_missed / total
 
             rows.append({
                 "Model": model.replace("_", " "),
                 "F1 Score": f1_score_avg,
                 "Recall": recall_avg,
                 "Delay": delay_avg,
-                "\\% False Alarms": f"{false_alarm_rate * 100:.1f}",
-                "\\% Event Missed": f"{event_missed_rate * 100:.1f}",
+                "False Alarms": f"{false_alarm_rate * 100:.1f}\\% ({total_false_alarm}/{total})",
+                "Event Missed": f"{event_missed_rate * 100:.1f}\\% ({total_event_missed}/{total})",
             })
 
         table = pd.DataFrame(rows).sort_values("F1 Score", ascending=False).reset_index(drop=True)
