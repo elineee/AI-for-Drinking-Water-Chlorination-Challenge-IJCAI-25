@@ -394,7 +394,7 @@ if __name__ == "__main__":
 #                         contaminated_files=CONTAMINATED_FILES1,
 #                         example_files=CLEAN_FILES,
 #                         nodes=[node],
-#                         window_size=50, 
+#                         window_size=225, 
 #                         model_name=ModelName.AUTOENCODER_ALARM,
 #                         model_params={}
 #         ), 
