@@ -1,12 +1,12 @@
 from experiment import ExperimentRunner
 from experiment_config import ContaminationType, ExperimentConfig, ModelName
-from evaluation import Evaluation, Metrics
+from evaluation import Evaluation
 
 import pickle
 
-#################
-# DONT REMOVE FIRST 3 DAYS HERE IN THE CODE BC ALREADY DONE IN THE DATA !!!!!!
-##################
+# ######################################################################################
+# # DONT REMOVE FIRST 3 DAYS IN THE CODE BECAUSE IT IS ALREADY DONE IN THE DATA !!!!!!##
+# ######################################################################################
 
 if __name__ == "__main__":
     
