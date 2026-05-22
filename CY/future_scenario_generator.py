@@ -1,5 +1,5 @@
 """
-This file contains code for creating new (random) contamination scenarios.
+This file contains code for creating new (random) contamination scenarios for more extreme case scenario (e.g, global warming, ageing network)
 """
 import random
 #random.seed(424242)
@@ -104,12 +104,6 @@ class ScenarioGenerator():
                                 epanet_api.get_msx_species_idx("C_SRA"),
                                 EpanetConstants.EN_SETPOINT, reservoir_toc, pat_idx)
 
-        ## Adjust chlorination strategy
-        #cl_booster_pat_id = ["CL2PAT1", "CL2PAT2", "CL2PAT3", "CL2PAT4", "CL2PAT5"]
-        #for pat_id in cl_booster_pat_id:
-        #    pat_idx = scenario.epanet_api.MSXgetindex(EpanetConstants.MSX_PATTERN, pat_id)
-        #    scenario.epanet_api.MSXsetpattern(pat_idx, [np.random.normal(reservoir_toc)], 1)
-
     def _adjust_peak_demands(self, epanet_api):
         dmd_pat_factor = self._s_params["peak_demand_factor"]
 
@@ -148,9 +142,7 @@ class ScenarioGenerator():
             scenario.epanet_api.setbasedemand(node_idx, 1, base_demand)
 
     def _create_random_contamination_event(self, node_id: str, scenario):
-        # time_window = self._s_params["contam_time_window"]
         time_window = (4, 7)
-        # duration_interval = self._s_params["contam_duration_interval"]
         duration_interval = (500, 1000)
 
         hyd_time_step = scenario.get_hydraulic_time_step()  # Usually 5min time steps
@@ -228,45 +220,13 @@ class ScenarioGenerator():
 
             for _ in range(self._s_params["n_contam_events"]):
                 node_id = random.choice(all_junctions)
-                # node_id = "dist423"
                 self._create_random_contamination_event(node_id, scenario)
 
             # Run final simulation and discard first few days
             scada_data = scenario.run_advanced_quality_simulation(hyd_file_in=hyd_file, verbose=verbose)
-            # scada_data = scenario.run_simulation(verbose=True)
             scada_data.join(scada_data_clean)
 
-            # scada_data_clean = scada_data_clean.extract_time_window(start_time=to_seconds(days=skip_days))
-            # scada_data = scada_data.extract_time_window(start_time=to_seconds(days=skip_days))
-
             return scada_data_clean, scada_data
-
-    def sim_results_to_numpy(self, scada_data: ScadaData):
-        all_junctions = scada_data.sensor_config.junctions
-
-        return {"flows": scada_data.get_data_flows(), "demands": scada_data.get_data_demands(),
-                "CL2": scada_data.get_data_bulk_species_node_concentration({"CL2": all_junctions}),
-                "P": scada_data.get_data_bulk_species_node_concentration({"P": all_junctions}),
-                "C_FRA": scada_data.get_data_bulk_species_node_concentration({"C_FRA": all_junctions}),
-                "C_SRA": scada_data.get_data_bulk_species_node_concentration({"C_SRA": all_junctions})}
-
-    def get_features(self, data: ScadaData, node_idx: list[int] = None):
-        """ Extract features for contamination detection """
-        contam_label = np.zeros(data["P"].shape[0])
-        if node_idx is None:
-            p_conc = np.argwhere(data["P"] > 1e-1)
-            print("p_conc", p_conc)
-
-            idx = np.unique(p_conc[:, 0])
-            contam_label[idx] = 1
-
-            contam_nodes_idx = np.unique(np.argwhere(data["P"] > 1e-1)[:, 1])
-        else:
-            contam_nodes_idx = node_idx
-
-        # return the label, the chlorine concentration at the nodes where the contamination happened and the index of those nodes
-        print("contam_nodes_idx", contam_nodes_idx)
-        return contam_label, data["CL2"][:, contam_nodes_idx], contam_nodes_idx
 
 
 if __name__ == "__main__":
@@ -276,8 +236,6 @@ if __name__ == "__main__":
         
         f_inp_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_6days_0.inp")  # 6 days long scenario
         f_msx_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_6days_0.msx")
-        #f_inp_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_365days.inp")   # 365 days long scenario
-        #f_msx_in = os.path.join(script_dir, "CY-DBP_competition_stream_competition_365days.msx")
 
         # Verify that the files exist before running
         if not os.path.exists(f_msx_in):
@@ -290,41 +248,26 @@ if __name__ == "__main__":
         #                         temperature_factor=0.001, ageing_factor=0.005,
         #                         urban_growth_factor=0.03) # global warming, network not maintained (scenario for robustness)
         
-        # 0.99 for temperature factor if global warming
+        # Ageing network scenario
+        # gen = ScenarioGenerator(f_inp_in, f_msx_in,
+        #                         temperature_factor=0.001, ageing_factor=0.99,
+        #                         urban_growth_factor=0.03) # global warming, network not maintained (scenario for robustness)
+        
+        # global warming scenario
         gen = ScenarioGenerator(f_inp_in, f_msx_in,
-                                temperature_factor=0.001, ageing_factor=0.99,
-                                urban_growth_factor=0.03) # global warming, network not maintained (scenario for robustness)
-
+                                temperature_factor=0.99, ageing_factor=0.005,
+                                urban_growth_factor=0.03)
 
         scada_data_clean, scada_data_contam = gen.run_simulation()
-        # data_clean = gen.sim_results_to_numpy(scada_data_clean)
-        # data_contam = gen.sim_results_to_numpy(scada_data_contam)
-        
+
         all_junctions = scada_data_contam.network_topo.get_all_junctions() 
-        # scada_data_contam.plot_bulk_species_node_concentration({"P": ["dist356", "dist399", "dist485", "dist606", "dist1028", "dist1332", "dist1363", "dist1459", "dist1464", "dist1915"]}) 
-        # scada_data_contam.plot_bulk_species_node_concentration({"CL2": ["dist356", "dist399"]})
-        # scada_data_contam.plot_bulk_species_node_concentration({"CL2": ["dist485", "dist606"]})
-        # scada_data_contam.plot_bulk_species_node_concentration({"CL2": ["dist1028", "dist1332"]})
-        # scada_data_contam.plot_bulk_species_node_concentration({"CL2": ["dist1363", "dist1459"]})
-        # scada_data_contam.plot_bulk_species_node_concentration({"CL2": ["dist1464", "dist1915"]})
-        
-        # scada_data_contam.plot_bulk_species_node_concentration({"P": all_junctions}) 
-
-        # contam_label, cl2_conc, contam_idx = gen.get_features(data_contam)
-        # _, cl2_conc_clean, _ = gen.get_features(data_clean, contam_idx) # get us the label, the chlorine concentration and index that tells where the contamination happened
-
-        # # # TODO
-        # print(contam_idx, cl2_conc.shape, cl2_conc_clean.shape)
-        # print(np.argwhere(contam_label == 1).flatten())
-        # cl2_diff = cl2_conc_clean - cl2_conc
-        # plot_timeseries_data(cl2_diff.T)
         
         df = scada_data_contam.to_pandas_dataframe(export_raw_data=False)
         df_clean = scada_data_clean.to_pandas_dataframe(export_raw_data=False)
         
         conta = False
         nodes = [ "dist606", "dist1332", "dist1915"]
-        nodes = ["dist1915"]
+        # Check if there is a significant increase in chlorine concentration at the nodes we're interested in (i.e., dist606, dist1332, dist1915)
         for column in df.columns: 
             for node in nodes:
                 if node in column and "at CL2 @" in column:
@@ -340,7 +283,7 @@ if __name__ == "__main__":
                         print("Contamination event detected in column", column)
             
             
-
+        # Rename columns to match the format of the original data (e.g., replace [CUSTOM UNIT] with [MG], and CL2 with Chlorine)
         for column in df.columns:
             if "[CUSTOM UNIT]" in column:
                 new_column_name = column.replace("[CUSTOM UNIT]", "[MG]")
@@ -349,25 +292,6 @@ if __name__ == "__main__":
                 new_column_name = column.replace("CL2", "Chlorine")
                 df.rename(columns={column: new_column_name}, inplace=True)
         
+        # Save the contaminated data to a new CSV file if a contamination event was detected at one of the nodes of interest
         if conta:
-            df.to_csv(f"scada_data_tzqt_{conta_node}_{i}.csv", index=False)
-        
-        # all_columns_conta = []
-        # for column in df.columns:
-        #     conta = False
-        #     if "at P" in column:
-        #         if "dist" in column:
-        #             elements = df[column] 
-        #             for element in elements:
-        #                 if element > 1e-1:
-        #                     conta = True
-        #             if conta:
-        #                 print("Contamination event detected in column", column)
-        #                 all_columns_conta.append(column)
-                        
-        # nodes = ["dist356", "dist399", "dist485", "dist606", "dist1028", "dist1332", "dist1363", "dist1459", "dist1464", "dist1915"]
-        # for column in all_columns_conta:
-        #     for node in nodes:
-        #         if node in column:
-        #             df.to_csv(f"scada_data_train_{node}.csv", index=False)
-        #             break
+            df.to_csv(f"scada_data_test_{conta_node}_{i}.csv", index=False)
