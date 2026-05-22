@@ -7,6 +7,9 @@ import math
 import numpy as np
 from epyt_flow.simulation import ScenarioSimulator, EpanetConstants
 
+# This file is used to create the dependencies dict that contains, for each contaminated node, the list of nodes that are affected by the contamination event (i.e. the nodes where a significant change in chlorine concentration is observed between the clean and contaminated scenarios).
+# This dict is then used to select the interesting nodes to monitor for each contaminated node.
+
 
 file_path = os.path.join(sys.path[0], "scada_data_clean.csv")
 df_clean = pd.read_csv(file_path)
@@ -22,8 +25,6 @@ f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6day
 scenario = ScenarioSimulator(f_inp_in=f_inp_in, f_msx_in=f_msx_in)
 
 ALL_NODES = scenario.get_topology().get_all_junctions() # get all nodes in the network
-
-print(ALL_NODES)
 
 scenario.close()
 
@@ -80,53 +81,80 @@ def create_random_contamination_event(time_window: tuple[int, int],
     return ("P", profile_P), ("C_FRA", profile_C_FRA), ("C_SRA", profile_C_SRA)
 
 def get_contaminated_nodes(df):
-        contaminated_nodes = []
-        for node in ALL_NODES:
-            column_name_P = f"bulk_species_node [CUSTOM UNIT] at P @ {node}"
-            if column_name_P in df.columns:
-                if df[column_name_P].max() > 0:
-                    contaminated_nodes.append(node)
+    """ 
+    Returns the list of contaminated nodes (nodes affected by the contamination event)
+    
+    Parameters:
+    - df: the dataframe containing the time series data (Pd.DataFrame)
+    
+    Returns:
+    - a list of contaminated nodes (nodes affected by the contamination event) (list of strings)
+    """
+    
+    contaminated_nodes = []
+    for node in ALL_NODES:
+        column_name_P = f"bulk_species_node [CUSTOM UNIT] at P @ {node}"
+        if column_name_P in df.columns:
+            if df[column_name_P].max() > 0:
+                contaminated_nodes.append(node)
 
-        return contaminated_nodes
+    return contaminated_nodes
     
 def get_interesting_nodes(df, nodes):
-        interesting_nodes = []
-        for node in nodes: 
-            column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
-            if column_name_cl in df.columns:
-                if df[column_name_cl].max() > 0.2 :
-                    interesting_nodes.append(node)
-        return interesting_nodes
+    """ 
+    Returns the list of nodes that have a chlorine concentration above 0.2 mg/L at some point during the simulation
     
-# def get_node_where_significant_change(df_clean, df_contaminated, nodes):
-#         significant_change_nodes = []
-#         for node in nodes:
-#             column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
-#             if column_name_cl in df_clean.columns and column_name_cl in df_contaminated.columns:
-#                 mean_clean = df_clean[column_name_cl].mean() 
-#                 mean_contaminated = df_contaminated[column_name_cl].mean() 
-#                 difference = abs(mean_contaminated - mean_clean)
-#                 if difference > 0.005:  # Threshold for significant change
-#                     significant_change_nodes.append(node)
-#         return significant_change_nodes
+    Parameters:
+    - df: the dataframe containing the time series data (Pd.DataFrame)
+    - nodes: the list of considered nodes (list of strings)
+    
+    Returns:
+    - a list of nodes thtat have a chlorine concentration above 0.2 mg/L at some point during the simulation (list of strings)
+    """
+    
+    interesting_nodes = []
+    for node in nodes: 
+        column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
+        if column_name_cl in df.columns:
+            if df[column_name_cl].max() > 0.2 :
+                interesting_nodes.append(node)
+    return interesting_nodes
+    
+def get_node_where_significant_change(df_clean, df_contaminated, nodes):
+    """ 
+    Returns the list of nodes where a significant change in chlorine concentration is observed between the clean and contaminated scenarios
+    
+    Parameters:
+    - df_clean: the dataframe containing the time series data for the clean scenario (Pd.DataFrame)
+    - df_contaminated: the dataframe containing the time series data for the contaminated scenario (Pd.DataFrame)
+    - nodes: the list of considered nodes (list of strings)
+    
+    Returns:
+    - a list of nodes where a significant change in chlorine concentration is observed between the clean and contaminated scenarios (list of strings)
+    """
+    
+    significant_change_nodes = []
+    for node in nodes:
+        column_name_cl = f"bulk_species_node [MG] at CL2 @ {node}"
+        if column_name_cl in df_clean.columns and column_name_cl in df_contaminated.columns:
+            mean_clean = df_clean[column_name_cl].mean() 
+            mean_contaminated = df_contaminated[column_name_cl].mean() 
+            difference = abs(mean_contaminated - mean_clean)
+            if difference > 0.005:  # Threshold for significant change
+                significant_change_nodes.append(node)
+    return significant_change_nodes
 
 i = 0
 for f_inp, f_msx in files:
     f_inp_in = os.path.join(sys.path[0], f_inp)
     f_msx_in = os.path.join(sys.path[0], f_msx)
     for node_id in ALL_NODES:
-        # f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.inp")
-        # f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_6days_0.msx")
-        #f_inp_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.inp")   
-        #f_msx_in = os.path.join(sys.path[0], "CY-DBP_competition_stream_competition_365days.msx")
 
         ########################################################################
         # Parameters of the contamination events
         duration_interval = (60, 480)    # Duration interval of the contamination event in minutes 
         n_contamination_events = 1  # Number of contamination events to generate
         time_window = (2, 5)        # Event can start between day 3 and day 6
-        #n_contamination_events = 5  # Alternative: multiple events over the year
-        #time_window = (5, 350)      # Event can start between day 6 and day 350
         ########################################################################
 
         # Create simulation scenario
@@ -143,7 +171,6 @@ for f_inp, f_msx in files:
             all_junctions = scenario.get_topology().get_all_junctions() # get all nodes in the network
             contamination_patterns = [] 
             for _ in range(n_contamination_events):
-                # node_id = random.choice(all_junctions) # select a random node
 
                 contaminants_profiles = create_random_contamination_event(time_window, duration_interval,
                                                                             n_time_steps) # get contamination profiles for each species
@@ -152,18 +179,12 @@ for f_inp, f_msx in files:
                     scenario.add_species_injection_source(species_id, node_id, pattern, 
                                                             EpanetConstants.EN_MASS) # inject contamination into the node following the profile
 
-            # Compute labels for each time step
-            # 1 if a contamination present, 0 otherwise
-            y = np.sum(contamination_patterns, axis=0) != 0
-            print(y.shape)  # TODO: Export labels
 
             # TEST: run simulation
             # Place sensors at all nodes 
             scenario.place_bulk_species_node_sensors_everywhere(["P", "CL2"]) # Measure of pathogen and chlorine. Chlorine is used as a proxy to detect contamination 
             # Run hydraulic and water quality simulation
             scada_data = scenario.run_simulation(verbose=True) 
-            # Plot chlorine concentration at a specific node   
-            # scada_data.plot_bulk_species_node_concentration({"CL2": ["dist71"]}) 
             
             # Export SCADA results 
             df_contaminated = scada_data.to_pandas_dataframe(export_raw_data=False)
@@ -171,11 +192,9 @@ for f_inp, f_msx in files:
         contaminated_nodes = get_contaminated_nodes(df_contaminated)
         print(contaminated_nodes)
         
-        # interesting_nodes = get_interesting_nodes(df_contaminated, contaminated_nodes)
-        # print(interesting_nodes)
+        interesting_nodes = get_interesting_nodes(df_contaminated, contaminated_nodes)
 
-        # significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
-        # print(significant_change_nodes)
+        significant_change_nodes = get_node_where_significant_change(df_clean=df_clean, df_contaminated=df_contaminated, nodes=interesting_nodes)
 
         dict_dependencies[node_id] = contaminated_nodes
 
@@ -183,10 +202,7 @@ for f_inp, f_msx in files:
     import pickle
     with open('dict_dependencies_all_' + str(i) + '.pkl', 'wb') as f:
         pickle.dump(dict_dependencies, f)
-    # test if can load : 
-    # with open('dict_dependencies_all_' + str(i) + '.pkl', 'rb') as f:
-    #     loaded_dict = pickle.load(f)
-    # print(loaded_dict)
+
     i += 1
 
 

@@ -62,6 +62,8 @@ def create_random_contamination_event(time_window: tuple[int, int],
 if __name__ == "__main__":
     f_inp_in = "CY-DBP_competition_stream_competition_6days_0.inp"  #inp file for topology and hydraulics
     f_msx_in = "CY-DBP_competition_stream_competition_6days_0.msx" # msx file for water quality and species
+    
+    # files for 365 days simulations :
     #f_inp_in = "CY-DBP_competition_stream_competition_365days.inp"   
     #f_msx_in = "CY-DBP_competition_stream_competition_365days.msx"
 
@@ -70,6 +72,8 @@ if __name__ == "__main__":
     duration_interval = (60, 480)    # Duration interval of the contamination event in minutes 
     n_contamination_events = 2  # Number of contamination events to generate
     time_window = (2, 5)        # Event can start between day 3 and day 6
+    
+    # parameters for 365 days simulations :
     #n_contamination_events = 5  # Alternative: multiple events over the year
     #time_window = (5, 350)      # Event can start between day 6 and day 350
     ########################################################################
@@ -96,11 +100,6 @@ if __name__ == "__main__":
                 contamination_patterns.append(pattern) # pattern is the list of values at each time step for each species
                 scenario.add_species_injection_source(species_id, node_id, pattern, 
                                                       EpanetConstants.EN_MASS) # inject contamination into the node following the profile
-
-        # Compute labels for each time step
-        # 1 if a contamination present, 0 otherwise
-        y = np.sum(contamination_patterns, axis=0) != 0
-        print(y.shape)  # TODO: Export labels
 
         # TEST: run simulation
         # Place sensors at all nodes 
