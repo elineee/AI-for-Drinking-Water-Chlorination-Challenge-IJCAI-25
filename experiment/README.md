@@ -1,8 +1,8 @@
 # Types of data
-There are three types of data in the folder data: 
+There are three types of data in the folder `data`: 
 
-- `data_net1`: data generated with the Net1 network, a small network with few nodes.
-- `data_hanoi`: data generated with the Hanoi network, a medium-sized network.
+- `data_hanoi`: data generated with the Hanoi network, small network whose chlorine concentration pattern is simple and very similar from one node to another.
+- `data_net1`: data generated with the Net1 network, a very small network whose chlorine concentration pattern is complex.
 - `data_cy`: data generated with the CY-DBP network, a large and more complex network, where not all nodes are relevant for anomaly detection.
 
 Notes: 
@@ -12,7 +12,15 @@ Notes:
 
 # Running experiments 
 
-Several `main_...` files are already provided with all experiments conducted in this work.
+Several `main_...` files are already provided with all experiments conducted in this work, in the folder `experiment`:  
+- `main_hanoi`: experiments conducted on the Hanoi network. 
+- `main_net1`: experiments conducted on the Net1 network. 
+- `main_cy`: experiments conducted on the CY-DBP network. 
+- `main_low_chlorine`: experiments conducted with low chlorine concentration, on the CY-DBP network.  
+- `main_noise`: experiments conducted with noisy data, on the CY-DBP network.  
+- `main_ageing_network`: experiments conducted with the simulation of an ageing network conditions, on the CY-DBP network.  
+- `main_global_warming`: experiments conducted with the simulation of global warming conditions, on the CY-DBP network.  
+
 
 To reproduce the experiments:
 - Open the corresponding `main_...` file.

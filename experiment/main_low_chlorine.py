@@ -10,11 +10,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+        CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
     
         configs = [
 
@@ -73,11 +73,11 @@ if __name__ == "__main__":
 
     
         
-    CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+    CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-    CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-    CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-    CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+    CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+    CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+    CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
 
 
     configs = [
@@ -136,11 +136,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+        CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
     
         configs = [
         
@@ -200,11 +200,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
 
-        CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+        CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
     
         configs = [
         
@@ -262,11 +262,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+        CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
     
     
         configs = [
@@ -326,11 +326,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
         
-        CLEAN_FILES = [".\\data\\data_small_chlorine\\scada_data_clean_1.csv", ".\\data\\data_small_chlorine\\scada_data_clean_3.csv", ".\\data\\data_small_chlorine\\scada_data_clean_4.csv"]
+        CLEAN_FILES = [".\\data\\data_low_chlorine\\scada_data_clean_1.csv", ".\\data\\data_low_chlorine\\scada_data_clean_3.csv", ".\\data\\data_low_chlorine\\scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_small_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_small_chlorine\\scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = [".\\data\\data_small_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_small_chlorine\\scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = [".\\data\\data_low_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_low_chlorine\\scada_data_train_1_2.csv", ".\\data\\data_low_chlorine\\scada_data_train_1_3.csv", ".\\data\\data_low_chlorine\\scada_data_train_3_1.csv", ".\\data\\data_low_chlorine\\scada_data_train_3_2.csv", ".\\data\\data_low_chlorine\\scada_data_train_3_3.csv", ".\\data\\data_low_chlorine\\scada_data_train_4_1.csv", ".\\data\\data_low_chlorine\\scada_data_train_4_2.csv", ".\\data\\data_low_chlorine\\scada_data_train_4_3.csv", ".\\data\\data_low_chlorine\\scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = [".\\data\\data_low_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_low_chlorine\\scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = [".\\data\\data_low_chlorine\\scada_data_train_1_1.csv", ".\\data\\data_low_chlorine\\scada_data_test_6.csv"]
     
 
         configs = [
@@ -389,11 +389,11 @@ if __name__ == "__main__":
     for node in nodes: 
         print(f"Running experiments for node {node}...")
 
-        CLEAN_FILES = ["./data/data_small_chlorine/scada_data_clean_1.csv", "./data/data_small_chlorine/scada_data_clean_3.csv", "./data/data_small_chlorine/scada_data_clean_4.csv"]
+        CLEAN_FILES = ["./data/data_low_chlorine/scada_data_clean_1.csv", "./data/data_low_chlorine/scada_data_clean_3.csv", "./data/data_low_chlorine/scada_data_clean_4.csv"]
 
-        CONTAMINATED_FILES2 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_train_1_2.csv", "./data/data_small_chlorine/scada_data_train_1_3.csv", "./data/data_small_chlorine/scada_data_train_3_1.csv", "./data/data_small_chlorine/scada_data_train_3_2.csv", "./data/data_small_chlorine/scada_data_train_3_3.csv", "./data/data_small_chlorine/scada_data_train_4_1.csv", "./data/data_small_chlorine/scada_data_train_4_2.csv", "./data/data_small_chlorine/scada_data_train_4_3.csv", "./data/data_small_chlorine/scada_data_test_2.csv"]
-        CONTAMINATED_FILES3 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_5.csv"]
-        CONTAMINATED_FILES4 = ["./data/data_small_chlorine/scada_data_train_1_1.csv", "./data/data_small_chlorine/scada_data_test_6.csv"]
+        CONTAMINATED_FILES2 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_train_1_2.csv", "./data/data_low_chlorine/scada_data_train_1_3.csv", "./data/data_low_chlorine/scada_data_train_3_1.csv", "./data/data_low_chlorine/scada_data_train_3_2.csv", "./data/data_low_chlorine/scada_data_train_3_3.csv", "./data/data_low_chlorine/scada_data_train_4_1.csv", "./data/data_low_chlorine/scada_data_train_4_2.csv", "./data/data_low_chlorine/scada_data_train_4_3.csv", "./data/data_low_chlorine/scada_data_test_2.csv"]
+        CONTAMINATED_FILES3 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_5.csv"]
+        CONTAMINATED_FILES4 = ["./data/data_low_chlorine/scada_data_train_1_1.csv", "./data/data_low_chlorine/scada_data_test_6.csv"]
     
     
         configs = [
