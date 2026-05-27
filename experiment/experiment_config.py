@@ -56,5 +56,4 @@ class ExperimentConfig:
     nodes: List[str] = field(default_factory=list)       
     contaminants: List[ContaminationType] = field(default_factory=lambda: [ContaminationType.ARSENIC])                  
     model_params: Dict = field(default_factory=dict)
-    aggregate_method: Optional[str] = None 
     

@@ -16,7 +16,6 @@ Several `main_...` files are already provided with all experiments conducted in 
 
 To reproduce the experiments:
 - Open the corresponding `main_...` file.
-- Uncomment the desired experiment configurations.
 - Run the file.
 
 

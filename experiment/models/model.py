@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from typing import List
 from experiment_config import ExperimentConfig
-from data_transformation import get_data_for_one_node, aggregate_data_for_several_nodes, change_data_format, create_features, create_extended_features, remove_first_x_days, calculate_labels
+from data_transformation import get_data_for_one_node, change_data_format, create_features, create_extended_features, remove_first_x_days, calculate_labels
 class AnomalyModel(ABC):
     """ 
     Abstract class for anomaly detection models. 
@@ -31,14 +31,9 @@ class AnomalyModel(ABC):
         
         dfs = {}
         
-        if self.config.aggregate_method is None:
-            for node in nodes:
-                df_node = get_data_for_one_node(df_all, node, to_csv=False)
-                dfs[str(node)] = df_node
-        
-        else:
-            df = aggregate_data_for_several_nodes(df_all, nodes, method=self.config.aggregate_method, to_csv=False)
-            dfs[str(nodes)] = df 
+        for node in nodes:
+            df_node = get_data_for_one_node(df_all, node, to_csv=False)
+            dfs[str(node)] = df_node
         
         return dfs
 
