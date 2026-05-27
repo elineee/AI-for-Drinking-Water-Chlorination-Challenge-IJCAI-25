@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 from models.autoencoder import AutoencoderModel
 
+# Inspired by :
 # https://www.datacamp.com/tutorial/variational-autoencoders
 # https://medium.com/@sofeikov/implementing-variational-autoencoders-from-scratch-533782d8eb95
 # https://github.com/Jackson-Kang/Pytorch-VAE-tutorial/blob/master/01_Variational_AutoEncoder.ipynb
@@ -219,6 +220,6 @@ class VAEModel(AutoencoderModel):
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
             # Plot the signal
-            # self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
+            self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
 
         return results

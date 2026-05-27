@@ -2,8 +2,7 @@ from data_transformation import calculate_labels_alarm
 from utils import detect_change_point
 from models.autoencoder import AutoencoderModel
 
-# https://klaviyo.tech/developing-our-first-anomaly-detection-algorithm-7c84cab7ca46
-# https://blog.stackademic.com/the-cusum-algorithm-all-the-essential-information-you-need-with-python-examples-f6a5651bf2e5
+
 class AutoencoderAlarmModel(AutoencoderModel):
     """ Class for Autoencoder with alarm model"""
     

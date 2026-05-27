@@ -206,14 +206,14 @@ class CNNMultiNodesModel(AnomalyModel):
                     torch.save(model.state_dict(), f"cnn_multi_nodes.pth")
                     print(f" Best model saved with validation F1: {best_val_f1:.4f}")
                 
-            # plt.figure()
-            # plt.plot(train_loss, label="train")
-            # plt.plot(val_loss, label="validation")
-            # plt.title("Loss evolution over epochs")
-            # plt.xlabel("epoch")
-            # plt.ylabel("loss")
-            # plt.legend()
-            # plt.show()
+            plt.figure()
+            plt.plot(train_loss, label="train")
+            plt.plot(val_loss, label="validation")
+            plt.title("Loss evolution over epochs")
+            plt.xlabel("epoch")
+            plt.ylabel("loss")
+            plt.legend()
+            plt.show()
             
             model.load_state_dict(torch.load(f"cnn_multi_nodes.pth", map_location=self.device, weights_only=True))
 

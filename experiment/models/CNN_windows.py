@@ -4,6 +4,7 @@ import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score, recall_score
 from sklearn.model_selection import train_test_split
+from matplotlib import pyplot as plt
 import torch
 import torch.nn as nn
 from torch.utils.data import TensorDataset, DataLoader
@@ -203,14 +204,14 @@ class CNNWindowsModel(AnomalyModel):
                     print(f"  -> Best model saved with validation F1: {best_val_f1:.4f}")
                 
                 
-            # plt.figure()
-            # plt.plot(train_loss, label="train")
-            # plt.plot(val_loss, label="validation")
-            # plt.title("Loss evolution over epochs")
-            # plt.xlabel("epoch")
-            # plt.ylabel("loss")
-            # plt.legend()
-            # plt.show()
+            plt.figure()
+            plt.plot(train_loss, label="train")
+            plt.plot(val_loss, label="validation")
+            plt.title("Loss evolution over epochs")
+            plt.xlabel("epoch")
+            plt.ylabel("loss")
+            plt.legend()
+            plt.show()
             
             model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
             
@@ -317,7 +318,7 @@ class CNNWindowsModel(AnomalyModel):
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                prepared_df, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
+                _, features, labels, y_svr = self._prepare_data(svr_model, df, clean_dfs, node)
                 data_train.extend(features)
                 data_svr_train.extend(y_svr)
                 y_train.extend(labels)

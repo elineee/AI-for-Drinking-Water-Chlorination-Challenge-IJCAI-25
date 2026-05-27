@@ -8,6 +8,7 @@ import pandas as pd
 from utils import plot_prediction, build_timestamps
 from models.model import AnomalyModel
 
+# Inspired by:
 # Source: https://www.geeksforgeeks.org/deep-learning/implementing-an-autoencoder-in-pytorch/
 # Source: https://www.datacamp.com/tutorial/introduction-to-autoencoders
 # Source: https://keras.io/examples/timeseries/timeseries_anomaly_detection/
@@ -142,14 +143,14 @@ class AutoencoderModel(AnomalyModel):
                 latent_stds.append(mean_std)
 
         # Plot latent stds 
-        # plt.figure(figsize=(10, 4))
-        # plt.plot(latent_stds, label="Mean std of embeddings")
-        # plt.axhline(y=threshold_std, color='r', linestyle='--', label=f"Threshold std = {threshold_std:.3f}")
-        # plt.xlabel("Epoch")
-        # plt.ylabel("Mean std")
-        # plt.title("Latent stds during training")
-        # plt.legend()
-        # plt.show()
+        plt.figure(figsize=(10, 4))
+        plt.plot(latent_stds, label="Mean std of embeddings")
+        plt.axhline(y=threshold_std, color='r', linestyle='--', label=f"Threshold std = {threshold_std:.3f}")
+        plt.xlabel("Epoch")
+        plt.ylabel("Mean std")
+        plt.title("Latent stds during training")
+        plt.legend()
+        plt.show()
 
         model.eval()
 
@@ -200,13 +201,13 @@ class AutoencoderModel(AnomalyModel):
             train_batches = DataLoader(X_train, batch_size=32, shuffle=True)
             test_batches = DataLoader(X_test, batch_size=32, shuffle=False)
 
-            anomalies, reconstructions, test_error = self.run_model( train_batches, test_batches, epochs=300, latent_dim=4)
+            anomalies, reconstructions, _ = self.run_model( train_batches, test_batches, epochs=300, latent_dim=4)
             y_pred = np.where(anomalies, -1, 1) 
             y_pred = self._post_predictions(y_pred)
             results[node] = {"y_true": y_true, "y_pred": y_pred}
             
             # Plot the signal
-            # self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
+            self._plot_reconstruction(prepared_contaminated_dfs, X_test, reconstructions, node)
 
         return results
 

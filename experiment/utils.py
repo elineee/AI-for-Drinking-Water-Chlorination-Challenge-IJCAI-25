@@ -41,50 +41,6 @@ def build_timestamps(datasets, window_size):
         timestamps += list(range(len(dataset) - window_size))
     return timestamps
 
-    
-def cusum_detection(data, reference_mean, reference_std, k, threshold, counter=20):
-    """
-    Detects anomalies using CUSUM applied on reconstruction errors. Since reconstruction errors are always >= 0, only increases are monitored.
-    Once the alarm is triggered, it remains active until the end.
-    
-    Parameters:
-    - data: array of reconstruction errors
-    - reference_mean: mean of the training reconstruction errors (normal behavior)
-    - reference_std: std of the training reconstruction errors (normal behavior)
-    - k: parameter controlling sensitivity
-    - threshold: alarm threshold
-    - counter: number of consecutive points to consider for anomaly detection
-    
-    Returns:
-    - anomalies: numpy array of 1 (normal) and -1 (anomaly)
-    - cusum : CUSUM scores over time
-    """    
-    
-    threshold = threshold*25
-
-    n = len(data)
-    cusum = np.zeros(n)
-    
-    for i in range(1, n):
-        cusum[i] = max(0, cusum[i-1] + data[i] - reference_mean - k * reference_std)
-     
-    anomalies = []
-    alarm = False
-    count = 0
-    for c in cusum:
-        if c > threshold or alarm:
-            count += 1
-            if count >= counter:
-                alarm = True
-                anomalies.append(-1)
-            else: 
-                anomalies.append(1)
-        else:
-            anomalies.append(1)
-            count = 0
-
-    return np.array(anomalies), cusum
-
 
 def detect_change_point(predictions: np.array, count_required=20):
         """Detects the change point and returns an array of 1 until the change point and -1 after the change point """
@@ -116,58 +72,6 @@ def detect_change_point(predictions: np.array, count_required=20):
                 y_pred.append(1)
         return np.array(y_pred)
 
-def get_interesting_and_similar_nodes(df, contaminated_node, dependencies_dict_path, cluster_number):
-    """ Returns a cluster of nodes with similar behavior and interesting to monitor using k_means clustering.
-    
-    Parameters:
-    - df: the dataframe containing the time series data
-    - contaminated_node: the node where the contamination event occurs
-    - dependencies_dict_path: path to the dependencies dict that contains the interesting nodes to monitor for each contaminated node
-    - cluster: the cluster number to select among the different cluster of interesting nodes (can be 0, 1 or 2)
-    
-    Returns:
-    - a list of interesting nodes behaving similarly
-    
-    """
-    
-    with open(dependencies_dict_path, 'rb') as f:
-        dependencies_dict = pickle.load(f)
-    interesting_nodes = dependencies_dict[contaminated_node]
-    
-    time_series_data = get_times_series(df, interesting_nodes)
-    
-    X = np.array(list(time_series_data.values()))
-    kmeans = KMeans(n_clusters=3, random_state=0, n_init="auto").fit_predict(X)
-    print(kmeans)
-
-    cluster_nodes = {}
-    for i in range(len(kmeans)):
-        cluster = kmeans[i]
-        node = interesting_nodes[i]
-        if cluster not in cluster_nodes:
-            cluster_nodes[cluster] = []
-        cluster_nodes[cluster].append(node)
-        
-    return cluster_nodes[cluster_number]
-
-def get_times_series(df, nodes): 
-    """ 
-    Extracts the time series data for the specified nodes from the dataframe.
-    
-    Parameters:
-    - df: the dataframe containing the time series data
-    - nodes: list of nodes to extract the time series for
-    
-    Returns:
-    - a dictionary with node as key and time series as value
-    """
-    
-    time_series_data = {}
-    for node in nodes:
-        column_name_cl = f"bulk_species_node [MG] at Chlorine @ {node}"
-        if column_name_cl in df.columns:
-            time_series_data[node] = df[column_name_cl].values
-    return time_series_data
 
 def gaussian_noise(x):
     """ Adds gaussian noise to the input array x. The noise has a mean of 0 and a standard deviation randomly chosen from a predefined list. 

@@ -1,11 +1,12 @@
 import os
+from matplotlib import pyplot as plt
 import numpy as np
 import pandas as pd
 from sklearn.metrics import f1_score, recall_score
 from sklearn.model_selection import train_test_split
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, TensorDataset, DataLoader
+from torch.utils.data import TensorDataset, DataLoader
 from data_transformation import remove_first_x_days, calculate_labels_alarm, get_labels
 from utils import detect_change_point, add_noisy_dfs
 from experiment_config import ContaminationType, ExperimentConfig
@@ -214,14 +215,14 @@ class CNNModel(AnomalyModel):
                     torch.save(model.state_dict(), f"cnn_{node}.pth")
                     print(f" Best model saved with validation F1: {best_val_f1:.4f}")
             
-            # plt.figure()
-            # plt.plot(train_loss, label="train")
-            # plt.plot(val_loss, label="validation")
-            # plt.title("Loss evolution over epochs")
-            # plt.xlabel("epoch")
-            # plt.ylabel("loss")
-            # plt.legend()
-            # plt.show()
+            plt.figure()
+            plt.plot(train_loss, label="train")
+            plt.plot(val_loss, label="validation")
+            plt.title("Loss evolution over epochs")
+            plt.xlabel("epoch")
+            plt.ylabel("loss")
+            plt.legend()
+            plt.show()
             model.load_state_dict(torch.load(f"cnn_{node}.pth", map_location=self.device, weights_only=True))
         
         model.eval()
@@ -339,7 +340,7 @@ class CNNModel(AnomalyModel):
             # last dataset for testing 
             # train data 
             for df in contaminated_dfs[:-1]:
-                prepared_df, features, labels, predicted_features = self._prepare_data(other_model, df, clean_dfs, node)
+                _, features, labels, predicted_features = self._prepare_data(other_model, df, clean_dfs, node)
                 data_train.extend(features)
                 data_model_train.extend(predicted_features)
                 y_train.extend(labels)

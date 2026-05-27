@@ -258,9 +258,9 @@ class VAEClassifierModel(CNNModel):
             clean_dfs = all_clean_dfs[node]
             
             # Add noise to the train data
-            # clean_dfs = add_noisy_dfs(clean_dfs)
-            # test_contaminated_df = contaminated_dfs[-1]
-            # contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
+            clean_dfs = add_noisy_dfs(clean_dfs)
+            test_contaminated_df = contaminated_dfs[-1]
+            contaminated_dfs = add_noisy_dfs(contaminated_dfs[:-1]) + [test_contaminated_df]
             
             print(f"Calculating results for node {node}")
                         

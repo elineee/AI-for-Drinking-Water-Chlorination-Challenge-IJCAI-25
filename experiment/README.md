@@ -48,3 +48,10 @@ Each configuration needs:
 )
 '''
 
+# Names of models
+
+- CNN corresponds to SVR-CNN (variant 1)
+- CNN_windows corresponds to SVR-CNN (variant 2)
+- CNN_VAE corresponds to VAE-CNN (variant 1)
+- CNN_windows_VAE corresponds to VAE-CNN (variant 2)
+

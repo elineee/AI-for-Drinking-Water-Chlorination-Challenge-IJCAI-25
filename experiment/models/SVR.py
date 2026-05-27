@@ -98,11 +98,11 @@ class SVRModel(AnomalyModel):
         y_test = scaler_y.inverse_transform(y_test)
         
         # Plots
-        # train_timestamps = build_timestamps(prepared_clean_dfs, self.config.window_size)
-        # plot_prediction( train_timestamps, y_train, y_train_pred, title=f"Training prediction node {node} ")
+        train_timestamps = build_timestamps(prepared_clean_dfs, self.config.window_size)
+        plot_prediction( train_timestamps, y_train, y_train_pred, title=f"Training prediction node {node} ")
 
-        # test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)
-        # plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
+        test_timestamps = build_timestamps(prepared_contaminated_dfs, self.config.window_size)
+        plot_prediction( test_timestamps, y_test, y_test_pred,title=f"Test prediction node {node}")
                     
         y_true = self._calculate_labels(prepared_contaminated_df, self.config.contaminants[0].value, self.config.window_size)
         

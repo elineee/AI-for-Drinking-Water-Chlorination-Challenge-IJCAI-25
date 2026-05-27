@@ -10,8 +10,9 @@ import pandas as pd
 from data_transformation import calculate_labels
 from models.model import AnomalyModel
 
-# from https://github.com/vincrichard/LSTM-autoencoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
-# and from https://github.com/matanle51/LSTM_autoencoder/blob/master/models/LSTMAE.py
+# Inspired by :
+# https://github.com/vincrichard/LSTM-autoencoder-Unsupervised-Anomaly-Detection/blob/master/src/model/LSTM_auto_encoder.py
+# and https://github.com/matanle51/LSTM_autoencoder/blob/master/models/LSTMAE.py
         
 class Encoder(nn.Module):
     def __init__(self, input_size, hidden_size, num_layers, dropout):
@@ -255,7 +256,7 @@ class LSTMAutoencoderModel(AnomalyModel):
             true_seq = self._convert_sequence_to_float(mean_true_seq_per_timestep)
             decoded_seq = self._convert_sequence_to_float(mean_decoded_seq_per_timestep)
 
-            # self._plot_reconstruction(true_seq, decoded_seq)
+            self._plot_reconstruction(true_seq, decoded_seq)
                         
             y_true = np.array(y_true)
             print(f"ok: {(y_true == 1).sum()}, ano: {(y_true == -1).sum()}")
