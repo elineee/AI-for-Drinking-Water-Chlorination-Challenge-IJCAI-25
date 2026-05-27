@@ -35,7 +35,7 @@ Each configuration needs:
 
 
 # Example of a configuration
-'''
+```python
     ExperimentConfig(
     config_name="CNN_VAE",
     example_files=CLEAN_FILES,
@@ -46,7 +46,7 @@ Each configuration needs:
     model_params={},
     contaminants=[ContaminationType.PATHOGEN]
 )
-'''
+```
 
 # Names of models
 
