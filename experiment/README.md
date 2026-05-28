@@ -42,6 +42,16 @@ Each configuration needs:
     By default, it is arsenic (for `data_net1` and `data_hanoi`). For `data_cy`, it must be set to `pathogen`.
 
 
+# Structure of the folder
+
+- `models/`: contains the implementation of all models.
+- `data_transformation.py`: handles data preprocessing and transformation.
+- `evaluation.py`: contains the evaluation metrics and functions.
+- `experiment_config.py`: defines the experiment configuration structure.
+- `experiment.py`: experiment runner.
+- `utils.py`: utility functions.
+
+
 # Example of a configuration
 ```python
     ExperimentConfig(
@@ -58,8 +68,22 @@ Each configuration needs:
 
 # Names of models
 
-- CNN corresponds to SVR-CNN (variant 1)
-- CNN_windows corresponds to SVR-CNN (variant 2)
-- CNN_VAE corresponds to VAE-CNN (variant 1)
-- CNN_windows_VAE corresponds to VAE-CNN (variant 2)
+Some model names in the code differ from those used in the thesis:
 
+| Code name | Thesis name |
+|---|---|
+| CNN | SVR-CNN (variant 1) |
+| CNN_windows | SVR-CNN (variant 2) |
+| CNN_VAE | VAE-CNN (variant 1) |
+| CNN_windows_VAE | VAE-CNN (variant 2) |
+| CNN_multi_nodes | CNN multi-node |
+| CNN_univariate | CNN univariate |
+| VAE_classifier | VAE-Classifier |
+| VAE | VAE |
+| AE | AE |
+| LSTM_AE | LSTM AE |
+| SVR | SVR |
+| one_class_SVM | One-Class SVM |
+| LOF | LOF |
+| isolation_forest | Isolation Forest |
+|---|---|
