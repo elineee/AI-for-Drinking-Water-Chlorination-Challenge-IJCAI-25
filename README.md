@@ -1,7 +1,7 @@
 # Anomaly Detection in Water Distribution Systems
 
 This repository contains the code developed for the master's thesis:
-**"Early detection of contamination events in water distribution systems using chlorine time series"** — Aurélie Genot and Eline Mota, UNamur, 2026.
+**"Early detection of contamination events in water distribution systems using chlorine time series"** by Aurélie Genot and Eline Mota, UNamur, 2026.
 
 ## Repository Structure
 
