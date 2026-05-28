@@ -86,4 +86,3 @@ Some model names in the code differ from those used in the thesis:
 | one_class_SVM | One-Class SVM |
 | LOF | LOF |
 | isolation_forest | Isolation Forest |
-|---|---|
