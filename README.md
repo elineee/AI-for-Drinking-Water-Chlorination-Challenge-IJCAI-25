@@ -21,8 +21,8 @@ pip install -r requirements.txt
 
 ## Reference
 
-This repository is forked from: [1st AI for Drinking Water Chlorination Challenge @ IJCAI-2025](https://github.com/WaterFutures/AI-for-Drinking-Water-Chlorination-Challenge-IJCAI-25)
-This code was developed as part of the master's thesis: "Early detection of contamination events in water distribution systems using chlorine time series" by Aurélie Genot and Eline Mota (2026). 
+This repository is forked from: [1st AI for Drinking Water Chlorination Challenge @ IJCAI-2025](https://github.com/WaterFutures/AI-for-Drinking-Water-Chlorination-Challenge-IJCAI-25).
+This code was developed for the master's thesis: "Early detection of contamination events in water distribution systems using chlorine time series" by Aurélie Genot and Eline Mota (2026). 
 
 
 ## License
