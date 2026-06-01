@@ -5,11 +5,11 @@ This repository contains the code developed for the master's thesis:
 
 ## Repository Structure
 
-- `CY/`: data and scripts related to the CY-DBP network, required to generate data.
-- `data/`: datasets generated for the conducted experiments.
+- `CY/`: data and scripts related to the CY-DBP network, required to generate data. See the [README](CY/README.md) for more details for the generation of data.
+- `data/`: datasets generated for the conducted experiments. See the [README](data/README.md) for more details on the data.
 - `experiment/`: main experiment scripts and configurations. See the [README](experiment/README.md) for details on how to run experiments.
-- `Hanoi/`: data and scripts related to the Hanoi network, required to generate data.
-- `Net1/`: data and scripts related to the Net1 network, required to generate data.
+- `Hanoi/`: data and scripts related to the Hanoi network, required to generate data. See the [README](Hanoi/README.md) for more details for the generation of data.
+- `Net1/`: data and scripts related to the Net1 network, required to generate data. See the [README](Net1/README.md) for more details for the generation of data.
 - `results/`: results from the experiments.
 - `trained_model/`: saved trained models.
 
